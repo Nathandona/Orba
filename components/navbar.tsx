@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import Images from "next/image"
+import Image from "next/image"
 import { ModeToggle } from "@/components/ui/mode-toggle"
 import { useTheme } from "next-themes"
 import { useState, useEffect } from "react"
@@ -40,7 +40,7 @@ export function Navbar() {
                         >
                             <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                                 {mounted && (
-                                    <Images
+                                    <Image
                                         src={theme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"}
                                         alt="Orba Logo"
                                         width={32}
