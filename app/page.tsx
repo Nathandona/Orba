@@ -32,7 +32,10 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <section className="pt-32 pb-32 px-4 sm:px-6 lg:px-8 relative">
+        {/* Gradient fade to next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-muted/50 pointer-events-none" />
+        
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -89,7 +92,10 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50 relative">
+        {/* Gradient fade to next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent via-muted/30 to-background pointer-events-none" />
+        
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -149,7 +155,10 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section className="pt-40 pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Gradient fade from previous section */}
+        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-background via-background/50 to-transparent pointer-events-none z-10" />
+        
         {/* 3D Cards Background */}
         <motion.div 
           className="absolute inset-0 pointer-events-none"
