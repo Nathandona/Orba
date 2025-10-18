@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import Images from "next/image"
 import { ModeToggle } from "@/components/ui/mode-toggle"
+import { useTheme } from "next-themes"
 
 export function Navbar() {
+  const { theme } = useTheme()
+
   return (
     <nav className="fixed top-0 w-full z-50 backdrop-blur-lg bg-background/70 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,7 +20,7 @@ export function Navbar() {
           >
             <div className="w-8 h-8 rounded-lg flex items-center justify-center">
               <Images
-                src="/logo-dark.svg"
+                src={theme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"}
                 alt="Orba Logo"
                 width={24}
                 height={24}

@@ -1,6 +1,11 @@
+"use client"
+
 import Images from "next/image"
+import { useTheme } from "next-themes"
 
 export function Footer() {
+  const { theme } = useTheme()
+
   return (
     <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
       <div className="max-w-7xl mx-auto">
@@ -8,7 +13,7 @@ export function Footer() {
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center">
               <Images
-                src="/logo-dark.svg"
+                src={theme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"}
                 alt="Orba Logo"
                 width={24}
                 height={24}
