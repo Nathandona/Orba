@@ -219,10 +219,6 @@ export default function Home() {
                 Schedule Demo
               </Button>
             </div>
-
-            <p className="text-sm text-muted-foreground">
-              ✓ Free 14-day trial  ✓ No credit card required  ✓ Cancel anytime
-            </p>
           </motion.div>
         </div>
       </section>
