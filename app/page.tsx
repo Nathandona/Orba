@@ -14,6 +14,8 @@ import dynamic from "next/dynamic";
 import Images from "next/image";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { CTASection } from "@/components/cta-section";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 
 // Dynamically import 3D component to avoid SSR issues
 const FloatingCards3D = dynamic(() => import("@/components/floating-cards-3d"), {
@@ -25,48 +27,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 backdrop-blur-lg bg-background/70 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2"
-            >
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                <Images
-                  src="/logo-dark.svg"
-                  alt="Orba Logo"
-                  width={24}
-                  height={24}
-                  className="text-primary-foreground"
-                />
-              </div>
-              <span className="text-2xl font-bold text-primary">
-                Orba
-              </span>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4"
-            >
-              <Button variant="ghost" className="hidden sm:inline-flex">
-                Features
-              </Button>
-              <Button variant="ghost" className="hidden sm:inline-flex">
-                Pricing
-              </Button>
-              <ModeToggle />
-              <Button variant="outline">Sign In</Button>
-              <Button>
-                Get Started
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
@@ -197,29 +158,7 @@ export default function Home() {
       />
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                <Images
-                  src="/logo-dark.svg"
-                  alt="Orba Logo"
-                  width={24}
-                  height={24}
-                  className="text-primary-foreground"
-                />
-              </div>
-              <span className="text-xl font-bold text-primary">
-                Orba
-              </span>
-            </div>
-            <p className="text-muted-foreground">
-              © 2025 Orba. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
