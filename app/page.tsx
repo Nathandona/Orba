@@ -198,7 +198,7 @@ export default function Home() {
             </h2>
             
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
-              Start your free 14-day trial today. No credit card required.
+              Start your free 14-day trial today.
               <br />
               Experience the future of team collaboration.
             </p>
