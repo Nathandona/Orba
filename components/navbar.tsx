@@ -5,9 +5,15 @@ import { motion } from "framer-motion"
 import Images from "next/image"
 import { ModeToggle } from "@/components/ui/mode-toggle"
 import { useTheme } from "next-themes"
+import { useState, useEffect } from "react"
 
 export function Navbar() {
     const { theme } = useTheme()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     return (
         <nav className="fixed top-0 w-full z-50 backdrop-blur-lg bg-background/70 border-b border-border">
@@ -19,13 +25,15 @@ export function Navbar() {
                         className="flex items-center gap-2"
                     >
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                            <Images
-                                src={theme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"}
-                                alt="Orba Logo"
-                                width={24}
-                                height={24}
-                                className="text-primary-foreground"
-                            />
+                            {mounted && (
+                                <Images
+                                    src={theme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"}
+                                    alt="Orba Logo"
+                                    width={24}
+                                    height={24}
+                                    className="text-primary-foreground"
+                                />
+                            )}
                         </div>
                         <span className="text-2xl font-bold text-primary">
                             Orba
