@@ -16,7 +16,7 @@ import { ModeToggle } from '@/components/ui/mode-toggle';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface DashboardNavbarProps {
@@ -40,6 +40,11 @@ export function DashboardNavbar({
 }: DashboardNavbarProps) {
   const { theme } = useTheme();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const getUserInitials = (name?: string | null) => {
     if (!name) return 'U';
@@ -68,13 +73,15 @@ export function DashboardNavbar({
           
           {!showBackButton && (
             <Link href="/dashboard" className="flex items-center gap-2">
-              <Image
-                src={theme === 'dark' ? '/logo-light.svg' : '/logo-dark.svg'}
-                alt="Orba Logo"
-                width={32}
-                height={32}
-                className="text-primary-foreground"
-              />
+              {mounted && (
+                <Image
+                  src={theme === 'dark' ? '/logo-light.svg' : '/logo-dark.svg'}
+                  alt="Orba Logo"
+                  width={32}
+                  height={32}
+                  className="text-primary-foreground"
+                />
+              )}
               <h1 className="text-2xl font-bold text-primary">Orba</h1>
             </Link>
           )}
