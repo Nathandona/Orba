@@ -315,7 +315,7 @@ export default function FeaturesPage() {
         title="Ready to supercharge"
         titleHighlight="your productivity?"
         description="Join thousands of teams already using Orba to work smarter and achieve more."
-        badge="Start your journey today"
+        badge=""
         primaryButtonText="Try Orba Free"
         secondaryButtonText="See All Features"
         showBackground3D={true}
