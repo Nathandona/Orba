@@ -12,8 +12,8 @@ import { motion } from "framer-motion";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import Images from "next/image";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { CTASection } from "@/components/cta-section";
 
 // Dynamically import 3D component to avoid SSR issues
 const FloatingCards3D = dynamic(() => import("@/components/floating-cards-3d"), {
@@ -21,21 +21,55 @@ const FloatingCards3D = dynamic(() => import("@/components/floating-cards-3d"), 
   loading: () => <div className="w-full h-[400px] bg-muted/50 rounded-2xl animate-pulse" />
 });
 
-const FloatingCards3DStatic = dynamic(() => import("@/components/floating-cards-3d-static"), {
-  ssr: false,
-  loading: () => null
-});
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
-      <Navbar />
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 backdrop-blur-lg bg-background/70 border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-2"
+            >
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <Images
+                  src="/logo-dark.svg"
+                  alt="Orba Logo"
+                  width={24}
+                  height={24}
+                  className="text-primary-foreground"
+                />
+              </div>
+              <span className="text-2xl font-bold text-primary">
+                Orba
+              </span>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-4"
+            >
+              <Button variant="ghost" className="hidden sm:inline-flex">
+                Features
+              </Button>
+              <Button variant="ghost" className="hidden sm:inline-flex">
+                Pricing
+              </Button>
+              <ModeToggle />
+              <Button variant="outline">Sign In</Button>
+              <Button>
+                Get Started
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-32 px-4 sm:px-6 lg:px-8 relative">
-        {/* Gradient fade to next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-muted/50 pointer-events-none" />
-        
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -92,16 +126,13 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50 relative">
-        {/* Gradient fade to next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent via-muted/30 to-background pointer-events-none" />
-        
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
             <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-foreground">
@@ -132,9 +163,9 @@ export default function Home() {
             ].map((feature, index) => (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, amount: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
                 <Card className="p-6 h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 group">
@@ -155,75 +186,40 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="pt-40 pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Gradient fade from previous section */}
-        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-background via-background/50 to-transparent pointer-events-none z-10" />
-        
-        {/* 3D Cards Background */}
-        <motion.div 
-          className="absolute inset-0 pointer-events-none"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 0.25, scale: 1 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          <Suspense fallback={null}>
-            <FloatingCards3DStatic />
-          </Suspense>
-        </motion.div>
-        
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/70 to-background/80 backdrop-blur-sm pointer-events-none" />
-        
-        <div className="max-w-5xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.7 }}
-            className="text-center"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 backdrop-blur-md">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+      <CTASection
+        badge="Limited Time Offer"
+        title="Ready to"
+        titleHighlight="Transform Your Workflow?"
+        description="Join thousands of teams boosting their productivity with Orba. Start your free trial today and experience the difference!"
+        primaryButtonText="Start Free Trial"
+        secondaryButtonText="Schedule Demo"
+        showBackground3D={true}
+      />
+
+      {/* Footer */}
+      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <Images
+                  src="/logo-dark.svg"
+                  alt="Orba Logo"
+                  width={24}
+                  height={24}
+                  className="text-primary-foreground"
+                />
+              </div>
+              <span className="text-xl font-bold text-primary">
+                Orba
               </span>
-              <span className="text-sm font-medium text-foreground">Join 10,000+ teams worldwide</span>
             </div>
-
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-foreground">
-              Ready to transform
-              <br />
-              <span className="text-primary">your workflow?</span>
-            </h2>
-            
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
-              Start your free 14-day trial today.
-              <br />
-              Experience the future of team collaboration.
+            <p className="text-muted-foreground">
+              © 2025 Orba. All rights reserved.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <Button 
-                size="lg" 
-                className="text-lg h-14 px-10 shadow-lg hover:shadow-xl transition-shadow group"
-              >
-                Start Free Trial
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-lg h-14 px-10 border-2 backdrop-blur-md"
-              >
-                Schedule Demo
-              </Button>
-            </div>
-          </motion.div>
+          </div>
         </div>
-      </section>
-
-      <Footer />
+      </footer>
     </div>
   );
 }

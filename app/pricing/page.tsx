@@ -18,6 +18,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { CTASection } from "@/components/cta-section";
 
 const pricingPlans = [
   {
@@ -341,44 +342,15 @@ export default function PricingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 relative">
-        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent pointer-events-none" />
-        
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Card className="p-12 bg-primary border-0 text-primary-foreground text-center">
-              <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-                Still have questions?
-              </h2>
-              <p className="text-xl mb-8 text-primary-foreground/90">
-                Our team is here to help you find the perfect plan
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  variant="secondary"
-                  className="text-lg h-14 px-8"
-                >
-                  Contact Sales
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="text-lg h-14 px-8 border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10"
-                >
-                  Schedule a Demo
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
-      </section>
+        <CTASection 
+            title="Ready to elevate your team's productivity?"
+            badge=""
+            titleHighlight="Get started with Orba today."
+            description="Join thousands of teams worldwide who trust Orba to streamline their workflows and boost collaboration."
+            primaryButtonText="Start Free Trial"
+            secondaryButtonText="Contact Sales"
+            showBackground3D={true}
+        />
 
       <Footer />
     </div>
