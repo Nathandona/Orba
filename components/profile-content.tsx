@@ -18,10 +18,6 @@ import {
     Calendar,
     MapPin,
     Briefcase,
-    Link as LinkIcon,
-    Twitter,
-    Github,
-    Linkedin,
     Save,
     Camera,
     Shield,
@@ -53,10 +49,6 @@ export function ProfileContent({ user }: ProfileContentProps) {
         location: '',
         company: '',
         jobTitle: '',
-        website: '',
-        twitter: '',
-        github: '',
-        linkedin: '',
     });
 
     const handleSave = async () => {
@@ -85,10 +77,6 @@ export function ProfileContent({ user }: ProfileContentProps) {
             location: '',
             company: '',
             jobTitle: '',
-            website: '',
-            twitter: '',
-            github: '',
-            linkedin: '',
         });
     };
 
@@ -241,14 +229,10 @@ export function ProfileContent({ user }: ProfileContentProps) {
                         transition={{ duration: 0.5, delay: 0.2 }}
                     >
                         <Tabs defaultValue="general" className="w-full">
-                            <TabsList className="grid w-full grid-cols-4">
+                            <TabsList className="grid w-full grid-cols-3">
                                 <TabsTrigger value="general">
                                     <User className="h-4 w-4 mr-2" />
                                     General
-                                </TabsTrigger>
-                                <TabsTrigger value="social">
-                                    <LinkIcon className="h-4 w-4 mr-2" />
-                                    Social
                                 </TabsTrigger>
                                 <TabsTrigger value="security">
                                     <Shield className="h-4 w-4 mr-2" />
@@ -337,76 +321,6 @@ export function ProfileContent({ user }: ProfileContentProps) {
                                                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                                                 disabled={!isEditing}
                                                 placeholder="e.g. San Francisco, CA"
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </TabsContent>
-
-                            {/* Social Tab */}
-                            <TabsContent value="social" className="space-y-4">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Social Links</CardTitle>
-                                        <CardDescription>
-                                            Connect your social media profiles
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="website" className="flex items-center gap-2">
-                                                <LinkIcon className="h-4 w-4" />
-                                                Website
-                                            </Label>
-                                            <Input
-                                                id="website"
-                                                type="url"
-                                                value={formData.website}
-                                                onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                                                disabled={!isEditing}
-                                                placeholder="https://yourwebsite.com"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="github" className="flex items-center gap-2">
-                                                <Github className="h-4 w-4" />
-                                                GitHub
-                                            </Label>
-                                            <Input
-                                                id="github"
-                                                value={formData.github}
-                                                onChange={(e) => setFormData({ ...formData, github: e.target.value })}
-                                                disabled={!isEditing}
-                                                placeholder="github.com/username"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="twitter" className="flex items-center gap-2">
-                                                <Twitter className="h-4 w-4" />
-                                                Twitter
-                                            </Label>
-                                            <Input
-                                                id="twitter"
-                                                value={formData.twitter}
-                                                onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
-                                                disabled={!isEditing}
-                                                placeholder="@username"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="linkedin" className="flex items-center gap-2">
-                                                <Linkedin className="h-4 w-4" />
-                                                LinkedIn
-                                            </Label>
-                                            <Input
-                                                id="linkedin"
-                                                value={formData.linkedin}
-                                                onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                                                disabled={!isEditing}
-                                                placeholder="linkedin.com/in/username"
                                             />
                                         </div>
                                     </CardContent>
