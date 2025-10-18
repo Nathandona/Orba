@@ -18,7 +18,6 @@ import {
     CheckCircle2,
     Clock,
     AlertCircle,
-    TrendingUp,
     Users,
     Target,
     MoreVertical,
@@ -142,32 +141,24 @@ export function DashboardContent({ user }: DashboardContentProps) {
         {
             title: 'Total Projects',
             value: '12',
-            change: '+3',
-            trend: 'up',
             icon: Target,
             color: 'text-blue-600',
         },
         {
             title: 'Tasks Completed',
             value: '143',
-            change: '+12%',
-            trend: 'up',
             icon: CheckCircle2,
             color: 'text-green-600',
         },
         {
             title: 'In Progress',
             value: '28',
-            change: '-5',
-            trend: 'down',
             icon: Clock,
             color: 'text-orange-600',
         },
         {
-            title: 'Team Members',
+            title: 'Collaborators',
             value: '24',
-            change: '+2',
-            trend: 'up',
             icon: Users,
             color: 'text-purple-600',
         },
@@ -254,18 +245,6 @@ export function DashboardContent({ user }: DashboardContentProps) {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-2xl font-bold">{stat.value}</div>
-                                    <p className="text-xs text-muted-foreground flex items-center mt-1">
-                                        <TrendingUp
-                                            className={`mr-1 h-3 w-3 ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                                                }`}
-                                        />
-                                        <span
-                                            className={stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}
-                                        >
-                                            {stat.change}
-                                        </span>
-                                        <span className="ml-1">from last month</span>
-                                    </p>
                                 </CardContent>
                             </Card>
                         ))}
