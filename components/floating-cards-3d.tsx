@@ -40,24 +40,6 @@ function KanbanCard({ position, color, scale = 1 }: { position: [number, number,
   );
 }
 
-function BackgroundSphere() {
-  return (
-    <mesh position={[0, 0, -5]}>
-      <sphereGeometry args={[3, 32, 32]} />
-      <MeshDistortMaterial
-        color="hsl(var(--primary))"
-        attach="material"
-        distort={0.4}
-        speed={2}
-        roughness={0.4}
-        metalness={0.8}
-        opacity={0.1}
-        transparent
-      />
-    </mesh>
-  );
-}
-
 export default function FloatingCards3D() {
   return (
     <div className="w-full h-[500px] rounded-2xl overflow-hidden bg-muted/30 border-2 border-border">
@@ -75,8 +57,6 @@ export default function FloatingCards3D() {
           intensity={1}
           castShadow
         />
-
-        <BackgroundSphere />
         
         {/* Kanban Cards - Using design system colors */}
         <KanbanCard position={[-2.5, 1, 0]} color="hsl(var(--chart-1))" scale={0.8} />
@@ -84,6 +64,8 @@ export default function FloatingCards3D() {
         <KanbanCard position={[2.5, -0.5, 0]} color="hsl(var(--chart-3))" scale={0.9} />
         <KanbanCard position={[-1.2, -1.5, -0.5]} color="hsl(var(--chart-4))" scale={0.7} />
         <KanbanCard position={[1.5, 1.8, -0.3]} color="hsl(var(--chart-5))" scale={0.75} />
+        <KanbanCard position={[1.2, -2, 0.5]} color="hsl(var(--chart-6))" scale={0.85} />
+        <KanbanCard position={[-2, -0.8, 0.3]} color="hsl(var(--chart-7))" scale={0.9} />
 
         <OrbitControls
           enableZoom={false}
