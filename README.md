@@ -29,7 +29,7 @@ Orba is a sleek, modern project management tool inspired by Kanban principles, d
 1. Clone the repository:
 
    ```
-   git clone https://github.com/yourusername/orba.git
+   git clone https://github.com/Nathandona/Orba.git
    cd orba
    ```
 
