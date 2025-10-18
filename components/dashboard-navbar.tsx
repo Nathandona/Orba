@@ -67,7 +67,7 @@ export function DashboardNavbar({
           )}
           
           {!showBackButton && (
-            <>
+            <Link href="/dashboard" className="flex items-center gap-2">
               <Image
                 src={theme === 'dark' ? '/logo-light.svg' : '/logo-dark.svg'}
                 alt="Orba Logo"
@@ -76,7 +76,7 @@ export function DashboardNavbar({
                 className="text-primary-foreground"
               />
               <h1 className="text-2xl font-bold text-primary">Orba</h1>
-            </>
+            </Link>
           )}
           
           {leftContent}
