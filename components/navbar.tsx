@@ -48,7 +48,7 @@ export function Navbar() {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-4"
                     >
-                        <Link href="/#features">
+                        <Link href="/features">
                             <Button variant="ghost" className="hidden sm:inline-flex">
                                 Features
                             </Button>
