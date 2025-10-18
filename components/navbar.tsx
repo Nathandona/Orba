@@ -17,7 +17,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LayoutDashboard, LogOut, Settings, User } from "lucide-react"
+import { LayoutDashboard, LogOut, User } from "lucide-react"
 
 export function Navbar() {
     const { theme } = useTheme()
@@ -113,12 +113,6 @@ export function Navbar() {
                                             <Link href="/profile" className="cursor-pointer">
                                                 <User className="mr-2 h-4 w-4" />
                                                 <span>Profile</span>
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem asChild>
-                                            <Link href="/settings" className="cursor-pointer">
-                                                <Settings className="mr-2 h-4 w-4" />
-                                                <span>Settings</span>
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
