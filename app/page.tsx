@@ -11,8 +11,6 @@ import {
 import { motion } from "framer-motion";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
-import Images from "next/image";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { CTASection } from "@/components/cta-section";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";

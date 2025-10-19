@@ -11,16 +11,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
+  id                    String        @id @default(cuid())
+  name                  String?
+  email                 String        @unique
+  emailVerified         DateTime?
+  password              String?
+  image                 String?
+  stripeCustomerId      String?       @unique
+  stripeSubscriptionId  String?       @unique
+  stripePriceId         String?
+  stripeCurrentPeriodEnd DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  accounts              Account[]
+  sessions              Session[]
+  subscription          Subscription?
 }
 
 model Account {
@@ -56,4 +61,24 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Subscription {
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  stripeSubscriptionId   String    @unique
+  stripeCustomerId       String
+  stripePriceId          String
+  stripeCurrentPeriodEnd DateTime
+  stripeStatus           String
+  stripeCancelAtPeriodEnd Boolean  @default(false)
+  plan                   String    // "starter", "pro", "enterprise"
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
 }

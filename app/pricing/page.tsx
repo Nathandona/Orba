@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Check,
   X,
@@ -12,10 +13,14 @@ import {
   ArrowRight,
   Star,
   Shield,
-  Headphones
+  Headphones,
+  Loader2,
+  AlertCircle
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CTASection } from "@/components/cta-section";
@@ -25,6 +30,7 @@ const pricingPlans = [
     name: "Starter",
     description: "Perfect for small teams getting started",
     price: { monthly: 0, annual: 0 },
+    priceId: { monthly: null, annual: null },
     icon: Zap,
     features: [
       { name: "Up to 3 boards", included: true },
@@ -43,6 +49,10 @@ const pricingPlans = [
     name: "Pro",
     description: "For growing teams that need more power",
     price: { monthly: 12, annual: 10 },
+    priceId: { 
+      monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO_MONTHLY,
+      annual: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO_ANNUAL
+    },
     icon: Users,
     features: [
       { name: "Unlimited boards", included: true },
@@ -61,6 +71,7 @@ const pricingPlans = [
     name: "Enterprise",
     description: "Advanced features for large organizations",
     price: { monthly: null, annual: null },
+    priceId: { monthly: null, annual: null },
     icon: Building2,
     features: [
       { name: "Everything in Pro", included: true },
@@ -96,8 +107,78 @@ const features = [
   },
 ];
 
-export default function PricingPage() {
+function PricingContent() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Check for success or canceled query params
+  const success = searchParams.get('success');
+  const canceled = searchParams.get('canceled');
+
+  const handleSubscribe = async (plan: typeof pricingPlans[0]) => {
+    setError(null);
+
+    // If not logged in, redirect to login
+    if (!session) {
+      router.push('/login?callbackUrl=/pricing');
+      return;
+    }
+
+    // Handle free plan
+    if (plan.name === 'Starter') {
+      router.push('/dashboard');
+      return;
+    }
+
+    // Handle enterprise plan
+    if (plan.name === 'Enterprise') {
+      window.location.href = 'mailto:sales@orba.com?subject=Enterprise Plan Inquiry';
+      return;
+    }
+
+    // Handle pro plan with Stripe
+    const priceId = plan.priceId[billingCycle];
+    if (!priceId) {
+      setError('Price configuration error. Please try again later.');
+      return;
+    }
+
+    setLoadingPlan(plan.name);
+
+    try {
+      // Create checkout session
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId,
+          billingCycle,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL returned');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.');
+      setLoadingPlan(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
@@ -108,6 +189,50 @@ export default function PricingPage() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-muted/30 pointer-events-none" />
         
         <div className="max-w-7xl mx-auto text-center">
+          {/* Success/Error Messages */}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <Alert className="max-w-2xl mx-auto bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900">
+                <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <AlertDescription className="text-green-800 dark:text-green-200">
+                  Success! Your subscription is now active. Welcome to Pro! 🎉
+                </AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+
+          {canceled && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <Alert className="max-w-2xl mx-auto" variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Checkout was canceled. You can try again anytime.
+                </AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <Alert className="max-w-2xl mx-auto" variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -209,9 +334,20 @@ export default function PricingPage() {
                     }`}
                     variant={plan.popular ? 'default' : 'outline'}
                     size="lg"
+                    onClick={() => handleSubscribe(plan)}
+                    disabled={loadingPlan === plan.name}
                   >
-                    {plan.cta}
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    {loadingPlan === plan.name ? (
+                      <>
+                        <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        {plan.cta}
+                        <ArrowRight className="ml-2 w-4 h-4" />
+                      </>
+                    )}
                   </Button>
 
                   <div className="space-y-3 flex-grow">
@@ -354,5 +490,21 @@ export default function PricingPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+        <Footer />
+      </div>
+    }>
+      <PricingContent />
+    </Suspense>
   );
 }
