@@ -1,0 +1,19 @@
+name: Branch Protection Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-protection:
+    name: Check Branch Protection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Verify Push Method
+        run: |
+          echo "⚠️  WARNING: Direct push to main branch detected!"
+          echo "This should not happen if branch protection is properly configured."
+          echo "Please ensure branch protection rules are enabled in repository settings."
+          exit 1
