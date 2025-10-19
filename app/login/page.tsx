@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,10 +13,22 @@ import { motion } from 'framer-motion';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const urlError = searchParams.get('error');
+    if (urlError === 'OAuthAccountNotLinked') {
+      setError('This email is already registered. Please sign in with your email and password, or use the same sign-in method you used before.');
+    } else if (urlError === 'OAuthCallback') {
+      setError('An error occurred during OAuth sign-in. Please try again.');
+    } else if (urlError) {
+      setError('An authentication error occurred. Please try again.');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
