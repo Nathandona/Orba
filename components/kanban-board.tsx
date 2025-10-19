@@ -76,6 +76,21 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     }))
   );
 
+  const handleTaskCreated = (newTask: any) => {
+    // Add new task to the state
+    const task: Task = {
+      id: newTask.id,
+      title: newTask.title,
+      description: newTask.description || '',
+      status: newTask.status as 'todo' | 'in-progress' | 'review' | 'done',
+      priority: newTask.priority as 'low' | 'medium' | 'high',
+      assignee: newTask.assignee ? { name: newTask.assignee } : undefined,
+      dueDate: newTask.dueDate ? new Date(newTask.dueDate).toISOString().split('T')[0] : undefined,
+      labels: newTask.labels || [],
+    };
+    setTasks((prevTasks) => [...prevTasks, task]);
+  };
+
   const columns = [
     { id: 'todo', title: 'To Do', color: 'border-blue-500' },
     { id: 'in-progress', title: 'In Progress', color: 'border-yellow-500' },
@@ -192,6 +207,8 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                     title={column.title}
                     color={column.color}
                     tasks={getTasksByStatus(column.id as Task['status'])}
+                    projectId={project.id}
+                    onTaskCreated={handleTaskCreated}
                   />
                 </motion.div>
               ))}

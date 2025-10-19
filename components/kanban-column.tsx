@@ -3,19 +3,20 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { KanbanCard } from '@/components/kanban-card';
 import { Task } from '@/components/kanban-board';
+import { NewTaskDialog } from '@/components/new-task-dialog';
 
 interface KanbanColumnProps {
   id: string;
   title: string;
   color: string;
   tasks: Task[];
+  projectId: string;
+  onTaskCreated?: (task: any) => void;
 }
 
-export function KanbanColumn({ id, title, color, tasks }: KanbanColumnProps) {
+export function KanbanColumn({ id, title, color, tasks, projectId, onTaskCreated }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
@@ -36,9 +37,11 @@ export function KanbanColumn({ id, title, color, tasks }: KanbanColumnProps) {
                 {tasks.length}
               </span>
             </CardTitle>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <Plus className="h-4 w-4" />
-            </Button>
+            <NewTaskDialog
+              projectId={projectId}
+              status={id as 'todo' | 'in-progress' | 'review' | 'done'}
+              onTaskCreated={onTaskCreated}
+            />
           </div>
         </CardHeader>
         <CardContent className="space-y-3 pb-3">
