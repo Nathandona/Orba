@@ -67,13 +67,6 @@ export default function Home() {
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="text-lg h-14 px-8 border-2"
-                >
-                  Watch Demo
-                </Button>
               </div>
             </motion.div>
 
