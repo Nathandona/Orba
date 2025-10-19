@@ -45,15 +45,33 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
       if (onSubmit) {
         await onSubmit(contactForm);
       } else {
-        // Default behavior: simulate form submission
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log('Contact form submitted:', contactForm);
+        // Default behavior: send to API
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(contactForm),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to submit form');
+        }
+
+        // Success message could be shown via toast notification here
+        console.log('Success:', data.message);
       }
 
       setDialogOpen(false);
       setContactForm({ name: '', email: '', company: '', message: '' });
     } catch (error) {
       console.error('Error submitting contact form:', error);
+      // You could show an error message to the user here
+      alert(error instanceof Error ? error.message : 'Failed to submit form. Please try again.');
+      setContactFormSubmitting(false);
+      return;
     } finally {
       setContactFormSubmitting(false);
     }
