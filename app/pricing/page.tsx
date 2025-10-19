@@ -24,6 +24,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CTASection } from "@/components/cta-section";
+import { ContactSalesDialog } from "@/components/contact-sales-dialog";
+import Link from "next/link";
 
 const pricingPlans = [
   {
@@ -122,21 +124,15 @@ function PricingContent() {
   const handleSubscribe = async (plan: typeof pricingPlans[0]) => {
     setError(null);
 
-    // If not logged in, redirect to login
+    // If not logged in, redirect to register
     if (!session) {
-      router.push('/login?callbackUrl=/pricing');
+      router.push('/register?callbackUrl=/pricing');
       return;
     }
 
     // Handle free plan
     if (plan.name === 'Starter') {
       router.push('/dashboard');
-      return;
-    }
-
-    // Handle enterprise plan
-    if (plan.name === 'Enterprise') {
-      window.location.href = 'mailto:sales@orba.com?subject=Enterprise Plan Inquiry';
       return;
     }
 
@@ -178,6 +174,19 @@ function PricingContent() {
       setError(err.message || 'Something went wrong. Please try again.');
       setLoadingPlan(null);
     }
+  };
+
+  const getButtonText = (plan: typeof pricingPlans[0]) => {
+    if (plan.name === 'Enterprise') {
+      return 'Contact Sales';
+    }
+    if (session) {
+      if (plan.name === 'Starter') {
+        return 'Go to Dashboard';
+      }
+      return plan.cta;
+    }
+    return plan.cta;
   };
 
   return (
@@ -326,29 +335,60 @@ function PricingContent() {
                     )}
                   </div>
 
-                  <Button 
-                    className={`w-full mb-8 ${
-                      plan.popular 
-                        ? 'bg-primary hover:bg-primary/90' 
-                        : ''
-                    }`}
-                    variant={plan.popular ? 'default' : 'outline'}
-                    size="lg"
-                    onClick={() => handleSubscribe(plan)}
-                    disabled={loadingPlan === plan.name}
-                  >
-                    {loadingPlan === plan.name ? (
-                      <>
-                        <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        {plan.cta}
+                  {plan.name === 'Enterprise' ? (
+                    <ContactSalesDialog
+                      trigger={
+                        <Button 
+                          className="w-full mb-8"
+                          variant="outline"
+                          size="lg"
+                        >
+                          Contact Sales
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </Button>
+                      }
+                    />
+                  ) : session ? (
+                    <Button 
+                      className={`w-full mb-8 ${
+                        plan.popular 
+                          ? 'bg-primary hover:bg-primary/90' 
+                          : ''
+                      }`}
+                      variant={plan.popular ? 'default' : 'outline'}
+                      size="lg"
+                      onClick={() => handleSubscribe(plan)}
+                      disabled={loadingPlan === plan.name}
+                    >
+                      {loadingPlan === plan.name ? (
+                        <>
+                          <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          {getButtonText(plan)}
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <Button 
+                      className={`w-full mb-8 ${
+                        plan.popular 
+                          ? 'bg-primary hover:bg-primary/90' 
+                          : ''
+                      }`}
+                      variant={plan.popular ? 'default' : 'outline'}
+                      size="lg"
+                      asChild
+                    >
+                      <Link href="/register?callbackUrl=/pricing">
+                        {getButtonText(plan)}
                         <ArrowRight className="ml-2 w-4 h-4" />
-                      </>
-                    )}
-                  </Button>
+                      </Link>
+                    </Button>
+                  )}
 
                   <div className="space-y-3 flex-grow">
                     {plan.features.map((feature) => (

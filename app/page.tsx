@@ -14,6 +14,8 @@ import dynamic from "next/dynamic";
 import { CTASection } from "@/components/cta-section";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 // Dynamically import 3D component to avoid SSR issues
 const FloatingCards3D = dynamic(() => import("@/components/floating-cards-3d"), {
@@ -22,6 +24,8 @@ const FloatingCards3D = dynamic(() => import("@/components/floating-cards-3d"), 
 });
 
 export default function Home() {
+  const { data: session } = useSession();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
@@ -56,9 +60,12 @@ export default function Home() {
                 <Button 
                   size="lg" 
                   className="text-lg h-14 px-8 shadow-lg"
+                  asChild
                 >
-                  Start Free Trial
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  <Link href={session ? "/dashboard" : "/register"}>
+                    {session ? "Dashboard" : "Get Started Free"}
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
                 </Button>
                 <Button 
                   size="lg" 
