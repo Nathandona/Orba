@@ -26,6 +26,10 @@ import {
     Lock,
     CheckCircle2,
     AlertCircle,
+    CreditCard,
+    Crown,
+    ExternalLink,
+    Loader2,
 } from 'lucide-react';
 
 interface ProfileContentProps {
@@ -34,12 +38,22 @@ interface ProfileContentProps {
         email?: string | null;
         image?: string | null;
     };
+    subscription?: {
+        plan: string;
+        stripeStatus?: string;
+        stripeCurrentPeriodEnd?: Date | null;
+        stripeCancelAtPeriodEnd?: boolean;
+        isActive?: boolean;
+        isPro?: boolean;
+        isCanceled?: boolean;
+    } | null;
 }
 
-export function ProfileContent({ user }: ProfileContentProps) {
+export function ProfileContent({ user, subscription }: ProfileContentProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const [isLoadingPortal, setIsLoadingPortal] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -78,6 +92,23 @@ export function ProfileContent({ user }: ProfileContentProps) {
             company: '',
             jobTitle: '',
         });
+    };
+
+    const handleManageSubscription = async () => {
+        setIsLoadingPortal(true);
+        try {
+            const response = await fetch('/api/stripe/portal', {
+                method: 'POST',
+            });
+            const data = await response.json();
+            if (data.url) {
+                window.location.href = data.url;
+            }
+        } catch (error) {
+            console.error('Error opening customer portal:', error);
+        } finally {
+            setIsLoadingPortal(false);
+        }
     };
 
     const stats = [
@@ -229,10 +260,14 @@ export function ProfileContent({ user }: ProfileContentProps) {
                         transition={{ duration: 0.5, delay: 0.2 }}
                     >
                         <Tabs defaultValue="general" className="w-full">
-                            <TabsList className="grid w-full grid-cols-3">
+                            <TabsList className="grid w-full grid-cols-4">
                                 <TabsTrigger value="general">
                                     <User className="h-4 w-4 mr-2" />
                                     General
+                                </TabsTrigger>
+                                <TabsTrigger value="billing">
+                                    <CreditCard className="h-4 w-4 mr-2" />
+                                    Billing
                                 </TabsTrigger>
                                 <TabsTrigger value="security">
                                     <Shield className="h-4 w-4 mr-2" />
@@ -322,6 +357,159 @@ export function ProfileContent({ user }: ProfileContentProps) {
                                                 disabled={!isEditing}
                                                 placeholder="e.g. San Francisco, CA"
                                             />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* Billing Tab */}
+                            <TabsContent value="billing" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <CardTitle>Subscription & Billing</CardTitle>
+                                                <CardDescription>
+                                                    Manage your subscription and payment methods
+                                                </CardDescription>
+                                            </div>
+                                            {subscription?.isPro && (
+                                                <Badge className="bg-primary/10 text-primary border-primary">
+                                                    <Crown className="h-3 w-3 mr-1" />
+                                                    Pro
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        {/* Current Plan */}
+                                        <div className="space-y-4">
+                                            <h3 className="text-lg font-semibold">Current Plan</h3>
+                                            <div className="rounded-lg border-2 border-primary/20 p-6 bg-primary/5">
+                                                <div className="flex items-start justify-between">
+                                                    <div>
+                                                        <h4 className="text-2xl font-bold capitalize">
+                                                            {subscription?.plan || 'Starter'} Plan
+                                                        </h4>
+                                                        {subscription?.isPro && (
+                                                            <p className="text-muted-foreground mt-2">
+                                                                {subscription.stripeCurrentPeriodEnd && (
+                                                                    <>
+                                                                        {subscription.isCanceled
+                                                                            ? 'Expires'
+                                                                            : 'Renews'} on{' '}
+                                                                        {new Date(subscription.stripeCurrentPeriodEnd).toLocaleDateString('en-US', {
+                                                                            month: 'long',
+                                                                            day: 'numeric',
+                                                                            year: 'numeric',
+                                                                        })}
+                                                                    </>
+                                                                )}
+                                                            </p>
+                                                        )}
+                                                        {subscription?.isCanceled && (
+                                                            <Badge variant="destructive" className="mt-2">
+                                                                Canceled - Access until period end
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-right">
+                                                        {subscription?.isPro ? (
+                                                            <>
+                                                                <div className="text-3xl font-bold">$12</div>
+                                                                <div className="text-sm text-muted-foreground">/user/month</div>
+                                                            </>
+                                                        ) : (
+                                                            <div className="text-3xl font-bold">Free</div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Plan Features */}
+                                        <div className="space-y-4">
+                                            <h3 className="text-lg font-semibold">Plan Features</h3>
+                                            <div className="space-y-2">
+                                                {subscription?.isPro ? (
+                                                    <>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>Unlimited boards</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>Unlimited team members</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>Advanced analytics</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>Priority support</span>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>Up to 3 boards</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>5 team members</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>Basic templates</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <span>Email support</span>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <Separator />
+
+                                        {/* Actions */}
+                                        <div className="space-y-4">
+                                            {subscription?.isPro ? (
+                                                <>
+                                                    <Button
+                                                        onClick={handleManageSubscription}
+                                                        disabled={isLoadingPortal}
+                                                        className="w-full"
+                                                    >
+                                                        {isLoadingPortal ? (
+                                                            <>
+                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                Loading...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <CreditCard className="mr-2 h-4 w-4" />
+                                                                Manage Subscription
+                                                                <ExternalLink className="ml-2 h-4 w-4" />
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                    <p className="text-xs text-muted-foreground text-center">
+                                                        Update payment method, billing info, or cancel your subscription
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <Button
+                                                    onClick={() => window.location.href = '/pricing'}
+                                                    className="w-full"
+                                                >
+                                                    <Crown className="mr-2 h-4 w-4" />
+                                                    Upgrade to Pro
+                                                </Button>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
