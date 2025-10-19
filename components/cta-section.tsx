@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { ContactSalesDialog } from "@/components/contact-sales-dialog";
 
 const FloatingCards3DStatic = dynamic(() => import("@/components/floating-cards-3d-static"), {
   ssr: false,
@@ -96,13 +97,18 @@ export function CTASection({
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="text-lg h-14 px-10 border-2 backdrop-blur-md"
-            >
-              {secondaryButtonText}
-            </Button>
+            
+            <ContactSalesDialog
+              trigger={
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-lg h-14 px-10 border-2 backdrop-blur-md"
+                >
+                  {secondaryButtonText}
+                </Button>
+              }
+            />
           </div>
         </motion.div>
       </div>
