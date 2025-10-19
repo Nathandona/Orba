@@ -5,6 +5,8 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const FloatingCards3DStatic = dynamic(() => import("@/components/floating-cards-3d-static"), {
   ssr: false,
@@ -30,6 +32,8 @@ export function CTASection({
   secondaryButtonText = "Schedule Demo",
   showBackground3D = true
 }: CTASectionProps) {
+  const { data: session } = useSession();
+
   return (
     <section className="pt-40 pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Gradient fade from previous section */}
@@ -85,9 +89,12 @@ export function CTASection({
             <Button 
               size="lg" 
               className="text-lg h-14 px-10 shadow-lg hover:shadow-xl transition-shadow group"
+              asChild
             >
-              {primaryButtonText}
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Link href={session ? "/dashboard" : "/register"}>
+                {session ? "Dashboard" : primaryButtonText}
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
             <Button 
               size="lg" 

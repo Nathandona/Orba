@@ -24,6 +24,8 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CTASection } from "@/components/cta-section";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const mainFeatures = [
   {
@@ -110,6 +112,8 @@ const workflow = [
 ];
 
 export default function FeaturesPage() {
+  const { data: session } = useSession();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       <Navbar />
@@ -135,9 +139,11 @@ export default function FeaturesPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" className="text-lg h-12 px-8">
-                Get Started Free
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Button size="lg" className="text-lg h-12 px-8" asChild>
+                <Link href={session ? "/dashboard" : "/register"}>
+                  {session ? "Dashboard" : "Get Started Free"}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
               </Button>
               <Button size="lg" variant="outline" className="text-lg h-12 px-8">
                 View Demo
