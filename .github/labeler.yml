@@ -1,0 +1,26 @@
+# Auto-label configuration for PRs
+documentation:
+  - '**/*.md'
+  - 'docs/**/*'
+
+frontend:
+  - 'app/**/*'
+  - 'components/**/*'
+
+backend:
+  - 'app/api/**/*'
+  - 'lib/**/*'
+
+database:
+  - 'prisma/**/*'
+
+dependencies:
+  - 'package.json'
+  - 'pnpm-lock.yaml'
+
+ci/cd:
+  - '.github/**/*'
+
+styling:
+  - '**/*.css'
+  - 'tailwind.config.*'
