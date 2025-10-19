@@ -4,6 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Check,
   X,
@@ -24,6 +35,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CTASection } from "@/components/cta-section";
+import Link from "next/link";
 
 const pricingPlans = [
   {
@@ -119,24 +131,37 @@ function PricingContent() {
   const success = searchParams.get('success');
   const canceled = searchParams.get('canceled');
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', company: '', message: '' });
+  const [contactFormSubmitting, setContactFormSubmitting] = useState(false);
+
+  const handleContactSales = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactFormSubmitting(true);
+    
+    // Simulate form submission (you can replace this with actual API call)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Here you would typically send the form data to your backend
+    console.log('Contact form submitted:', contactForm);
+    
+    setContactFormSubmitting(false);
+    setDialogOpen(false);
+    setContactForm({ name: '', email: '', company: '', message: '' });
+  };
+
   const handleSubscribe = async (plan: typeof pricingPlans[0]) => {
     setError(null);
 
-    // If not logged in, redirect to login
+    // If not logged in, redirect to register
     if (!session) {
-      router.push('/login?callbackUrl=/pricing');
+      router.push('/register?callbackUrl=/pricing');
       return;
     }
 
     // Handle free plan
     if (plan.name === 'Starter') {
       router.push('/dashboard');
-      return;
-    }
-
-    // Handle enterprise plan
-    if (plan.name === 'Enterprise') {
-      window.location.href = 'mailto:sales@orba.com?subject=Enterprise Plan Inquiry';
       return;
     }
 
@@ -178,6 +203,19 @@ function PricingContent() {
       setError(err.message || 'Something went wrong. Please try again.');
       setLoadingPlan(null);
     }
+  };
+
+  const getButtonText = (plan: typeof pricingPlans[0]) => {
+    if (plan.name === 'Enterprise') {
+      return 'Contact Sales';
+    }
+    if (session) {
+      if (plan.name === 'Starter') {
+        return 'Go to Dashboard';
+      }
+      return plan.cta;
+    }
+    return plan.cta;
   };
 
   return (
@@ -326,29 +364,136 @@ function PricingContent() {
                     )}
                   </div>
 
-                  <Button 
-                    className={`w-full mb-8 ${
-                      plan.popular 
-                        ? 'bg-primary hover:bg-primary/90' 
-                        : ''
-                    }`}
-                    variant={plan.popular ? 'default' : 'outline'}
-                    size="lg"
-                    onClick={() => handleSubscribe(plan)}
-                    disabled={loadingPlan === plan.name}
-                  >
-                    {loadingPlan === plan.name ? (
-                      <>
-                        <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        {plan.cta}
+                  {plan.name === 'Enterprise' ? (
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button 
+                          className="w-full mb-8"
+                          variant="outline"
+                          size="lg"
+                        >
+                          Contact Sales
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[500px]">
+                        <DialogHeader>
+                          <DialogTitle>Contact Sales</DialogTitle>
+                          <DialogDescription>
+                            Fill out the form below and our team will get back to you within 24 hours.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleContactSales} className="space-y-4 pt-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="name">Name *</Label>
+                            <Input
+                              id="name"
+                              placeholder="John Doe"
+                              value={contactForm.name}
+                              onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                              required
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="email">Email *</Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              placeholder="john@company.com"
+                              value={contactForm.email}
+                              onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                              required
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="company">Company</Label>
+                            <Input
+                              id="company"
+                              placeholder="Acme Inc."
+                              value={contactForm.company}
+                              onChange={(e) => setContactForm({...contactForm, company: e.target.value})}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="message">Message *</Label>
+                            <Textarea
+                              id="message"
+                              placeholder="Tell us about your needs..."
+                              value={contactForm.message}
+                              onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                              required
+                              rows={4}
+                            />
+                          </div>
+                          <div className="flex gap-3 pt-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => setDialogOpen(false)}
+                              disabled={contactFormSubmitting}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              type="submit"
+                              className="flex-1"
+                              disabled={contactFormSubmitting}
+                            >
+                              {contactFormSubmitting ? (
+                                <>
+                                  <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                                  Sending...
+                                </>
+                              ) : (
+                                'Submit'
+                              )}
+                            </Button>
+                          </div>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                  ) : session ? (
+                    <Button 
+                      className={`w-full mb-8 ${
+                        plan.popular 
+                          ? 'bg-primary hover:bg-primary/90' 
+                          : ''
+                      }`}
+                      variant={plan.popular ? 'default' : 'outline'}
+                      size="lg"
+                      onClick={() => handleSubscribe(plan)}
+                      disabled={loadingPlan === plan.name}
+                    >
+                      {loadingPlan === plan.name ? (
+                        <>
+                          <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          {getButtonText(plan)}
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <Button 
+                      className={`w-full mb-8 ${
+                        plan.popular 
+                          ? 'bg-primary hover:bg-primary/90' 
+                          : ''
+                      }`}
+                      variant={plan.popular ? 'default' : 'outline'}
+                      size="lg"
+                      asChild
+                    >
+                      <Link href="/register?callbackUrl=/pricing">
+                        {getButtonText(plan)}
                         <ArrowRight className="ml-2 w-4 h-4" />
-                      </>
-                    )}
-                  </Button>
+                      </Link>
+                    </Button>
+                  )}
 
                   <div className="space-y-3 flex-grow">
                     {plan.features.map((feature) => (
