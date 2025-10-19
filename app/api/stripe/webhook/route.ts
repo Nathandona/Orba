@@ -49,7 +49,7 @@ export async function POST(req: Request) {
           }
 
           // Get subscription details from Stripe
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const priceId = subscription.items.data[0].price.id;
           const plan = await getPlanFromPriceId(priceId);
 
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
               stripeSubscriptionId: subscriptionId,
               stripeCustomerId: customerId,
               stripePriceId: priceId,
-              stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
               stripeStatus: subscription.status,
               plan,
             },
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
               stripeSubscriptionId: subscriptionId,
               stripeCustomerId: customerId,
               stripePriceId: priceId,
-              stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
               stripeStatus: subscription.status,
               plan,
             },
@@ -82,7 +82,7 @@ export async function POST(req: Request) {
               stripeCustomerId: customerId,
               stripeSubscriptionId: subscriptionId,
               stripePriceId: priceId,
-              stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
             },
           });
         }
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
           update: {
             stripeSubscriptionId: subscription.id,
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
             stripeStatus: subscription.status,
             stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
             plan,
@@ -122,7 +122,7 @@ export async function POST(req: Request) {
             stripeSubscriptionId: subscription.id,
             stripeCustomerId: customerId,
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
             stripeStatus: subscription.status,
             stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
             plan,
@@ -135,7 +135,7 @@ export async function POST(req: Request) {
           data: {
             stripeSubscriptionId: subscription.id,
             stripePriceId: priceId,
-            stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
           },
         });
         break;
@@ -175,10 +175,10 @@ export async function POST(req: Request) {
 
       case 'invoice.payment_succeeded': {
         const invoice = event.data.object as Stripe.Invoice;
-        const subscriptionId = invoice.subscription as string;
+        const subscriptionId = invoice.parent?.subscription_details?.subscription as string | undefined;
         
         if (subscriptionId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const customerId = subscription.customer as string;
 
           const user = await prisma.user.findUnique({
@@ -190,7 +190,7 @@ export async function POST(req: Request) {
             await prisma.subscription.update({
               where: { userId: user.id },
               data: {
-                stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
                 stripeStatus: subscription.status,
               },
             });
@@ -198,7 +198,7 @@ export async function POST(req: Request) {
             await prisma.user.update({
               where: { id: user.id },
               data: {
-                stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                stripeCurrentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
               },
             });
           }
@@ -208,10 +208,10 @@ export async function POST(req: Request) {
 
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice;
-        const subscriptionId = invoice.subscription as string;
+        const subscriptionId = invoice.parent?.subscription_details?.subscription as string | undefined;
         
         if (subscriptionId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const customerId = subscription.customer as string;
 
           const user = await prisma.user.findUnique({

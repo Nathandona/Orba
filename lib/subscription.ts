@@ -6,19 +6,22 @@ export async function getUserSubscription(userId: string) {
     include: { subscription: true },
   });
 
-  if (!user) return null;
+  if (!user || !user.subscription) return null;
 
   const subscription = user.subscription;
 
   return {
-    ...subscription,
+    plan: subscription.plan,
+    stripeStatus: subscription.stripeStatus,
+    stripeCurrentPeriodEnd: subscription.stripeCurrentPeriodEnd,
+    stripeCancelAtPeriodEnd: subscription.stripeCancelAtPeriodEnd,
     isActive:
-      subscription?.stripeStatus === 'active' ||
-      subscription?.stripeStatus === 'trialing',
+      subscription.stripeStatus === 'active' ||
+      subscription.stripeStatus === 'trialing',
     isPro:
-      subscription?.stripeStatus === 'active' &&
-      subscription?.plan === 'pro',
-    isCanceled: subscription?.stripeCancelAtPeriodEnd || false,
+      subscription.stripeStatus === 'active' &&
+      subscription.plan === 'pro',
+    isCanceled: subscription.stripeCancelAtPeriodEnd || false,
   };
 }
 
