@@ -1,22 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
 import { ArrowRight, Lock, Mail, AlertCircle, Github } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const urlError = searchParams.get('error');
+    if (urlError === 'OAuthAccountNotLinked') {
+      setError('This email is already registered. Please sign in with your email and password, or use the same sign-in method you used before.');
+    } else if (urlError === 'OAuthCallback') {
+      setError('An error occurred during OAuth sign-in. Please try again.');
+    } else if (urlError) {
+      setError('An authentication error occurred. Please try again.');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,10 +91,11 @@ export default function LoginPage() {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg flex items-center gap-2"
                 >
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  <p className="text-sm">{error}</p>
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
                 </motion.div>
               )}
 
@@ -148,7 +163,7 @@ export default function LoginPage() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-muted"></div>
+                <Separator />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
@@ -218,5 +233,35 @@ export default function LoginPage() {
         </Card>
       </motion.div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted px-4">
+        <div className="w-full max-w-md">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl">Welcome back</CardTitle>
+              <CardDescription>Sign in to your Orba account</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <div className="h-10 bg-muted animate-pulse rounded-md" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-10 bg-muted animate-pulse rounded-md" />
+                </div>
+                <div className="h-10 bg-muted animate-pulse rounded-md" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

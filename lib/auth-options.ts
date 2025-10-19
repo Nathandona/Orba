@@ -67,7 +67,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
       }
@@ -78,6 +78,31 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
       }
       return session;
+    },
+    async signIn({ user, account, profile }) {
+      // Allow OAuth sign-in
+      if (account?.provider === 'github' || account?.provider === 'google') {
+        // Check if user exists with this email but without this OAuth provider
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+          include: { accounts: true }
+        });
+
+        if (existingUser) {
+          // Check if this specific OAuth provider is already linked
+          const providerLinked = existingUser.accounts.some(
+            acc => acc.provider === account.provider
+          );
+
+          if (!providerLinked) {
+            // User exists but this OAuth provider is not linked
+            // You can choose to auto-link or return false
+            // For security, we'll return false and show the error
+            return false;
+          }
+        }
+      }
+      return true;
     },
   },
 };
