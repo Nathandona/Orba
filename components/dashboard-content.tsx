@@ -32,157 +32,100 @@ interface DashboardContentProps {
         email?: string | null;
         image?: string | null;
     };
+    projects: Array<{
+        id: string;
+        name: string;
+        description: string | null;
+        color: string;
+        dueDate: Date | null;
+        totalTasks: number;
+        tasksCompleted: number;
+        team: number;
+    }>;
+    recentTasks: Array<{
+        id: string;
+        title: string;
+        status: string;
+        priority: string;
+        dueDate: Date | null;
+        project: {
+            name: string;
+        };
+    }>;
 }
 
-interface Project {
-    id: string;
-    name: string;
-    description: string;
-    color: string;
-    tasksCompleted: number;
-    totalTasks: number;
-    dueDate: string;
-    team: number;
-}
-
-interface Task {
-    id: string;
-    title: string;
-    status: 'todo' | 'in-progress' | 'completed';
-    priority: 'low' | 'medium' | 'high';
-    dueDate: string;
-    project: string;
-}
-
-export function DashboardContent({ user }: DashboardContentProps) {
+export function DashboardContent({ user, projects: initialProjects, recentTasks: initialTasks }: DashboardContentProps) {
     const [view, setView] = useState<'grid' | 'list'>('grid');
+    const [projects, setProjects] = useState(initialProjects);
     const router = useRouter();
 
-    // Mock data - replace with real data from your database
-    const projects: Project[] = [
-        {
-            id: '1',
-            name: 'Website Redesign',
-            description: 'Complete overhaul of company website',
-            color: 'bg-blue-500',
-            tasksCompleted: 12,
-            totalTasks: 20,
-            dueDate: '2025-11-15',
-            team: 5,
-        },
-        {
-            id: '2',
-            name: 'Mobile App Launch',
-            description: 'iOS and Android app development',
-            color: 'bg-purple-500',
-            tasksCompleted: 8,
-            totalTasks: 15,
-            dueDate: '2025-12-01',
-            team: 8,
-        },
-        {
-            id: '3',
-            name: 'Marketing Campaign',
-            description: 'Q4 digital marketing strategy',
-            color: 'bg-green-500',
-            tasksCompleted: 15,
-            totalTasks: 18,
-            dueDate: '2025-10-30',
-            team: 4,
-        },
-        {
-            id: '4',
-            name: 'Product Launch',
-            description: 'New feature rollout and testing',
-            color: 'bg-orange-500',
-            tasksCompleted: 5,
-            totalTasks: 25,
-            dueDate: '2025-11-20',
-            team: 6,
-        },
-    ];
+    // Transform recent tasks to match the component's interface
+    const recentTasks = initialTasks.slice(0, 4).map(task => ({
+        id: task.id,
+        title: task.title,
+        status: task.status as 'todo' | 'in-progress' | 'completed' | 'done',
+        priority: task.priority as 'low' | 'medium' | 'high',
+        dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        project: task.project.name,
+    }));
 
-    const recentTasks: Task[] = [
-        {
-            id: '1',
-            title: 'Design landing page mockups',
-            status: 'completed',
-            priority: 'high',
-            dueDate: '2025-10-20',
-            project: 'Website Redesign',
-        },
-        {
-            id: '2',
-            title: 'Implement authentication flow',
-            status: 'in-progress',
-            priority: 'high',
-            dueDate: '2025-10-22',
-            project: 'Mobile App Launch',
-        },
-        {
-            id: '3',
-            title: 'Write blog post content',
-            status: 'todo',
-            priority: 'medium',
-            dueDate: '2025-10-25',
-            project: 'Marketing Campaign',
-        },
-        {
-            id: '4',
-            title: 'User testing feedback analysis',
-            status: 'in-progress',
-            priority: 'medium',
-            dueDate: '2025-10-21',
-            project: 'Product Launch',
-        },
-    ];
+    // Calculate stats from real data
+    const totalProjects = projects.length;
+    const totalTasksCompleted = projects.reduce((sum, p) => sum + p.tasksCompleted, 0);
+    const totalTasksInProgress = projects.reduce((sum, p) => {
+        const inProgressTasks = p.totalTasks - p.tasksCompleted;
+        return sum + inProgressTasks;
+    }, 0);
 
     const stats = [
         {
             title: 'Total Projects',
-            value: '12',
+            value: totalProjects.toString(),
             icon: Target,
             color: 'text-blue-600',
         },
         {
             title: 'Tasks Completed',
-            value: '143',
+            value: totalTasksCompleted.toString(),
             icon: CheckCircle2,
             color: 'text-green-600',
         },
         {
             title: 'In Progress',
-            value: '28',
+            value: totalTasksInProgress.toString(),
             icon: Clock,
             color: 'text-orange-600',
         },
         {
             title: 'Collaborators',
-            value: '24',
+            value: '1',
             icon: Users,
             color: 'text-purple-600',
         },
     ];
 
-    const getStatusIcon = (status: Task['status']) => {
+    const getStatusIcon = (status: string) => {
         switch (status) {
             case 'completed':
+            case 'done':
                 return <CheckCircle2 className="w-4 h-4 text-green-600" />;
             case 'in-progress':
                 return <Clock className="w-4 h-4 text-orange-600" />;
             case 'todo':
                 return <AlertCircle className="w-4 h-4 text-blue-600" />;
+            default:
+                return <AlertCircle className="w-4 h-4 text-gray-600" />;
         }
     };
 
-    const getPriorityBadge = (priority: Task['priority']) => {
-        const variants = {
+    const getPriorityBadge = (priority: string) => {
+        const variants: Record<string, string> = {
             high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
             medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
             low: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
         };
         return (
-            <Badge className={variants[priority]} variant="outline">
+            <Badge className={variants[priority] || variants.medium} variant="outline">
                 {priority}
             </Badge>
         );
@@ -344,7 +287,7 @@ export function DashboardContent({ user }: DashboardContentProps) {
                                                 </div>
                                                 <div className="flex items-center gap-2 text-muted-foreground">
                                                     <Clock className="h-4 w-4" />
-                                                    <span>Due {new Date(project.dueDate).toLocaleDateString()}</span>
+                                                    <span>Due {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'No date'}</span>
                                                 </div>
                                             </div>
                                         </CardContent>

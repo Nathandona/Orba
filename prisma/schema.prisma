@@ -26,6 +26,8 @@ model User {
   accounts              Account[]
   sessions              Session[]
   subscription          Subscription?
+  projects              Project[]
+  tasks                 Task[]
 }
 
 model Account {
@@ -96,4 +98,43 @@ model ContactSubmission {
   @@index([email])
   @@index([status])
   @@index([createdAt])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  color       String   @default("bg-blue-500")
+  dueDate     DateTime?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  status      String   @default("todo") // "todo", "in-progress", "review", "done"
+  priority    String   @default("medium") // "low", "medium", "high"
+  dueDate     DateTime?
+  labels      String[] @default([])
+  assignee    String?
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  position    Int      @default(0) // For ordering within column
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([userId])
+  @@index([status])
+  @@index([position])
 }

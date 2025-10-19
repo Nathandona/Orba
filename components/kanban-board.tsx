@@ -24,7 +24,7 @@ interface KanbanBoardProps {
   project: {
     id: string;
     name: string;
-    description: string;
+    description: string | null;
     color: string;
   };
   user: {
@@ -32,6 +32,16 @@ interface KanbanBoardProps {
     email?: string | null;
     image?: string | null;
   };
+  initialTasks: Array<{
+    id: string;
+    title: string;
+    description: string | null;
+    status: string;
+    priority: string;
+    assignee: string | null;
+    dueDate: Date | null;
+    labels: string[];
+  }>;
 }
 
 export interface Task {
@@ -48,83 +58,23 @@ export interface Task {
   labels?: string[];
 }
 
-export function KanbanBoard({ project, user }: KanbanBoardProps) {
+export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
   const router = useRouter();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
-  // Mock tasks data - replace with real data from your database
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: '1',
-      title: 'Design landing page',
-      description: 'Create mockups for the new landing page',
-      status: 'todo',
-      priority: 'high',
-      assignee: { name: 'John Doe' },
-      dueDate: '2025-10-25',
-      labels: ['design', 'ui/ux'],
-    },
-    {
-      id: '2',
-      title: 'Implement authentication',
-      description: 'Add NextAuth.js integration',
-      status: 'todo',
-      priority: 'high',
-      assignee: { name: 'Jane Smith' },
-      dueDate: '2025-10-22',
-      labels: ['backend', 'security'],
-    },
-    {
-      id: '3',
-      title: 'Create dashboard layout',
-      description: 'Build responsive dashboard with shadcn/ui',
-      status: 'in-progress',
-      priority: 'medium',
-      assignee: { name: 'Mike Johnson' },
-      dueDate: '2025-10-24',
-      labels: ['frontend', 'ui'],
-    },
-    {
-      id: '4',
-      title: 'API endpoint for tasks',
-      description: 'Create CRUD operations for tasks',
-      status: 'in-progress',
-      priority: 'high',
-      assignee: { name: 'Sarah Wilson' },
-      dueDate: '2025-10-23',
-      labels: ['backend', 'api'],
-    },
-    {
-      id: '5',
-      title: 'User profile page',
-      description: 'Design and implement user profile',
-      status: 'review',
-      priority: 'medium',
-      assignee: { name: 'John Doe' },
-      dueDate: '2025-10-21',
-      labels: ['frontend'],
-    },
-    {
-      id: '6',
-      title: 'Database schema',
-      description: 'Define Prisma schema for all models',
-      status: 'done',
-      priority: 'high',
-      assignee: { name: 'Jane Smith' },
-      dueDate: '2025-10-18',
-      labels: ['backend', 'database'],
-    },
-    {
-      id: '7',
-      title: 'Setup CI/CD pipeline',
-      description: 'Configure GitHub Actions for deployment',
-      status: 'done',
-      priority: 'medium',
-      assignee: { name: 'Mike Johnson' },
-      dueDate: '2025-10-17',
-      labels: ['devops'],
-    },
-  ]);
+  // Transform initial tasks to match component interface
+  const [tasks, setTasks] = useState<Task[]>(
+    initialTasks.map(task => ({
+      id: task.id,
+      title: task.title,
+      description: task.description || '',
+      status: task.status as 'todo' | 'in-progress' | 'review' | 'done',
+      priority: task.priority as 'low' | 'medium' | 'high',
+      assignee: task.assignee ? { name: task.assignee } : undefined,
+      dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : undefined,
+      labels: task.labels || [],
+    }))
+  );
 
   const columns = [
     { id: 'todo', title: 'To Do', color: 'border-blue-500' },
@@ -149,7 +99,7 @@ export function KanbanBoard({ project, user }: KanbanBoardProps) {
     }
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTask(null);
 
@@ -158,14 +108,35 @@ export function KanbanBoard({ project, user }: KanbanBoardProps) {
     const taskId = active.id as string;
     const newStatus = over.id as Task['status'];
 
-    // Update task status
+    // Optimistically update UI
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.id === taskId ? { ...task, status: newStatus } : task
       )
     );
 
-    // Here you would typically make an API call to update the task in your database
+    // Update task in database
+    try {
+      const response = await fetch(`/api/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!response.ok) {
+        // Revert on error
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === taskId ? { ...task, status: task.status } : task
+          )
+        );
+        console.error('Failed to update task');
+      }
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
   };
 
   const getTasksByStatus = (status: Task['status']) => {
