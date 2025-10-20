@@ -12,9 +12,19 @@ export default async function ProfilePage() {
         redirect('/login');
     }
 
-    // Get user from database
+    // Get user from database with all profile fields
     const user = await prisma.user.findUnique({
         where: { email: session.user.email },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            bio: true,
+            location: true,
+            company: true,
+            jobTitle: true,
+        },
     });
 
     if (!user) {
@@ -24,5 +34,45 @@ export default async function ProfilePage() {
     // Get subscription data
     const subscription = await getUserSubscription(user.id);
 
-    return <ProfileContent user={session.user} subscription={subscription} />;
+    // Get statistics
+    const [projectCount, taskCount, completedTaskCount] = await Promise.all([
+        prisma.project.count({
+            where: { userId: user.id },
+        }),
+        prisma.task.count({
+            where: { userId: user.id },
+        }),
+        prisma.task.count({
+            where: {
+                userId: user.id,
+                column: {
+                    title: {
+                        contains: 'done',
+                        mode: 'insensitive'
+                    }
+                },
+            },
+        }),
+    ]);
+
+    // Calculate hours logged (estimated based on completed tasks)
+    const hoursLogged = completedTaskCount * 2;
+
+    // For team members, count unique assignees in tasks
+    const tasksWithAssignees = await prisma.task.findMany({
+        where: { userId: user.id },
+        select: { assignee: true },
+        distinct: ['assignee'],
+    });
+
+    const teamMembers = tasksWithAssignees.filter((t) => t.assignee).length;
+
+    const stats = {
+        projects: projectCount,
+        tasksCompleted: completedTaskCount,
+        teamMembers: teamMembers,
+        hoursLogged: hoursLogged,
+    };
+
+    return <ProfileContent user={user} subscription={subscription} stats={stats} />;
 }

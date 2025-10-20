@@ -1,6 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -41,6 +51,12 @@ interface DashboardContentProps {
         totalTasks: number;
         tasksCompleted: number;
         team: number;
+        isOwner: boolean;
+        owner?: {
+            id: string;
+            name: string | null;
+            email: string;
+        };
     }>;
     recentTasks: Array<{
         id: string;
@@ -57,16 +73,16 @@ interface DashboardContentProps {
 export function DashboardContent({ user, projects: initialProjects, recentTasks: initialTasks }: DashboardContentProps) {
     const [view, setView] = useState<'grid' | 'list'>('grid');
     const [projects, setProjects] = useState(initialProjects);
+    const [projectToDelete, setProjectToDelete] = useState<typeof initialProjects[0] | null>(null);
+    const [projectToLeave, setProjectToLeave] = useState<typeof initialProjects[0] | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
-    // Transform recent tasks to match the component's interface
+    // Recent tasks are already transformed in the server component
     const recentTasks = initialTasks.slice(0, 4).map(task => ({
-        id: task.id,
-        title: task.title,
-        status: task.status as 'todo' | 'in-progress' | 'completed' | 'done',
+        ...task,
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         priority: task.priority as 'low' | 'medium' | 'high',
-        dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        project: task.project.name,
     }));
 
     // Calculate stats from real data
@@ -76,6 +92,9 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
         const inProgressTasks = p.totalTasks - p.tasksCompleted;
         return sum + inProgressTasks;
     }, 0);
+    
+    // Calculate unique collaborators across all projects
+    const totalCollaborators = projects.reduce((sum, p) => sum + (p.team - 1), 0); // -1 to exclude self
 
     const stats = [
         {
@@ -98,7 +117,7 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
         },
         {
             title: 'Collaborators',
-            value: '1',
+            value: totalCollaborators.toString(),
             icon: Users,
             color: 'text-purple-600',
         },
@@ -129,6 +148,56 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                 {priority}
             </Badge>
         );
+    };
+
+    const handleDeleteProject = async () => {
+        if (!projectToDelete) return;
+        
+        setIsDeleting(true);
+        try {
+            const response = await fetch(`/api/projects/${projectToDelete.id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                // Remove from local state
+                setProjects(projects.filter(p => p.id !== projectToDelete.id));
+                setProjectToDelete(null);
+                router.refresh();
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Failed to delete project');
+            }
+        } catch (error) {
+            alert('Failed to delete project. Please try again.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleLeaveProject = async () => {
+        if (!projectToLeave) return;
+        
+        setIsDeleting(true);
+        try {
+            const response = await fetch(`/api/projects/${projectToLeave.id}/leave`, {
+                method: 'POST',
+            });
+
+            if (response.ok) {
+                // Remove from local state
+                setProjects(projects.filter(p => p.id !== projectToLeave.id));
+                setProjectToLeave(null);
+                router.refresh();
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Failed to leave project');
+            }
+        } catch (error) {
+            alert('Failed to leave project. Please try again.');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -223,9 +292,21 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                     >
                                         <CardHeader>
                                             <div className="flex items-start justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className={`w-3 h-3 rounded-full ${project.color}`} />
-                                                    <CardTitle className="text-lg">{project.name}</CardTitle>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <div className={`w-3 h-3 rounded-full ${project.color}`} />
+                                                        <CardTitle className="text-lg">{project.name}</CardTitle>
+                                                        {!project.isOwner && (
+                                                            <Badge variant="secondary" className="text-xs">
+                                                                Member
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                    {!project.isOwner && project.owner && (
+                                                        <p className="text-xs text-muted-foreground ml-6">
+                                                            Owned by {project.owner.name || project.owner.email}
+                                                        </p>
+                                                    )}
                                                 </div>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
@@ -245,20 +326,41 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                                         }}>
                                                             View Details
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                                                            Edit Project
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem
-                                                            className="text-red-600"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            Delete Project
-                                                        </DropdownMenuItem>
+                                                        {project.isOwner && (
+                                                            <>
+                                                                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                                                                    Edit Project
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    className="text-red-600"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setProjectToDelete(project);
+                                                                    }}
+                                                                >
+                                                                    Delete Project
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        )}
+                                                        {!project.isOwner && (
+                                                            <>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    className="text-red-600"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setProjectToLeave(project);
+                                                                    }}
+                                                                >
+                                                                    Leave Project
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        )}
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </div>
-                                            <CardDescription>{project.description}</CardDescription>
+                                            <CardDescription className="mt-2">{project.description}</CardDescription>
                                         </CardHeader>
                                         <CardContent className="space-y-4">
                                             <div>
@@ -318,7 +420,7 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                                     {getStatusIcon(task.status)}
                                                     <div className="flex-1">
                                                         <h4 className="font-medium">{task.title}</h4>
-                                                        <p className="text-sm text-muted-foreground">{task.project}</p>
+                                                        <p className="text-sm text-muted-foreground">{task.project.name}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-4">
@@ -336,6 +438,52 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                     </div>
                 </div>
             </main>
+
+            {/* Delete Project Dialog */}
+            <AlertDialog open={!!projectToDelete} onOpenChange={(open: boolean) => !open && setProjectToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete <strong>{projectToDelete?.name}</strong>? 
+                            This will permanently delete the project and all its tasks. This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDeleteProject}
+                            disabled={isDeleting}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            {isDeleting ? 'Deleting...' : 'Delete Project'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Leave Project Dialog */}
+            <AlertDialog open={!!projectToLeave} onOpenChange={(open: boolean) => !open && setProjectToLeave(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Leave Project</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to leave <strong>{projectToLeave?.name}</strong>? 
+                            You will lose access to all project tasks and resources. You can be re-invited later.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleLeaveProject}
+                            disabled={isDeleting}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            {isDeleting ? 'Leaving...' : 'Leave Project'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

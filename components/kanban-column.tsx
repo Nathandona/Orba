@@ -6,6 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { KanbanCard } from '@/components/kanban-card';
 import { Task } from '@/components/kanban-board';
 import { NewTaskDialog } from '@/components/new-task-dialog';
+import { ColumnMenu } from '@/components/column-menu';
+
+interface TeamMember {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
 
 interface KanbanColumnProps {
   id: string;
@@ -13,10 +21,14 @@ interface KanbanColumnProps {
   color: string;
   tasks: Task[];
   projectId: string;
+  teamMembers?: TeamMember[];
   onTaskCreated?: (task: any) => void;
+  onTaskUpdated?: (task: any) => void;
+  onTaskDeleted?: (taskId: string) => void;
+  onColumnDeleted?: (columnId: string) => void;
 }
 
-export function KanbanColumn({ id, title, color, tasks, projectId, onTaskCreated }: KanbanColumnProps) {
+export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated, onTaskUpdated, onTaskDeleted, onColumnDeleted }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
@@ -37,16 +49,27 @@ export function KanbanColumn({ id, title, color, tasks, projectId, onTaskCreated
                 {tasks.length}
               </span>
             </CardTitle>
-            <NewTaskDialog
-              projectId={projectId}
-              status={id as 'todo' | 'in-progress' | 'review' | 'done'}
-              onTaskCreated={onTaskCreated}
-            />
+            <div className="flex items-center gap-2">
+              <NewTaskDialog
+                projectId={projectId}
+                columnId={id}
+                columnTitle={title}
+                teamMembers={teamMembers}
+                onTaskCreated={onTaskCreated}
+              />
+              {onColumnDeleted && (
+                <ColumnMenu
+                  columnId={id}
+                  columnTitle={title}
+                  onColumnDeleted={onColumnDeleted}
+                />
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-3 pb-3">
           <SortableContext
-            items={tasks.map((task) => task.id)}
+            items={tasks.map((task) => `sortable-${task.id}`)}
             strategy={verticalListSortingStrategy}
           >
             {tasks.length === 0 ? (
@@ -54,7 +77,15 @@ export function KanbanColumn({ id, title, color, tasks, projectId, onTaskCreated
                 No tasks yet
               </div>
             ) : (
-              tasks.map((task) => <KanbanCard key={task.id} task={task} />)
+              tasks.map((task) => (
+                <KanbanCard
+                  key={`dynamic-${task.id}`}
+                  task={task}
+                  teamMembers={teamMembers}
+                  onUpdate={onTaskUpdated}
+                  onDelete={onTaskDeleted}
+                />
+              ))
             )}
           </SortableContext>
         </CardContent>

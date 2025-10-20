@@ -37,6 +37,10 @@ interface ProfileContentProps {
         name?: string | null;
         email?: string | null;
         image?: string | null;
+        bio?: string | null;
+        location?: string | null;
+        company?: string | null;
+        jobTitle?: string | null;
     };
     subscription?: {
         plan: string;
@@ -47,9 +51,15 @@ interface ProfileContentProps {
         isPro?: boolean;
         isCanceled?: boolean;
     } | null;
+    stats?: {
+        projects: number;
+        tasksCompleted: number;
+        teamMembers: number;
+        hoursLogged: number;
+    };
 }
 
-export function ProfileContent({ user, subscription }: ProfileContentProps) {
+export function ProfileContent({ user, subscription, stats }: ProfileContentProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -59,27 +69,54 @@ export function ProfileContent({ user, subscription }: ProfileContentProps) {
     const [formData, setFormData] = useState({
         name: user.name || '',
         email: user.email || '',
-        bio: '',
-        location: '',
-        company: '',
-        jobTitle: '',
+        bio: user.bio || '',
+        location: user.location || '',
+        company: user.company || '',
+        jobTitle: user.jobTitle || '',
     });
 
     const handleSave = async () => {
         setIsSaving(true);
         setSaveStatus('idle');
         
-        // Simulate API call
-        setTimeout(() => {
+        try {
+            const response = await fetch('/api/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    bio: formData.bio,
+                    location: formData.location,
+                    company: formData.company,
+                    jobTitle: formData.jobTitle,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update profile');
+            }
+
             setIsSaving(false);
             setSaveStatus('success');
             setIsEditing(false);
             
-            // Reset status after 3 seconds
+            // Reset status after 3 seconds and reload to show updated data
+            setTimeout(() => {
+                setSaveStatus('idle');
+                window.location.reload();
+            }, 2000);
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            setIsSaving(false);
+            setSaveStatus('error');
+            
+            // Reset error status after 3 seconds
             setTimeout(() => {
                 setSaveStatus('idle');
             }, 3000);
-        }, 1500);
+        }
     };
 
     const handleCancel = () => {
@@ -87,10 +124,10 @@ export function ProfileContent({ user, subscription }: ProfileContentProps) {
         setFormData({
             name: user.name || '',
             email: user.email || '',
-            bio: '',
-            location: '',
-            company: '',
-            jobTitle: '',
+            bio: user.bio || '',
+            location: user.location || '',
+            company: user.company || '',
+            jobTitle: user.jobTitle || '',
         });
     };
 
@@ -111,11 +148,11 @@ export function ProfileContent({ user, subscription }: ProfileContentProps) {
         }
     };
 
-    const stats = [
-        { label: 'Projects', value: '12' },
-        { label: 'Tasks Completed', value: '143' },
-        { label: 'Team Members', value: '24' },
-        { label: 'Hours Logged', value: '324' },
+    const statsData = [
+        { label: 'Projects', value: stats?.projects?.toString() || '0' },
+        { label: 'Tasks Completed', value: stats?.tasksCompleted?.toString() || '0' },
+        { label: 'Team Members', value: stats?.teamMembers?.toString() || '0' },
+        { label: 'Hours Logged', value: stats?.hoursLogged?.toString() || '0' },
     ];
 
     return (
@@ -214,7 +251,7 @@ export function ProfileContent({ user, subscription }: ProfileContentProps) {
                                 {/* Stats */}
                                 <Separator className="my-6" />
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    {stats.map((stat, index) => (
+                                    {statsData.map((stat, index) => (
                                         <motion.div
                                             key={stat.label}
                                             initial={{ opacity: 0, y: 10 }}

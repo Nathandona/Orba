@@ -24,14 +24,23 @@ import { Loader2, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
 
+interface TeamMember {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
 interface NewTaskDialogProps {
   projectId: string;
-  status: 'todo' | 'in-progress' | 'review' | 'done';
+  columnId: string;
+  columnTitle: string;
+  teamMembers?: TeamMember[];
   onTaskCreated?: (task: any) => void;
   trigger?: React.ReactNode;
 }
 
-export function NewTaskDialog({ projectId, status, onTaskCreated, trigger }: NewTaskDialogProps) {
+export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, onTaskCreated, trigger }: NewTaskDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -57,7 +66,7 @@ export function NewTaskDialog({ projectId, status, onTaskCreated, trigger }: New
         body: JSON.stringify({
           title: formData.title,
           description: formData.description || null,
-          status,
+          columnId,
           priority: formData.priority,
           dueDate: formData.dueDate || null,
           assignee: formData.assignee || null,
@@ -132,8 +141,8 @@ export function NewTaskDialog({ projectId, status, onTaskCreated, trigger }: New
         <DialogHeader>
           <DialogTitle>Create New Task</DialogTitle>
           <DialogDescription>
-            Add a new task to your project. Status will be set to{' '}
-            <span className="font-medium capitalize">{status.replace('-', ' ')}</span>.
+            Add a new task to your project. Task will be added to the{' '}
+            <span className="font-medium">{columnTitle}</span> column.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
@@ -196,13 +205,33 @@ export function NewTaskDialog({ projectId, status, onTaskCreated, trigger }: New
 
           <div className="space-y-2">
             <Label htmlFor="task-assignee">Assignee</Label>
-            <Input
-              id="task-assignee"
-              placeholder="John Doe"
-              value={formData.assignee}
-              onChange={(e) => setFormData({ ...formData, assignee: e.target.value })}
-              disabled={loading}
-            />
+            {teamMembers && teamMembers.length > 0 ? (
+              <Select
+                value={formData.assignee}
+                onValueChange={(value) => setFormData({ ...formData, assignee: value })}
+                disabled={loading}
+              >
+                <SelectTrigger id="task-assignee">
+                  <SelectValue placeholder="Select team member" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Unassigned</SelectItem>
+                  {teamMembers.map((member) => (
+                    <SelectItem key={member.id} value={member.name}>
+                      {member.name} ({member.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                id="task-assignee"
+                placeholder="John Doe"
+                value={formData.assignee}
+                onChange={(e) => setFormData({ ...formData, assignee: e.target.value })}
+                disabled={loading}
+              />
+            )}
           </div>
 
           <div className="space-y-2">
