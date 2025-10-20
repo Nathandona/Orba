@@ -44,6 +44,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     include: {
       tasks: {
         include: {
+          column: {
+            select: {
+              id: true,
+              title: true,
+              color: true,
+              position: true,
+            },
+          },
           _count: {
             select: {
               comments: true,
@@ -52,7 +60,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           },
         },
         orderBy: [
-          { status: 'asc' },
+          { column: { position: 'asc' } },
           { position: 'asc' },
           { createdAt: 'asc' },
         ],

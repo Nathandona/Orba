@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { KanbanCard } from '@/components/kanban-card';
 import { Task } from '@/components/kanban-board';
 import { NewTaskDialog } from '@/components/new-task-dialog';
+import { ColumnMenu } from '@/components/column-menu';
 
 interface TeamMember {
   id: string;
@@ -24,9 +25,10 @@ interface KanbanColumnProps {
   onTaskCreated?: (task: any) => void;
   onTaskUpdated?: (task: any) => void;
   onTaskDeleted?: (taskId: string) => void;
+  onColumnDeleted?: (columnId: string) => void;
 }
 
-export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated, onTaskUpdated, onTaskDeleted }: KanbanColumnProps) {
+export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated, onTaskUpdated, onTaskDeleted, onColumnDeleted }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
@@ -47,12 +49,22 @@ export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, 
                 {tasks.length}
               </span>
             </CardTitle>
-            <NewTaskDialog
-              projectId={projectId}
-              status={id as 'todo' | 'in-progress' | 'review' | 'done'}
-              teamMembers={teamMembers}
-              onTaskCreated={onTaskCreated}
-            />
+            <div className="flex items-center gap-2">
+              <NewTaskDialog
+                projectId={projectId}
+                columnId={id}
+                columnTitle={title}
+                teamMembers={teamMembers}
+                onTaskCreated={onTaskCreated}
+              />
+              {onColumnDeleted && (
+                <ColumnMenu
+                  columnId={id}
+                  columnTitle={title}
+                  onColumnDeleted={onColumnDeleted}
+                />
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-3 pb-3">

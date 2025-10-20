@@ -33,13 +33,14 @@ interface TeamMember {
 
 interface NewTaskDialogProps {
   projectId: string;
-  status: 'todo' | 'in-progress' | 'review' | 'done';
+  columnId: string;
+  columnTitle: string;
   teamMembers?: TeamMember[];
   onTaskCreated?: (task: any) => void;
   trigger?: React.ReactNode;
 }
 
-export function NewTaskDialog({ projectId, status, teamMembers, onTaskCreated, trigger }: NewTaskDialogProps) {
+export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, onTaskCreated, trigger }: NewTaskDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -65,7 +66,7 @@ export function NewTaskDialog({ projectId, status, teamMembers, onTaskCreated, t
         body: JSON.stringify({
           title: formData.title,
           description: formData.description || null,
-          status,
+          columnId,
           priority: formData.priority,
           dueDate: formData.dueDate || null,
           assignee: formData.assignee || null,
@@ -140,8 +141,8 @@ export function NewTaskDialog({ projectId, status, teamMembers, onTaskCreated, t
         <DialogHeader>
           <DialogTitle>Create New Task</DialogTitle>
           <DialogDescription>
-            Add a new task to your project. Status will be set to{' '}
-            <span className="font-medium capitalize">{status.replace('-', ' ')}</span>.
+            Add a new task to your project. Task will be added to the{' '}
+            <span className="font-medium">{columnTitle}</span> column.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">

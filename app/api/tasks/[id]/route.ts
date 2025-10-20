@@ -40,9 +40,8 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     }
 
     const body = await req.json();
-    const { title, description, status, priority, dueDate, labels, assignee, position } = body;
+    const { title, description, columnId, priority, dueDate, labels, assignee, position } = body;
 
-    // If status changed, update position
     let updateData: any = {
       ...(title !== undefined && { title }),
       ...(description !== undefined && { description }),
@@ -52,16 +51,16 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
       ...(assignee !== undefined && { assignee }),
     };
 
-    // Handle status change
-    if (status !== undefined && status !== existingTask.status) {
-      // Get max position in new status
+    // Handle column change
+    if (columnId !== undefined && columnId !== existingTask.columnId) {
+      // Get max position in new column
       const maxPositionTask = await prisma.task.findFirst({
-        where: { projectId: existingTask.projectId, status },
+        where: { projectId: existingTask.projectId, columnId },
         orderBy: { position: 'desc' },
         select: { position: true },
       });
-      
-      updateData.status = status;
+
+      updateData.columnId = columnId;
       updateData.position = (maxPositionTask?.position || 0) + 1;
     } else if (position !== undefined) {
       updateData.position = position;

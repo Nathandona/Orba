@@ -27,9 +27,9 @@ export default async function DashboardPage() {
       tasks: {
         select: {
           id: true,
-          status: true,
           priority: true,
           dueDate: true,
+          columnId: true,
         },
       },
       members: {
@@ -60,9 +60,9 @@ export default async function DashboardPage() {
           tasks: {
             select: {
               id: true,
-              status: true,
               priority: true,
               dueDate: true,
+              columnId: true,
             },
           },
           members: {
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
   const allOwnedProjects = ownedProjects.map((project) => ({
     ...project,
     totalTasks: project._count.tasks,
-    tasksCompleted: project.tasks.filter((task) => task.status === 'done').length,
+    tasksCompleted: 0, // TODO: Calculate based on "Done" column tasks
     team: project._count.members + 1, // members + owner
     isOwner: true,
   }));
@@ -101,7 +101,7 @@ export default async function DashboardPage() {
   const allMemberProjects = memberProjects.map((membership) => ({
     ...membership.project,
     totalTasks: membership.project._count.tasks,
-    tasksCompleted: membership.project.tasks.filter((task) => task.status === 'done').length,
+    tasksCompleted: 0, // TODO: Calculate based on "Done" column tasks
     team: membership.project._count.members + 1, // members + owner
     isOwner: false,
     owner: membership.project.user,
@@ -119,6 +119,11 @@ export default async function DashboardPage() {
       project: {
         select: {
           name: true,
+        },
+      },
+      column: {
+        select: {
+          title: true,
         },
       },
     },

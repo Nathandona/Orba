@@ -113,12 +113,29 @@ model Project {
   userId      String
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Task[]
+  columns     Column[]
   members     ProjectMember[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
   @@index([userId])
   @@index([createdAt])
+}
+
+model Column {
+  id        String   @id @default(cuid())
+  title     String
+  color     String   @default("border-gray-500")
+  position  Int      @default(0) // For ordering columns
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId, title])
+  @@index([projectId])
+  @@index([position])
 }
 
 model ProjectMember {
@@ -144,16 +161,17 @@ model Task {
   id          String       @id @default(cuid())
   title       String
   description String?      @db.Text
-  status      String       @default("todo") // "todo", "in-progress", "review", "done"
   priority    String       @default("medium") // "low", "medium", "high"
   dueDate     DateTime?
   labels      String[]     @default([])
   assignee    String?
+  position    Int          @default(0) // For ordering within column
   projectId   String
   project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  columnId    String?
+  column      Column?      @relation(fields: [columnId], references: [id], onDelete: SetNull)
   userId      String
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  position    Int          @default(0) // For ordering within column
   comments    Comment[]
   attachments Attachment[]
   createdAt   DateTime     @default(now())
@@ -161,7 +179,7 @@ model Task {
 
   @@index([projectId])
   @@index([userId])
-  @@index([status])
+  @@index([columnId])
   @@index([position])
 }
 

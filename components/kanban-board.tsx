@@ -20,6 +20,7 @@ import { KanbanColumn } from './kanban-column';
 import { KanbanCard } from '@/components/kanban-card';
 import { DashboardNavbar } from '@/components/dashboard-navbar';
 import { TeamDialog } from '@/components/team-dialog';
+import { AddColumnDialog } from '@/components/add-column-dialog';
 
 interface KanbanBoardProps {
   project: {
@@ -70,16 +71,52 @@ export interface TeamMember {
   role: string;
 }
 
+export interface Column {
+  id: string;
+  title: string;
+  color: string;
+  position: number;
+  _count?: {
+    tasks: number;
+  };
+}
+
 export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
   const router = useRouter();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [isAddColumnOpen, setIsAddColumnOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   // Prevent hydration errors with dnd-kit by only rendering after mount
   useEffect(() => {
     setIsMounted(true);
+    // Fetch columns on mount
+    fetchColumns();
   }, []);
+
+  const fetchColumns = async () => {
+    try {
+      const response = await fetch(`/api/projects/${project.id}/columns`);
+      if (response.ok) {
+        const data = await response.json();
+        setColumns(data);
+      }
+    } catch (error) {
+      console.error('Error fetching columns:', error);
+    }
+  };
+
+  const handleColumnCreated = (newColumn: Column) => {
+    setColumns((prevColumns) => [...prevColumns, newColumn]);
+  };
+
+  const handleColumnDeleted = (columnId: string) => {
+    setColumns((prevColumns) => prevColumns.filter((col) => col.id !== columnId));
+    // Remove tasks that were in the deleted column
+    setTasks((prevTasks) => prevTasks.filter((task) => task.columnId !== columnId));
+  };
 
   // Transform initial tasks to match component interface, removing duplicates
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -89,11 +126,12 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         id: task.id,
         title: task.title,
         description: task.description || '',
-        status: task.status as 'todo' | 'in-progress' | 'review' | 'done',
+        status: task.column?.title as 'todo' | 'in-progress' | 'review' | 'done' || 'todo',
         priority: task.priority as 'low' | 'medium' | 'high',
         assignee: task.assignee ? { name: task.assignee } : undefined,
         dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : undefined,
         labels: task.labels || [],
+        columnId: task.columnId,
         _count: task._count,
       }))
       .filter(task => {
@@ -112,11 +150,12 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
       id: newTask.id,
       title: newTask.title,
       description: newTask.description || '',
-      status: newTask.status as 'todo' | 'in-progress' | 'review' | 'done',
+      status: 'todo', // Default status for compatibility
       priority: newTask.priority as 'low' | 'medium' | 'high',
       assignee: newTask.assignee ? { name: newTask.assignee } : undefined,
       dueDate: newTask.dueDate ? new Date(newTask.dueDate).toISOString().split('T')[0] : undefined,
       labels: newTask.labels || [],
+      columnId: newTask.columnId,
       _count: newTask._count || { comments: 0, attachments: 0 },
     };
     setTasks((prevTasks) => [...prevTasks, task]);
@@ -131,11 +170,12 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
               ...task,
               title: updatedTask.title,
               description: updatedTask.description || '',
-              status: updatedTask.status as 'todo' | 'in-progress' | 'review' | 'done',
+              status: task.status, // Keep existing status for compatibility
               priority: updatedTask.priority as 'low' | 'medium' | 'high',
               assignee: updatedTask.assignee ? { name: updatedTask.assignee } : undefined,
               dueDate: updatedTask.dueDate ? new Date(updatedTask.dueDate).toISOString().split('T')[0] : undefined,
               labels: updatedTask.labels || [],
+              columnId: updatedTask.columnId || task.columnId,
               _count: updatedTask._count || task._count,
             }
           : task
@@ -148,12 +188,9 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   };
 
-  const columns = [
-    { id: 'todo', title: 'To Do', color: 'border-blue-500' },
-    { id: 'in-progress', title: 'In Progress', color: 'border-yellow-500' },
-    { id: 'review', title: 'Review', color: 'border-purple-500' },
-    { id: 'done', title: 'Done', color: 'border-green-500' },
-  ];
+  const getTasksByColumn = (columnId: string) => {
+    return tasks.filter((task) => task.columnId === columnId);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -179,12 +216,12 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     if (!over) return;
 
     const taskId = typeof active.id === 'string' ? active.id.replace('sortable-', '') : active.id;
-    const newStatus = over.id as Task['status'];
+    const newColumnId = typeof over.id === 'string' ? over.id : over.id.toString();
 
     // Optimistically update UI
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task
+        task.id === taskId ? { ...task, columnId: newColumnId } : task
       )
     );
 
@@ -195,14 +232,14 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ columnId: newColumnId }),
       });
 
       if (!response.ok) {
         // Revert on error
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
-            task.id === taskId ? { ...task, status: task.status } : task
+            task.id === taskId ? { ...task, columnId: task.columnId } : task
           )
         );
         console.error('Failed to update task');
@@ -212,10 +249,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     }
   };
 
-  const getTasksByStatus = (status: Task['status']) => {
-    return tasks.filter((task) => task.status === status);
-  };
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Header */}
@@ -235,8 +269,15 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
               <Filter className="w-4 h-4 mr-2" />
               Filter
             </Button>
-            <TeamDialog 
-              projectId={project.id} 
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAddColumnOpen(true)}
+            >
+              Add Column
+            </Button>
+            <TeamDialog
+              projectId={project.id}
               projectOwner={user}
               onMembersChange={(members) => setTeamMembers(members)}
             />
@@ -261,7 +302,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                     <div className={`h-full border-t-4 ${column.color} rounded-lg bg-card p-4`}>
                       <h3 className="font-semibold mb-4">{column.title}</h3>
                       <div className="space-y-3">
-                        {tasks.filter((t) => t.status === column.id).map((task) => (
+                        {tasks.filter((t) => t.columnId === column.id).map((task) => (
                           <div key={`static-${task.id}`} className="bg-background rounded-lg p-3 shadow-sm border">
                             <p className="text-sm font-medium">{task.title}</p>
                           </div>
@@ -291,12 +332,13 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                     id={column.id}
                     title={column.title}
                     color={column.color}
-                    tasks={getTasksByStatus(column.id as Task['status'])}
+                    tasks={getTasksByColumn(column.id)}
                     projectId={project.id}
                     teamMembers={teamMembers}
                     onTaskCreated={handleTaskCreated}
                     onTaskUpdated={handleTaskUpdated}
                     onTaskDeleted={handleTaskDeleted}
+                    onColumnDeleted={handleColumnDeleted}
                   />
                 </motion.div>
               ))}
@@ -315,6 +357,14 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
           )}
         </div>
       </main>
+
+      {/* Add Column Dialog */}
+      <AddColumnDialog
+        open={isAddColumnOpen}
+        onOpenChange={setIsAddColumnOpen}
+        projectId={project.id}
+        onColumnCreated={handleColumnCreated}
+      />
     </div>
   );
 }
