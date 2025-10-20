@@ -43,6 +43,11 @@ interface KanbanBoardProps {
     assignee: string | null;
     dueDate: Date | null;
     labels: string[];
+    columnId: string | null;
+    _count?: {
+      comments: number;
+      attachments: number;
+    };
   }>;
 }
 
@@ -58,6 +63,7 @@ export interface Task {
   };
   dueDate?: string;
   labels?: string[];
+  columnId: string | null;
   _count?: {
     comments: number;
     attachments: number;
@@ -126,10 +132,10 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         id: task.id,
         title: task.title,
         description: task.description || '',
-        status: task.column?.title as 'todo' | 'in-progress' | 'review' | 'done' || 'todo',
+        status: task.status as 'todo' | 'in-progress' | 'review' | 'done',
         priority: task.priority as 'low' | 'medium' | 'high',
         assignee: task.assignee ? { name: task.assignee } : undefined,
-        dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : undefined,
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : undefined,
         labels: task.labels || [],
         columnId: task.columnId,
         _count: task._count,

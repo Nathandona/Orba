@@ -94,6 +94,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     assignee: task.assignee,
     dueDate: task.dueDate,
     labels: task.labels,
+    columnId: task.columnId,
+    _count: task._count,
   }));
 
   return <KanbanBoard project={project} user={session.user} initialTasks={transformedTasks} />;

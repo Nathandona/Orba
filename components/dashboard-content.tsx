@@ -420,7 +420,7 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                                     {getStatusIcon(task.status)}
                                                     <div className="flex-1">
                                                         <h4 className="font-medium">{task.title}</h4>
-                                                        <p className="text-sm text-muted-foreground">{task.project}</p>
+                                                        <p className="text-sm text-muted-foreground">{task.project.name}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-4">
