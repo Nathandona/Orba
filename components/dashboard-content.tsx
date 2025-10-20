@@ -82,7 +82,10 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
     const recentTasks = initialTasks.slice(0, 4).map(task => ({
         id: task.id,
         title: task.title,
-        status: task.status as 'todo' | 'in-progress' | 'completed' | 'done',
+        status: (task.column?.title?.toLowerCase() === 'done' ? 'done' :
+                task.column?.title?.toLowerCase().includes('progress') ? 'in-progress' :
+                task.column?.title?.toLowerCase().includes('to do') || task.column?.title?.toLowerCase().includes('todo') ? 'todo' :
+                'todo') as 'todo' | 'in-progress' | 'completed' | 'done',
         priority: task.priority as 'low' | 'medium' | 'high',
         dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         project: task.project.name,
