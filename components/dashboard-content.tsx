@@ -78,17 +78,11 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
 
-    // Transform recent tasks to match the component's interface
+    // Recent tasks are already transformed in the server component
     const recentTasks = initialTasks.slice(0, 4).map(task => ({
-        id: task.id,
-        title: task.title,
-        status: (task.column?.title?.toLowerCase() === 'done' ? 'done' :
-                task.column?.title?.toLowerCase().includes('progress') ? 'in-progress' :
-                task.column?.title?.toLowerCase().includes('to do') || task.column?.title?.toLowerCase().includes('todo') ? 'todo' :
-                'todo') as 'todo' | 'in-progress' | 'completed' | 'done',
+        ...task,
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         priority: task.priority as 'low' | 'medium' | 'high',
-        dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        project: task.project.name,
     }));
 
     // Calculate stats from real data

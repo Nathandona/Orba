@@ -113,7 +113,7 @@ export default async function DashboardPage() {
   );
 
   // Get recent tasks across all projects
-  const recentTasks = await prisma.task.findMany({
+  const recentTasksData = await prisma.task.findMany({
     where: { userId: user.id },
     include: {
       project: {
@@ -130,6 +130,21 @@ export default async function DashboardPage() {
     orderBy: { createdAt: 'desc' },
     take: 10,
   });
+
+  // Transform recent tasks to match the expected interface
+  const recentTasks = recentTasksData.map(task => ({
+    id: task.id,
+    title: task.title,
+    status: (task.column?.title?.toLowerCase() === 'done' ? 'done' :
+            task.column?.title?.toLowerCase().includes('progress') ? 'in-progress' :
+            task.column?.title?.toLowerCase().includes('to do') || task.column?.title?.toLowerCase().includes('todo') ? 'todo' :
+            'todo') as 'todo' | 'in-progress' | 'completed' | 'done',
+    priority: task.priority,
+    dueDate: task.dueDate,
+    project: {
+      name: task.project.name,
+    },
+  }));
 
   return <DashboardContent user={session.user} projects={projects} recentTasks={recentTasks} />;
 }
