@@ -143,6 +143,11 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     );
   };
 
+  const handleTaskDeleted = (taskId: string) => {
+    // Remove task from the state
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+  };
+
   const columns = [
     { id: 'todo', title: 'To Do', color: 'border-blue-500' },
     { id: 'in-progress', title: 'In Progress', color: 'border-yellow-500' },
@@ -291,6 +296,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                     teamMembers={teamMembers}
                     onTaskCreated={handleTaskCreated}
                     onTaskUpdated={handleTaskUpdated}
+                    onTaskDeleted={handleTaskDeleted}
                   />
                 </motion.div>
               ))}

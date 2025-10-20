@@ -23,16 +23,29 @@ import {
 } from 'lucide-react';
 import { Task } from '@/components/kanban-board';
 import { EditTaskDialog } from '@/components/edit-task-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface KanbanCardProps {
   task: Task;
   isDragging?: boolean;
   teamMembers?: Array<{ id: string; name: string; email: string }>;
   onUpdate?: (updatedTask: Task) => void;
+  onDelete?: (taskId: string) => void;
 }
 
-export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate }: KanbanCardProps) {
+export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, onDelete }: KanbanCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [localTask, setLocalTask] = useState(task);
 
   // Update local task when prop changes
@@ -60,6 +73,32 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate }: 
     setLocalTask(updatedTask);
     if (onUpdate) {
       onUpdate(updatedTask);
+    }
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(`/api/tasks/${task.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete task');
+      }
+
+      // Call the onDelete callback to remove the task from the parent state
+      if (onDelete) {
+        onDelete(task.id);
+      }
+
+      setIsDeleteOpen(false);
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      alert('Failed to delete task. Please try again.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -117,7 +156,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate }: 
                     className="text-destructive"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // TODO: Add delete functionality
+                      setIsDeleteOpen(true);
                     }}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
@@ -201,6 +240,37 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate }: 
         teamMembers={teamMembers}
         onSave={handleSave}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the task "{task.title}" and all associated comments and attachments. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Task
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

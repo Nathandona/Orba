@@ -23,9 +23,10 @@ interface KanbanColumnProps {
   teamMembers?: TeamMember[];
   onTaskCreated?: (task: any) => void;
   onTaskUpdated?: (task: any) => void;
+  onTaskDeleted?: (taskId: string) => void;
 }
 
-export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated, onTaskUpdated }: KanbanColumnProps) {
+export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated, onTaskUpdated, onTaskDeleted }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
@@ -70,6 +71,7 @@ export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, 
                   task={task}
                   teamMembers={teamMembers}
                   onUpdate={onTaskUpdated}
+                  onDelete={onTaskDeleted}
                 />
               ))
             )}
