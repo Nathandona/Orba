@@ -31,7 +31,9 @@ export async function GET(req: NextRequest) {
       prisma.task.count({
         where: {
           userId: user.id,
-          status: 'done',
+          column: {
+            title: 'Done'
+          }
         },
       }),
     ]);
