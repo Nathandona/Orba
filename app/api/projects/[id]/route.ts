@@ -129,7 +129,7 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE a project
+// DELETE - Delete a project
 export async function DELETE(req: NextRequest, { params }: RouteParams) {
   try {
     const session = await getServerSession(authOptions);
@@ -147,7 +147,7 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Verify ownership
+    // Check if project exists and user is owner
     const project = await prisma.project.findFirst({
       where: {
         id,
@@ -156,17 +156,20 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
     });
 
     if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Project not found or you do not have permission to delete it' },
+        { status: 404 }
+      );
     }
 
-    // Delete project (tasks will be cascade deleted)
+    // Delete project (cascade will delete tasks and members)
     await prisma.project.delete({
       where: { id },
     });
 
-    return NextResponse.json({ success: true, message: 'Project deleted' });
+    return NextResponse.json({ success: true, message: 'Project deleted successfully' });
   } catch (error) {
-    console.error('Error deleting project:', error);
+    console.error('Delete project error:', error);
     return NextResponse.json(
       { error: 'Failed to delete project' },
       { status: 500 }

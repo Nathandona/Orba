@@ -25,11 +25,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     redirect('/login');
   }
 
-  // Fetch project with tasks
+  // Fetch project with tasks - check if user is owner OR member
   const project = await prisma.project.findFirst({
     where: {
-      id,
-      userId: user.id,
+      OR: [
+        { id, userId: user.id }, // User is owner
+        { 
+          id, 
+          members: {
+            some: {
+              email: user.email,
+              status: 'active'
+            }
+          }
+        }, // User is member
+      ],
     },
     include: {
       tasks: {
@@ -38,6 +48,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           { position: 'asc' },
           { createdAt: 'asc' },
         ],
+      },
+      members: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
       },
     },
   });

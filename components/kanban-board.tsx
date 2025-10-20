@@ -13,12 +13,13 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Button } from '@/components/ui/button';
-import { Users, Filter } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { KanbanColumn } from './kanban-column';
 import { KanbanCard } from '@/components/kanban-card';
 import { DashboardNavbar } from '@/components/dashboard-navbar';
+import { TeamDialog } from '@/components/team-dialog';
 
 interface KanbanBoardProps {
   project: {
@@ -58,9 +59,17 @@ export interface Task {
   labels?: string[];
 }
 
+export interface TeamMember {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
 export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
   const router = useRouter();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   // Transform initial tasks to match component interface
   const [tasks, setTasks] = useState<Task[]>(
@@ -177,10 +186,11 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
               <Filter className="w-4 h-4 mr-2" />
               Filter
             </Button>
-            <Button variant="outline" size="sm">
-              <Users className="w-4 h-4 mr-2" />
-              Team
-            </Button>
+            <TeamDialog 
+              projectId={project.id} 
+              projectOwner={user}
+              onMembersChange={(members) => setTeamMembers(members)}
+            />
           </>
         }
       />
@@ -208,6 +218,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                     color={column.color}
                     tasks={getTasksByStatus(column.id as Task['status'])}
                     projectId={project.id}
+                    teamMembers={teamMembers}
                     onTaskCreated={handleTaskCreated}
                   />
                 </motion.div>

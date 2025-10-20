@@ -7,16 +7,24 @@ import { KanbanCard } from '@/components/kanban-card';
 import { Task } from '@/components/kanban-board';
 import { NewTaskDialog } from '@/components/new-task-dialog';
 
+interface TeamMember {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
 interface KanbanColumnProps {
   id: string;
   title: string;
   color: string;
   tasks: Task[];
   projectId: string;
+  teamMembers?: TeamMember[];
   onTaskCreated?: (task: any) => void;
 }
 
-export function KanbanColumn({ id, title, color, tasks, projectId, onTaskCreated }: KanbanColumnProps) {
+export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
@@ -40,6 +48,7 @@ export function KanbanColumn({ id, title, color, tasks, projectId, onTaskCreated
             <NewTaskDialog
               projectId={projectId}
               status={id as 'todo' | 'in-progress' | 'review' | 'done'}
+              teamMembers={teamMembers}
               onTaskCreated={onTaskCreated}
             />
           </div>

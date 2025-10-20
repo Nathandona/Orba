@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,8 +13,9 @@ import { Separator } from '@/components/ui/separator';
 import { ArrowRight, Lock, Mail, User, AlertCircle, CheckCircle, Github } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,6 +24,20 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isInvited, setIsInvited] = useState(false);
+
+  useEffect(() => {
+    const emailParam = searchParams.get('email');
+    const refParam = searchParams.get('ref');
+    
+    if (emailParam) {
+      setFormData(prev => ({ ...prev, email: emailParam }));
+    }
+    
+    if (refParam === 'invite') {
+      setIsInvited(true);
+    }
+  }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -127,8 +142,14 @@ export default function RegisterPage() {
       >
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl">Create your account</CardTitle>
-            <CardDescription>Start organizing your work with Orba</CardDescription>
+            <CardTitle className="text-3xl">
+              {isInvited ? 'Join Your Team on Orba' : 'Create your account'}
+            </CardTitle>
+            <CardDescription>
+              {isInvited 
+                ? 'Complete your registration to start collaborating' 
+                : 'Start organizing your work with Orba'}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 mb-6">
@@ -316,5 +337,35 @@ export default function RegisterPage() {
         </Card>
       </motion.div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted px-4 py-12">
+        <div className="w-full max-w-md">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl">Create your account</CardTitle>
+              <CardDescription>Start organizing your work with Orba</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <div className="h-10 bg-muted animate-pulse rounded-md" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-10 bg-muted animate-pulse rounded-md" />
+                </div>
+                <div className="h-10 bg-muted animate-pulse rounded-md" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    }>
+      <RegisterForm />
+    </Suspense>
   );
 }
