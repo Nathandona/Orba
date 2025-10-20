@@ -17,6 +17,10 @@ model User {
   emailVerified         DateTime?
   password              String?
   image                 String?
+  bio                   String?       @db.Text
+  location              String?
+  company               String?
+  jobTitle              String?
   stripeCustomerId      String?       @unique
   stripeSubscriptionId  String?       @unique
   stripePriceId         String?
