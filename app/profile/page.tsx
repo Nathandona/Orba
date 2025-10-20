@@ -45,7 +45,12 @@ export default async function ProfilePage() {
         prisma.task.count({
             where: {
                 userId: user.id,
-                status: 'done',
+                column: {
+                    title: {
+                        contains: 'done',
+                        mode: 'insensitive'
+                    }
+                },
             },
         }),
     ]);
