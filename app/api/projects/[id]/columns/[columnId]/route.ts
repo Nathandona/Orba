@@ -72,7 +72,7 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     return NextResponse.json(column);
   } catch (error) {
     console.error('Error updating column:', error);
-    if (error.code === 'P2002') {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
       return NextResponse.json(
         { error: 'A column with this title already exists' },
         { status: 409 }

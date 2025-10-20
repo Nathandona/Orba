@@ -132,6 +132,12 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     return NextResponse.json(task, { status: 201 });
   } catch (error) {
     console.error('Error creating task:', error);
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
+      return NextResponse.json(
+        { error: 'A task with this identifier already exists' },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       { error: 'Failed to create task' },
       { status: 500 }
