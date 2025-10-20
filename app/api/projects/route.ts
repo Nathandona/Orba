@@ -24,9 +24,12 @@ export async function GET() {
       where: { userId: user.id },
       include: {
         tasks: {
-          select: {
-            id: true,
-            status: true,
+          include: {
+            column: {
+              select: {
+                title: true,
+              },
+            },
           },
         },
         _count: {
@@ -42,7 +45,9 @@ export async function GET() {
     const projectsWithStats = projects.map((project) => ({
       ...project,
       totalTasks: project._count.tasks,
-      tasksCompleted: project.tasks.filter((task) => task.status === 'done').length,
+      tasksCompleted: project.tasks.filter((task) =>
+        task.column && task.column.title.toLowerCase() === 'done'
+      ).length,
       team: 1, // For now, single user per project
     }));
 
