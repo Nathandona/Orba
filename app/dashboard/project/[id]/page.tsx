@@ -80,5 +80,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     redirect('/dashboard');
   }
 
-  return <KanbanBoard project={project} user={session.user} initialTasks={project.tasks} />;
+  // Transform tasks to match the expected interface (convert column to status)
+  const transformedTasks = project.tasks.map(task => ({
+    id: task.id,
+    title: task.title,
+    description: task.description,
+    status: (task.column?.title?.toLowerCase() === 'done' ? 'done' :
+            task.column?.title?.toLowerCase().includes('progress') ? 'in-progress' :
+            task.column?.title?.toLowerCase().includes('review') ? 'review' :
+            task.column?.title?.toLowerCase().includes('to do') || task.column?.title?.toLowerCase().includes('todo') ? 'todo' :
+            'todo') as 'todo' | 'in-progress' | 'review' | 'done',
+    priority: task.priority,
+    assignee: task.assignee,
+    dueDate: task.dueDate,
+    labels: task.labels,
+  }));
+
+  return <KanbanBoard project={project} user={session.user} initialTasks={transformedTasks} />;
 }
