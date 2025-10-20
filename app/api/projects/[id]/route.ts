@@ -31,7 +31,15 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
         userId: user.id,
       },
       include: {
-        tasks: true,
+        tasks: {
+          include: {
+            column: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             tasks: true,
@@ -47,7 +55,9 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     const projectWithStats = {
       ...project,
       totalTasks: project._count.tasks,
-      tasksCompleted: project.tasks.filter((task) => task.status === 'done').length,
+      tasksCompleted: project.tasks.filter((task) =>
+        task.column && task.column.title.toLowerCase() === 'done'
+      ).length,
       team: 1,
     };
 
@@ -103,7 +113,15 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
         ...(dueDate !== undefined && { dueDate: dueDate ? new Date(dueDate) : null }),
       },
       include: {
-        tasks: true,
+        tasks: {
+          include: {
+            column: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             tasks: true,
@@ -115,7 +133,9 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     const projectWithStats = {
       ...project,
       totalTasks: project._count.tasks,
-      tasksCompleted: project.tasks.filter((task) => task.status === 'done').length,
+      tasksCompleted: project.tasks.filter((task) =>
+        task.column && task.column.title.toLowerCase() === 'done'
+      ).length,
       team: 1,
     };
 
