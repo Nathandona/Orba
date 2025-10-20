@@ -22,9 +22,10 @@ interface KanbanColumnProps {
   projectId: string;
   teamMembers?: TeamMember[];
   onTaskCreated?: (task: any) => void;
+  onTaskUpdated?: (task: any) => void;
 }
 
-export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated }: KanbanColumnProps) {
+export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, onTaskCreated, onTaskUpdated }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
@@ -55,7 +56,7 @@ export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, 
         </CardHeader>
         <CardContent className="space-y-3 pb-3">
           <SortableContext
-            items={tasks.map((task) => task.id)}
+            items={tasks.map((task) => `sortable-${task.id}`)}
             strategy={verticalListSortingStrategy}
           >
             {tasks.length === 0 ? (
@@ -63,7 +64,14 @@ export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, 
                 No tasks yet
               </div>
             ) : (
-              tasks.map((task) => <KanbanCard key={task.id} task={task} />)
+              tasks.map((task) => (
+                <KanbanCard
+                  key={`dynamic-${task.id}`}
+                  task={task}
+                  teamMembers={teamMembers}
+                  onUpdate={onTaskUpdated}
+                />
+              ))
             )}
           </SortableContext>
         </CardContent>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DndContext,
   DragEndEvent,
@@ -57,6 +57,10 @@ export interface Task {
   };
   dueDate?: string;
   labels?: string[];
+  _count?: {
+    comments: number;
+    attachments: number;
+  };
 }
 
 export interface TeamMember {
@@ -70,20 +74,37 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
   const router = useRouter();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Transform initial tasks to match component interface
-  const [tasks, setTasks] = useState<Task[]>(
-    initialTasks.map(task => ({
-      id: task.id,
-      title: task.title,
-      description: task.description || '',
-      status: task.status as 'todo' | 'in-progress' | 'review' | 'done',
-      priority: task.priority as 'low' | 'medium' | 'high',
-      assignee: task.assignee ? { name: task.assignee } : undefined,
-      dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : undefined,
-      labels: task.labels || [],
-    }))
-  );
+  // Prevent hydration errors with dnd-kit by only rendering after mount
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Transform initial tasks to match component interface, removing duplicates
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const seen = new Set();
+    return initialTasks
+      .map(task => ({
+        id: task.id,
+        title: task.title,
+        description: task.description || '',
+        status: task.status as 'todo' | 'in-progress' | 'review' | 'done',
+        priority: task.priority as 'low' | 'medium' | 'high',
+        assignee: task.assignee ? { name: task.assignee } : undefined,
+        dueDate: task.dueDate ? task.dueDate.toISOString().split('T')[0] : undefined,
+        labels: task.labels || [],
+        _count: task._count,
+      }))
+      .filter(task => {
+        if (seen.has(task.id)) {
+          console.warn(`Duplicate task ID found: ${task.id}`);
+          return false;
+        }
+        seen.add(task.id);
+        return true;
+      });
+  });
 
   const handleTaskCreated = (newTask: any) => {
     // Add new task to the state
@@ -96,8 +117,30 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
       assignee: newTask.assignee ? { name: newTask.assignee } : undefined,
       dueDate: newTask.dueDate ? new Date(newTask.dueDate).toISOString().split('T')[0] : undefined,
       labels: newTask.labels || [],
+      _count: newTask._count || { comments: 0, attachments: 0 },
     };
     setTasks((prevTasks) => [...prevTasks, task]);
+  };
+
+  const handleTaskUpdated = (updatedTask: any) => {
+    // Update existing task in the state
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === updatedTask.id
+          ? {
+              ...task,
+              title: updatedTask.title,
+              description: updatedTask.description || '',
+              status: updatedTask.status as 'todo' | 'in-progress' | 'review' | 'done',
+              priority: updatedTask.priority as 'low' | 'medium' | 'high',
+              assignee: updatedTask.assignee ? { name: updatedTask.assignee } : undefined,
+              dueDate: updatedTask.dueDate ? new Date(updatedTask.dueDate).toISOString().split('T')[0] : undefined,
+              labels: updatedTask.labels || [],
+              _count: updatedTask._count || task._count,
+            }
+          : task
+      )
+    );
   };
 
   const columns = [
@@ -117,7 +160,8 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    const task = tasks.find((t) => t.id === active.id);
+    const taskId = typeof active.id === 'string' ? active.id.replace('sortable-', '') : active.id;
+    const task = tasks.find((t) => t.id === taskId);
     if (task) {
       setActiveTask(task);
     }
@@ -129,7 +173,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
 
     if (!over) return;
 
-    const taskId = active.id as string;
+    const taskId = typeof active.id === 'string' ? active.id.replace('sortable-', '') : active.id;
     const newStatus = over.id as Task['status'];
 
     // Optimistically update UI
@@ -198,13 +242,39 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
       {/* Kanban Board */}
       <main className="px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-[1800px] mx-auto">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCorners}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-          >
+          {!isMounted ? (
+            // Static render during hydration to prevent mismatch
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {columns.map((column, index) => (
+                <motion.div
+                  key={column.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <div className="h-full">
+                    <div className={`h-full border-t-4 ${column.color} rounded-lg bg-card p-4`}>
+                      <h3 className="font-semibold mb-4">{column.title}</h3>
+                      <div className="space-y-3">
+                        {tasks.filter((t) => t.status === column.id).map((task) => (
+                          <div key={`static-${task.id}`} className="bg-background rounded-lg p-3 shadow-sm border">
+                            <p className="text-sm font-medium">{task.title}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCorners}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
@@ -220,15 +290,23 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                     projectId={project.id}
                     teamMembers={teamMembers}
                     onTaskCreated={handleTaskCreated}
+                    onTaskUpdated={handleTaskUpdated}
                   />
                 </motion.div>
               ))}
             </div>
 
-            <DragOverlay>
-              {activeTask ? <KanbanCard task={activeTask} isDragging /> : null}
-            </DragOverlay>
-          </DndContext>
+              <DragOverlay>
+                {activeTask ? (
+                  <KanbanCard 
+                    task={activeTask} 
+                    isDragging 
+                    teamMembers={teamMembers}
+                  />
+                ) : null}
+              </DragOverlay>
+            </DndContext>
+          )}
         </div>
       </main>
     </div>

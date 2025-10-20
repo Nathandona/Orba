@@ -43,6 +43,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     },
     include: {
       tasks: {
+        include: {
+          _count: {
+            select: {
+              comments: true,
+              attachments: true,
+            },
+          },
+        },
         orderBy: [
           { status: 'asc' },
           { position: 'asc' },
