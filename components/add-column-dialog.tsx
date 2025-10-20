@@ -65,7 +65,8 @@ export function AddColumnDialog({ open, onOpenChange, projectId, onColumnCreated
       setFormData({ title: '', color: 'border-gray-500' });
     } catch (error) {
       console.error('Error creating column:', error);
-      alert(error.message || 'Failed to create column. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create column. Please try again.';
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -49,7 +49,8 @@ export function ColumnMenu({ columnId, columnTitle, onColumnDeleted, onColumnEdi
       setIsDeleteOpen(false);
     } catch (error) {
       console.error('Error deleting column:', error);
-      alert(error.message || 'Failed to delete column. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete column. Please try again.';
+      alert(errorMessage);
     } finally {
       setIsDeleting(false);
     }
