@@ -248,14 +248,11 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     const taskId = typeof active.id === 'string' ? active.id.replace('sortable-', '') : active.id;
     let newColumnId = typeof over.id === 'string' ? over.id : over.id.toString();
 
-    console.log('DragEnd:', { taskId, newColumnId, activeId: active.id, overId: over.id });
-
     // If the over element is a task (sortable-), find its column
     if (newColumnId.startsWith('sortable-')) {
       const droppedOnTask = tasks.find(t => `sortable-${t.id}` === newColumnId);
       if (droppedOnTask && droppedOnTask.columnId) {
         newColumnId = droppedOnTask.columnId;
-        console.log('Dropped on task, using its column:', newColumnId);
       }
     }
 
@@ -270,7 +267,6 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     const targetColumn = columns.find((col) => col.id === newColumnId);
     if (!targetColumn) {
       console.error('Target column not found:', newColumnId);
-      console.log('Available columns:', columns.map(c => ({ id: c.id, title: c.title })));
       return;
     }
 
@@ -309,8 +305,6 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         );
         console.error('Failed to update task:', errorText);
         console.error('Task ID:', taskId, 'Target Column ID:', newColumnId);
-      } else {
-        console.log('Task successfully moved');
       }
     } catch (error) {
       // Revert on network error - use the original task's columnId

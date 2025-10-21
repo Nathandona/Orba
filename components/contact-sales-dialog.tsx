@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 
 interface ContactSalesDialogProps {
   trigger?: React.ReactNode;
@@ -29,6 +30,7 @@ export interface ContactFormData {
 
 export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { showToast } = useToast();
   const [contactForm, setContactForm] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -60,16 +62,14 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
           throw new Error(data.error || 'Failed to submit form');
         }
 
-        // Success message could be shown via toast notification here
-        console.log('Success:', data.message);
+        showToast('Your message has been sent successfully!', 'default');
       }
 
       setDialogOpen(false);
       setContactForm({ name: '', email: '', company: '', message: '' });
     } catch (error) {
       console.error('Error submitting contact form:', error);
-      // You could show an error message to the user here
-      alert(error instanceof Error ? error.message : 'Failed to submit form. Please try again.');
+      showToast(error instanceof Error ? error.message : 'Failed to submit form. Please try again.', 'destructive');
       setContactFormSubmitting(false);
       return;
     } finally {

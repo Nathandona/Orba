@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/components/ui/toast';
 import {
   Loader2,
   X,
@@ -75,6 +76,7 @@ interface Attachment {
 
 export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }: EditTaskDialogProps) {
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     title: task.title,
     description: task.description,
@@ -171,11 +173,15 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
       }
 
       const updatedTask = await response.json();
+
+      // Show success toast
+      showToast('Task updated successfully!', 'default');
+
       onSave(updatedTask);
       onOpenChange(false);
     } catch (error) {
       console.error('Error updating task:', error);
-      alert('Failed to update task. Please try again.');
+      showToast('Failed to update task. Please try again.', 'destructive');
     } finally {
       setLoading(false);
     }
@@ -223,11 +229,16 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
           }
         });
       } else {
-        alert('Failed to add comment');
+        showToast('Failed to add comment', 'destructive');
+      }
+
+      // Show success toast only if comment was added successfully
+      if (response.ok) {
+        showToast('Comment added successfully!', 'default');
       }
     } catch (error) {
       console.error('Error adding comment:', error);
-      alert('Failed to add comment');
+      showToast('Failed to add comment', 'destructive');
     }
   };
 
@@ -271,14 +282,17 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
               });
               return newAttachments;
             });
+
+            // Show success toast for file upload
+            showToast(`"${file.name}" uploaded successfully!`, 'default');
           } else {
-            alert(`Failed to upload ${file.name}`);
+            showToast(`Failed to upload ${file.name}`, 'destructive');
           }
         };
         reader.readAsDataURL(file);
       } catch (error) {
         console.error('Error uploading file:', error);
-        alert(`Failed to upload ${file.name}`);
+        showToast(`Failed to upload ${file.name}`, 'destructive');
       }
     }
 
@@ -308,11 +322,16 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
           return newAttachments;
         });
       } else {
-        alert('Failed to delete attachment');
+        showToast('Failed to delete attachment', 'destructive');
+      }
+
+      // Show success toast only if attachment was deleted successfully
+      if (response.ok) {
+        showToast('Attachment deleted successfully!', 'default');
       }
     } catch (error) {
       console.error('Error deleting attachment:', error);
-      alert('Failed to delete attachment');
+      showToast('Failed to delete attachment', 'destructive');
     }
   };
 
@@ -350,7 +369,7 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
       }, 100);
     } catch (error) {
       console.error('Error downloading file:', error);
-      alert('Failed to download file. Please try again.');
+      showToast('Failed to download file. Please try again.', 'destructive');
     }
   };
 

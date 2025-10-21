@@ -61,6 +61,7 @@ export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, 
                 <ColumnMenu
                   columnId={id}
                   columnTitle={title}
+                  projectId={projectId}
                   onColumnDeleted={onColumnDeleted}
                 />
               )}

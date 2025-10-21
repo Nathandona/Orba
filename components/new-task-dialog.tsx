@@ -23,6 +23,7 @@ import {
 import { Loader2, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
+import { useToast } from '@/components/ui/toast';
 
 interface TeamMember {
   id: string;
@@ -43,6 +44,7 @@ interface NewTaskDialogProps {
 export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, onTaskCreated, trigger }: NewTaskDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -92,13 +94,16 @@ export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, o
       });
       setOpen(false);
 
+      // Show success toast
+      showToast('Task created successfully!', 'default');
+
       // Callback
       if (onTaskCreated) {
         onTaskCreated(task);
       }
     } catch (error) {
       console.error('Error creating task:', error);
-      alert('Failed to create task. Please try again.');
+      showToast('Failed to create task. Please try again.', 'destructive');
     } finally {
       setLoading(false);
     }

@@ -21,6 +21,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/components/ui/toast';
 import {
     LayoutGrid,
     List,
@@ -76,6 +77,7 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
     const [projectToDelete, setProjectToDelete] = useState<typeof initialProjects[0] | null>(null);
     const [projectToLeave, setProjectToLeave] = useState<typeof initialProjects[0] | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const { showToast } = useToast();
     const router = useRouter();
 
     // Recent tasks are already transformed in the server component
@@ -160,16 +162,19 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
             });
 
             if (response.ok) {
+                // Show success toast
+                showToast(`Project "${projectToDelete.name}" deleted successfully!`, 'default');
+
                 // Remove from local state
                 setProjects(projects.filter(p => p.id !== projectToDelete.id));
                 setProjectToDelete(null);
                 router.refresh();
             } else {
                 const data = await response.json();
-                alert(data.error || 'Failed to delete project');
+                showToast(data.error || 'Failed to delete project', 'destructive');
             }
         } catch (error) {
-            alert('Failed to delete project. Please try again.');
+            showToast('Failed to delete project. Please try again.', 'destructive');
         } finally {
             setIsDeleting(false);
         }
@@ -185,16 +190,19 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
             });
 
             if (response.ok) {
+                // Show success toast
+                showToast(`You left project "${projectToLeave.name}" successfully!`, 'default');
+
                 // Remove from local state
                 setProjects(projects.filter(p => p.id !== projectToLeave.id));
                 setProjectToLeave(null);
                 router.refresh();
             } else {
                 const data = await response.json();
-                alert(data.error || 'Failed to leave project');
+                showToast(data.error || 'Failed to leave project', 'destructive');
             }
         } catch (error) {
-            alert('Failed to leave project. Please try again.');
+            showToast('Failed to leave project. Please try again.', 'destructive');
         } finally {
             setIsDeleting(false);
         }
