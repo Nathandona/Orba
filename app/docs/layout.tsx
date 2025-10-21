@@ -8,7 +8,7 @@ export default function DocsLayout({
 }) {
   return (
     <div className="min-h-screen">
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="flex-1">
         {children}
       </main>
