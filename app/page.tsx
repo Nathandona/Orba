@@ -27,19 +27,27 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30">
       {/* Navigation */}
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* 3D Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <Suspense fallback={<div className="w-full h-full bg-muted/20" />}>
+            <FloatingCards3D />
+          </Suspense>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
               
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
                 <span className="text-foreground">
@@ -50,15 +58,15 @@ export default function Home() {
                   Amplify Results
                 </span>
               </h1>
-              
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Streamline your workflow with Orba's intuitive Kanban boards. 
+
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
+                Streamline your workflow with Orba's intuitive Kanban boards.
                 Built for teams that value simplicity, speed, and collaboration.
               </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  size="lg"
                   className="text-lg h-14 px-8 shadow-lg"
                   asChild
                 >
@@ -69,23 +77,14 @@ export default function Home() {
                 </Button>
               </div>
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative"
-            >
-              <Suspense fallback={<div className="w-full h-[400px] bg-muted/50 rounded-2xl animate-pulse" />}>
-                <FloatingCards3D />
-              </Suspense>
-            </motion.div>
-          </div>
         </div>
       </section>
 
+      {/* Smooth Transition from Hero to Features */}
+      <div className="relative h-48 bg-gradient-to-b from-transparent via-background to-muted/40 overflow-hidden"></div>
+
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-muted/40 to-muted/60 relative">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -144,9 +143,12 @@ export default function Home() {
         </div>
       </section>
 
+    {/* Smooth Transition from Features to CTA */}
+      <div className="relative h-36 bg-gradient-to-b from-muted/60 via-muted/30 to-background overflow-hidden"></div>
+
       {/* CTA Section */}
       <CTASection
-        badge="Limited Time Offer"
+        badge=""
         title="Ready to"
         titleHighlight="Transform Your Workflow?"
         description="Join thousands of teams boosting their productivity with Orba. Start your free trial today and experience the difference!"
@@ -154,6 +156,9 @@ export default function Home() {
         secondaryButtonText="Schedule Demo"
         showBackground3D={true}
       />
+
+      {/* Smooth Transition from CTA to Footer */}
+      <div className="relative h-20 bg-gradient-to-b from-background/95 via-background/90 to-muted/10 overflow-hidden"></div>
 
       {/* Footer */}
       <Footer />
