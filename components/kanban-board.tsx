@@ -360,14 +360,14 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         <div className="max-w-[1800px] mx-auto">
           {!isMounted ? (
             // Static render during hydration to prevent mismatch
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-cols-fr items-start">
+            <div className="flex gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="min-w-0 w-full"
+                  className="flex-shrink-0 w-80"
                 >
                   <div className="w-full">
                     <div className={`min-h-[200px] border-t-4 ${column.color} rounded-lg bg-card p-4 flex flex-col h-fit`}>
@@ -388,7 +388,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: columns.length * 0.1 }}
-                className="min-w-0 w-full"
+                className="flex-shrink-0 w-80"
               >
                 <div className="w-full">
                   <div className="min-h-[200px] border-2 border-dashed border-muted-foreground/30 rounded-lg bg-card flex flex-col items-center justify-center hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 cursor-pointer group p-4"
@@ -417,14 +417,14 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-cols-fr items-start">
+              <div className="flex gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="min-w-0 w-full"
+                  className="flex-shrink-0 w-80"
                 >
                   <KanbanColumn
                     id={column.id}
@@ -445,7 +445,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: columns.length * 0.1 }}
-                className="min-w-0 w-full"
+                className="flex-shrink-0 w-80"
               >
                 <Card className="min-h-[200px] border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 cursor-pointer group"
                       onClick={() => setIsAddColumnOpen(true)}>
