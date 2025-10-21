@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   async rewrites() {
     return [
+      // Root path on docs.orba.work goes to /docs
+      {
+        source: '/',
+        has: [{ type: 'host', value: 'docs.orba.work' }],
+        destination: '/docs',
+      },
       // Handle docs subdomain - route all traffic to docs routes
       {
         source: '/:path*',
