@@ -36,12 +36,12 @@ export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, 
   return (
     <div
       ref={setNodeRef}
-      className={`h-full transition-colors ${
-        isOver ? 'bg-muted/50 rounded-lg' : ''
+      className={`transition-all duration-200 ${
+        isOver ? 'bg-muted/50 rounded-lg scale-[1.02]' : ''
       }`}
     >
-      <Card className={`h-full border-t-4 ${color}`}>
-        <CardHeader className="pb-3">
+      <Card className={`min-h-[200px] border-t-4 ${color} flex flex-col h-fit`}>
+        <CardHeader className="pb-3 flex-shrink-0">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold">
               {title}
@@ -61,31 +61,43 @@ export function KanbanColumn({ id, title, color, tasks, projectId, teamMembers, 
                 <ColumnMenu
                   columnId={id}
                   columnTitle={title}
+                  projectId={projectId}
                   onColumnDeleted={onColumnDeleted}
                 />
               )}
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3 pb-3">
+        <CardContent className="space-y-3 pb-3 overflow-visible">
           <SortableContext
             items={tasks.map((task) => `sortable-${task.id}`)}
             strategy={verticalListSortingStrategy}
           >
             {tasks.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground text-sm">
-                No tasks yet
+              <div className={`text-center py-8 text-muted-foreground text-sm border-2 border-dashed rounded-lg transition-colors ${
+                isOver ? 'border-primary bg-primary/5' : 'border-gray-300'
+              }`}>
+                <div className="pointer-events-none">
+                  <div>Drop tasks here</div>
+                  <div className="text-xs mt-1">or create a new task</div>
+                </div>
               </div>
             ) : (
-              tasks.map((task) => (
-                <KanbanCard
-                  key={`dynamic-${task.id}`}
-                  task={task}
-                  teamMembers={teamMembers}
-                  onUpdate={onTaskUpdated}
-                  onDelete={onTaskDeleted}
-                />
-              ))
+              <div className="space-y-3">
+                {tasks.map((task) => (
+                  <KanbanCard
+                    key={`dynamic-${task.id}`}
+                    task={task}
+                    teamMembers={teamMembers}
+                    onUpdate={onTaskUpdated}
+                    onDelete={onTaskDeleted}
+                  />
+                ))}
+                {/* Add a drop indicator at the bottom */}
+                {isOver && tasks.length > 0 && (
+                  <div className="h-2 bg-primary/20 rounded-full animate-pulse" />
+                )}
+              </div>
             )}
           </SortableContext>
         </CardContent>

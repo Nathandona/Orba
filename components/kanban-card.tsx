@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { Task } from '@/components/kanban-board';
 import { EditTaskDialog } from '@/components/edit-task-dialog';
+import { useToast } from '@/components/ui/toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,6 +48,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [localTask, setLocalTask] = useState(task);
+  const { showToast } = useToast();
 
   // Update local task when prop changes
   React.useEffect(() => {
@@ -88,6 +90,9 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
         throw new Error('Failed to delete task');
       }
 
+      // Show success toast
+      showToast('Task deleted successfully!', 'default');
+
       // Call the onDelete callback to remove the task from the parent state
       if (onDelete) {
         onDelete(task.id);
@@ -96,7 +101,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
       setIsDeleteOpen(false);
     } catch (error) {
       console.error('Error deleting task:', error);
-      alert('Failed to delete task. Please try again.');
+      showToast('Failed to delete task. Please try again.', 'destructive');
     } finally {
       setIsDeleting(false);
     }

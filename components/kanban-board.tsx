@@ -9,11 +9,13 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  closestCorners,
+  closestCenter,
+  rectIntersection,
+  CollisionDetection,
 } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Button } from '@/components/ui/button';
-import { Filter } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { KanbanColumn } from './kanban-column';
@@ -215,6 +217,28 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     }
   };
 
+  // Custom collision detection that prioritizes columns over tasks
+  const customCollisionDetection: CollisionDetection = (args) => {
+    // Get all droppable containers that are columns
+    const columnContainers = args.droppableContainers.filter(container =>
+      columns.some(col => col.id === container.id)
+    );
+
+    // Check if we're intersecting with any columns
+    const columnIntersections = rectIntersection({
+      ...args,
+      droppableContainers: columnContainers,
+    });
+
+    // If we have column intersections, return those
+    if (columnIntersections.length > 0) {
+      return columnIntersections;
+    }
+
+    // Otherwise, fall back to default closest center behavior
+    return closestCenter(args);
+  };
+
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTask(null);
@@ -222,7 +246,37 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     if (!over) return;
 
     const taskId = typeof active.id === 'string' ? active.id.replace('sortable-', '') : active.id;
-    const newColumnId = typeof over.id === 'string' ? over.id : over.id.toString();
+    let newColumnId = typeof over.id === 'string' ? over.id : over.id.toString();
+
+    // If the over element is a task (sortable-), find its column
+    if (newColumnId.startsWith('sortable-')) {
+      const droppedOnTask = tasks.find(t => `sortable-${t.id}` === newColumnId);
+      if (droppedOnTask && droppedOnTask.columnId) {
+        newColumnId = droppedOnTask.columnId;
+      }
+    }
+
+    // Find the original task to preserve its data for potential revert
+    const originalTask = tasks.find((t) => t.id === taskId);
+    if (!originalTask) {
+      console.error('Task not found:', taskId);
+      return;
+    }
+
+    // Verify the target column exists
+    const targetColumn = columns.find((col) => col.id === newColumnId);
+    if (!targetColumn) {
+      console.error('Target column not found:', newColumnId);
+      return;
+    }
+
+    // If the task is already in the target column, no need to update
+    if (originalTask.columnId === newColumnId) {
+      console.log('Task already in target column, skipping update');
+      return;
+    }
+
+    console.log('Moving task from', originalTask.columnId, 'to', newColumnId);
 
     // Optimistically update UI
     setTasks((prevTasks) =>
@@ -242,15 +296,23 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
       });
 
       if (!response.ok) {
-        // Revert on error
+        const errorText = await response.text();
+        // Revert on error - use the original task's columnId
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
-            task.id === taskId ? { ...task, columnId: task.columnId } : task
+            task.id === taskId ? { ...task, columnId: originalTask.columnId } : task
           )
         );
-        console.error('Failed to update task');
+        console.error('Failed to update task:', errorText);
+        console.error('Task ID:', taskId, 'Target Column ID:', newColumnId);
       }
     } catch (error) {
+      // Revert on network error - use the original task's columnId
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, columnId: originalTask.columnId } : task
+        )
+      );
       console.error('Error updating task:', error);
     }
   };
@@ -271,10 +333,6 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         }
         rightContent={
           <>
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -296,17 +354,18 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         <div className="max-w-[1800px] mx-auto">
           {!isMounted ? (
             // Static render during hydration to prevent mismatch
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="flex gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="flex-shrink-0 w-80"
                 >
-                  <div className="h-full">
-                    <div className={`h-full border-t-4 ${column.color} rounded-lg bg-card p-4`}>
-                      <h3 className="font-semibold mb-4">{column.title}</h3>
+                  <div className="w-full">
+                    <div className={`min-h-[200px] border-t-4 ${column.color} rounded-lg bg-card p-4 flex flex-col h-fit`}>
+                      <h3 className="font-semibold mb-4 flex-shrink-0">{column.title}</h3>
                       <div className="space-y-3">
                         {tasks.filter((t) => t.columnId === column.id).map((task) => (
                           <div key={`static-${task.id}`} className="bg-background rounded-lg p-3 shadow-sm border">
@@ -318,21 +377,48 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                   </div>
                 </motion.div>
               ))}
+              {/* Add Column Button - Static version */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: columns.length * 0.1 }}
+                className="flex-shrink-0 w-80"
+              >
+                <div className="w-full">
+                  <div className="min-h-[200px] border-2 border-dashed border-muted-foreground/30 rounded-lg bg-card flex flex-col items-center justify-center hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 cursor-pointer group p-4"
+                       onClick={() => setIsAddColumnOpen(true)}>
+                    <div className="text-center">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors duration-200">
+                        <svg className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                      <h3 className="font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+                        Add Column
+                      </h3>
+                      <p className="text-xs text-muted-foreground/70 mt-1">
+                        Create new column
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           ) : (
             <DndContext
               sensors={sensors}
-              collisionDetection={closestCorners}
+              collisionDetection={customCollisionDetection}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="flex gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="flex-shrink-0 w-80"
                 >
                   <KanbanColumn
                     id={column.id}
@@ -348,6 +434,30 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                   />
                 </motion.div>
               ))}
+              {/* Add Column Button - Fixed position at the end */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: columns.length * 0.1 }}
+                className="flex-shrink-0 w-80"
+              >
+                <Card className="min-h-[200px] border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 cursor-pointer group"
+                      onClick={() => setIsAddColumnOpen(true)}>
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors duration-200">
+                      <svg className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <h3 className="font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+                      Add Column
+                    </h3>
+                    <p className="text-xs text-muted-foreground/70 mt-1">
+                      Create new column
+                    </p>
+                  </div>
+                </Card>
+              </motion.div>
             </div>
 
               <DragOverlay>

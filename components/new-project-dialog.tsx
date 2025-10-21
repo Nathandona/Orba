@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/toast';
 
 interface NewProjectDialogProps {
   onProjectCreated?: () => void;
@@ -34,6 +35,7 @@ const projectColors = [
 export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -77,11 +79,14 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
         router.refresh();
       }
 
+      // Show success toast before navigation
+      showToast(`Project "${formData.name}" created successfully!`, 'default');
+
       // Navigate to the new project
       router.push(`/dashboard/project/${project.id}`);
     } catch (error) {
       console.error('Error creating project:', error);
-      alert('Failed to create project. Please try again.');
+      showToast('Failed to create project. Please try again.', 'destructive');
     } finally {
       setLoading(false);
     }

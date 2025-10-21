@@ -12,6 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Loader2 } from 'lucide-react';
+import { useToast } from '@/components/ui/toast';
 
 interface AddColumnDialogProps {
   open: boolean;
@@ -33,6 +34,7 @@ const columnColors = [
 
 export function AddColumnDialog({ open, onOpenChange, projectId, onColumnCreated }: AddColumnDialogProps) {
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     title: '',
     color: 'border-gray-500',
@@ -60,13 +62,17 @@ export function AddColumnDialog({ open, onOpenChange, projectId, onColumnCreated
       }
 
       const newColumn = await response.json();
+
+      // Show success toast
+      showToast(`Column "${formData.title}" created successfully!`, 'default');
+
       onColumnCreated(newColumn);
       onOpenChange(false);
       setFormData({ title: '', color: 'border-gray-500' });
     } catch (error) {
       console.error('Error creating column:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to create column. Please try again.';
-      alert(errorMessage);
+      showToast(errorMessage, 'destructive');
     } finally {
       setLoading(false);
     }

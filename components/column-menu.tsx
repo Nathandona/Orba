@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/toast';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,19 +24,21 @@ import {
 interface ColumnMenuProps {
   columnId: string;
   columnTitle: string;
+  projectId: string;
   onColumnDeleted: (columnId: string) => void;
   onColumnEdit?: (columnId: string) => void;
 }
 
-export function ColumnMenu({ columnId, columnTitle, onColumnDeleted, onColumnEdit }: ColumnMenuProps) {
+export function ColumnMenu({ columnId, columnTitle, projectId, onColumnDeleted, onColumnEdit }: ColumnMenuProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { showToast } = useToast();
 
   const handleDelete = async () => {
     setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/projects/${columnId.split('_')[0]}/columns/${columnId}`, {
+      const response = await fetch(`/api/projects/${projectId}/columns/${columnId}`, {
         method: 'DELETE',
       });
 
@@ -45,12 +48,16 @@ export function ColumnMenu({ columnId, columnTitle, onColumnDeleted, onColumnEdi
       }
 
       const result = await response.json();
+
+      // Show success message from API or default
+      showToast(result.message || 'Column deleted successfully!', 'default');
+
       onColumnDeleted(columnId);
       setIsDeleteOpen(false);
     } catch (error) {
       console.error('Error deleting column:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete column. Please try again.';
-      alert(errorMessage);
+      showToast(errorMessage, 'destructive');
     } finally {
       setIsDeleting(false);
     }

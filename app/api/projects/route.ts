@@ -102,6 +102,22 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Create default columns for the new project
+    const defaultColumns = [
+      { title: 'To Do', color: 'border-blue-500', position: 0 },
+      { title: 'In Progress', color: 'border-yellow-500', position: 1 },
+      { title: 'Done', color: 'border-green-500', position: 2 },
+    ];
+
+    for (const columnData of defaultColumns) {
+      await prisma.column.create({
+        data: {
+          ...columnData,
+          projectId: project.id,
+        },
+      });
+    }
+
     return NextResponse.json({
       ...project,
       totalTasks: 0,
