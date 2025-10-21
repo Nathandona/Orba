@@ -17,6 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Orba - Modern Project Management",
   description: "Streamline your workflow with Orba's intuitive Kanban boards. Built for teams that value simplicity, speed, and collaboration.",
+  metadataBase: new URL('https://orba.work'),
+  alternates: {
+    canonical: 'https://orba.work',
+  },
 };
 
 export default function RootLayout({
