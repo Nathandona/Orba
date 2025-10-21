@@ -17,7 +17,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LayoutDashboard, LogOut, User } from "lucide-react"
+import { LayoutDashboard, LogOut, User, BookOpen } from "lucide-react"
 
 export function Navbar() {
     const { theme } = useTheme()
@@ -70,6 +70,12 @@ export function Navbar() {
                             <Link href="/pricing">
                                 Pricing
                             </Link>
+                        </Button>
+                        <Button variant="ghost" className="hidden sm:inline-flex" asChild>
+                            <a href="https://docs.orba.work" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                                <BookOpen className="w-4 h-4" />
+                                Docs
+                            </a>
                         </Button>
                         <ModeToggle />
                         
