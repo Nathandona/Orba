@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Button } from '@/components/ui/button';
-import { Filter } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { KanbanColumn } from './kanban-column';
@@ -339,10 +339,6 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         }
         rightContent={
           <>
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -387,6 +383,32 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                   </div>
                 </motion.div>
               ))}
+              {/* Add Column Button - Static version */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: columns.length * 0.1 }}
+                className="min-w-0 w-full"
+              >
+                <div className="w-full">
+                  <div className="min-h-[200px] border-2 border-dashed border-muted-foreground/30 rounded-lg bg-card flex flex-col items-center justify-center hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 cursor-pointer group p-4"
+                       onClick={() => setIsAddColumnOpen(true)}>
+                    <div className="text-center">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors duration-200">
+                        <svg className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                      <h3 className="font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+                        Add Column
+                      </h3>
+                      <p className="text-xs text-muted-foreground/70 mt-1">
+                        Create new column
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           ) : (
             <DndContext
@@ -418,6 +440,30 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                   />
                 </motion.div>
               ))}
+              {/* Add Column Button - Fixed position at the end */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: columns.length * 0.1 }}
+                className="min-w-0 w-full"
+              >
+                <Card className="min-h-[200px] border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 cursor-pointer group"
+                      onClick={() => setIsAddColumnOpen(true)}>
+                  <div className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors duration-200">
+                      <svg className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <h3 className="font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+                      Add Column
+                    </h3>
+                    <p className="text-xs text-muted-foreground/70 mt-1">
+                      Create new column
+                    </p>
+                  </div>
+                </Card>
+              </motion.div>
             </div>
 
               <DragOverlay>
