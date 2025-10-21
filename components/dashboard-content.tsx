@@ -42,6 +42,10 @@ interface DashboardContentProps {
         name?: string | null;
         email?: string | null;
         image?: string | null;
+        subscription?: {
+            plan: string;
+            stripeCurrentPeriodEnd?: Date | null;
+        } | null;
     };
     projects: Array<{
         id: string;
@@ -98,12 +102,20 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
     // Calculate unique collaborators across all projects
     const totalCollaborators = projects.reduce((sum, p) => sum + (p.team - 1), 0); // -1 to exclude self
 
+    // Determine user tier and limits
+    const isFreeTier = !user.subscription || user.subscription.plan === 'free';
+    const projectLimit = isFreeTier ? 3 : Infinity;
+    const projectsRemaining = Math.max(0, projectLimit - totalProjects);
+    const isNearLimit = projectsRemaining <= 1 && projectsRemaining > 0;
+
     const stats = [
         {
             title: 'Total Projects',
             value: totalProjects.toString(),
             icon: Target,
             color: 'text-blue-600',
+            subtitle: isFreeTier ? `${projectsRemaining} of ${projectLimit} remaining` : undefined,
+            subtitleColor: isNearLimit ? 'text-orange-600' : 'text-muted-foreground',
         },
         {
             title: 'Tasks Completed',
@@ -265,6 +277,11 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-2xl font-bold">{stat.value}</div>
+                                    {stat.subtitle && (
+                                        <div className={`text-xs ${stat.subtitleColor} mt-1`}>
+                                            {stat.subtitle}
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         ))}
@@ -274,7 +291,14 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-2xl font-bold tracking-tight">Active Projects</h3>
-                            <NewProjectDialog />
+                            <div className="flex items-center gap-3">
+                                {isFreeTier && (
+                                    <Badge variant="outline" className="text-xs">
+                                        Free Plan: {totalProjects}/3 projects
+                                    </Badge>
+                                )}
+                                <NewProjectDialog />
+                            </div>
                         </div>
 
                         <motion.div

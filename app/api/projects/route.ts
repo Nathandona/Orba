@@ -72,10 +72,29 @@ export async function POST(req: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      include: {
+        subscription: true,
+        _count: {
+          select: {
+            projects: true,
+          },
+        },
+      },
     });
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Check tier limits for free users
+    const isFreeTier = !user.subscription || user.subscription.plan === 'free';
+    if (isFreeTier && user._count.projects >= 3) {
+      return NextResponse.json({
+        error: 'You have reached your limit of 3 projects on the free plan. Upgrade to create more projects.',
+        code: 'PROJECT_LIMIT_EXCEEDED',
+        limit: 3,
+        current: user._count.projects
+      }, { status: 403 });
     }
 
     const body = await req.json();

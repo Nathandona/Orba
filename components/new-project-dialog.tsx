@@ -58,7 +58,14 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create project');
+        const errorData = await response.json().catch(() => ({}));
+
+        if (errorData.code === 'PROJECT_LIMIT_EXCEEDED') {
+          showToast(errorData.error || 'You have reached your project limit on the free plan.', 'destructive');
+          return;
+        }
+
+        throw new Error(errorData.error || 'Failed to create project');
       }
 
       const project = await response.json();

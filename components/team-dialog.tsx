@@ -35,6 +35,7 @@ import { Badge } from '@/components/ui/badge';
 import { Users, UserPlus, Trash2, Mail, AlertCircle, Clock } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useToast } from '@/components/ui/toast';
 
 interface TeamMember {
   id: string;
@@ -60,6 +61,7 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { showToast } = useToast();
 
   // Form state
   const [email, setEmail] = useState('');
@@ -102,7 +104,12 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Failed to add member');
+        if (data.code === 'TEAM_MEMBER_LIMIT_EXCEEDED') {
+          setError(data.error || 'You have reached your team member limit on the free plan.');
+          showToast(data.error || 'You have reached your team member limit on the free plan.', 'destructive');
+        } else {
+          setError(data.error || 'Failed to add member');
+        }
         setLoading(false);
         return;
       }
@@ -253,9 +260,16 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
 
           {/* Members List */}
           <div>
-            <h3 className="font-semibold mb-4">
-              Current Members ({members.length + 1})
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">
+                Current Members ({members.length + 1})
+              </h3>
+              {members.length >= 2 && (
+                <Badge variant="outline" className="text-xs text-orange-600 border-orange-200">
+                  {members.length}/3 team members (Free Plan)
+                </Badge>
+              )}
+            </div>
 
             <div className="space-y-2">
               {/* Project Owner */}

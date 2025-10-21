@@ -77,9 +77,12 @@ export async function POST(
     // Validate input
     const validatedData = addMemberSchema.parse(body);
 
-    // Verify user owns this project
+    // Verify user owns this project and check tier limits
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      include: {
+        subscription: true,
+      },
     });
 
     if (!user) {
@@ -91,6 +94,13 @@ export async function POST(
         id: projectId,
         userId: user.id,
       },
+      include: {
+        _count: {
+          select: {
+            members: true,
+          },
+        },
+      },
     });
 
     if (!project) {
@@ -98,6 +108,17 @@ export async function POST(
         { error: 'Project not found or you do not have permission' },
         { status: 404 }
       );
+    }
+
+    // Check tier limits for free users (max 3 team members per project)
+    const isFreeTier = !user.subscription || user.subscription.plan === 'free';
+    if (isFreeTier && project._count.members >= 3) {
+      return NextResponse.json({
+        error: 'You have reached your limit of 3 team members per project on the free plan. Upgrade to add more members.',
+        code: 'TEAM_MEMBER_LIMIT_EXCEEDED',
+        limit: 3,
+        current: project._count.members
+      }, { status: 403 });
     }
 
     // Check if member already exists
