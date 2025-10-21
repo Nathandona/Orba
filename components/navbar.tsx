@@ -8,6 +8,7 @@ import { useTheme } from "next-themes"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
+import { usePathname } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
     DropdownMenu,
@@ -22,14 +23,21 @@ import { LayoutDashboard, LogOut, User, BookOpen } from "lucide-react"
 export function Navbar() {
     const { theme } = useTheme()
     const { data: session, status } = useSession()
+    const pathname = usePathname()
     const [mounted, setMounted] = useState(false)
+
+    const isHomePage = pathname === "/"
 
     useEffect(() => {
         setMounted(true)
     }, [])
 
     return (
-        <nav className="fixed top-0 w-full z-50 backdrop-blur-lg bg-background/70 border-b border-border">
+        <nav className={`fixed top-0 w-full z-50 backdrop-blur-lg ${
+            isHomePage
+                ? "bg-transparent border-transparent"
+                : "bg-background/70 border-b border-border"
+        }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <Link href="/">
