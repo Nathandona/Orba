@@ -53,6 +53,20 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
 
     // Handle column change
     if (columnId !== undefined && columnId !== existingTask.columnId) {
+      // Verify the column exists and belongs to the project
+      const column = await prisma.column.findFirst({
+        where: {
+          id: columnId,
+          projectId: existingTask.projectId
+        },
+      });
+
+      if (!column) {
+        return NextResponse.json({
+          error: 'Column not found or does not belong to this project'
+        }, { status: 404 });
+      }
+
       // Get max position in new column
       const maxPositionTask = await prisma.task.findFirst({
         where: { projectId: existingTask.projectId, columnId },
@@ -75,7 +89,10 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error('Error updating task:', error);
     return NextResponse.json(
-      { error: 'Failed to update task' },
+      {
+        error: 'Failed to update task',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }

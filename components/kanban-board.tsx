@@ -9,7 +9,9 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  closestCorners,
+  closestCenter,
+  rectIntersection,
+  CollisionDetection,
 } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Button } from '@/components/ui/button';
@@ -215,6 +217,28 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     }
   };
 
+  // Custom collision detection that prioritizes columns over tasks
+  const customCollisionDetection: CollisionDetection = (args) => {
+    // Get all droppable containers that are columns
+    const columnContainers = args.droppableContainers.filter(container =>
+      columns.some(col => col.id === container.id)
+    );
+
+    // Check if we're intersecting with any columns
+    const columnIntersections = rectIntersection({
+      ...args,
+      droppableContainers: columnContainers,
+    });
+
+    // If we have column intersections, return those
+    if (columnIntersections.length > 0) {
+      return columnIntersections;
+    }
+
+    // Otherwise, fall back to default closest center behavior
+    return closestCenter(args);
+  };
+
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTask(null);
@@ -222,7 +246,41 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
     if (!over) return;
 
     const taskId = typeof active.id === 'string' ? active.id.replace('sortable-', '') : active.id;
-    const newColumnId = typeof over.id === 'string' ? over.id : over.id.toString();
+    let newColumnId = typeof over.id === 'string' ? over.id : over.id.toString();
+
+    console.log('DragEnd:', { taskId, newColumnId, activeId: active.id, overId: over.id });
+
+    // If the over element is a task (sortable-), find its column
+    if (newColumnId.startsWith('sortable-')) {
+      const droppedOnTask = tasks.find(t => `sortable-${t.id}` === newColumnId);
+      if (droppedOnTask && droppedOnTask.columnId) {
+        newColumnId = droppedOnTask.columnId;
+        console.log('Dropped on task, using its column:', newColumnId);
+      }
+    }
+
+    // Find the original task to preserve its data for potential revert
+    const originalTask = tasks.find((t) => t.id === taskId);
+    if (!originalTask) {
+      console.error('Task not found:', taskId);
+      return;
+    }
+
+    // Verify the target column exists
+    const targetColumn = columns.find((col) => col.id === newColumnId);
+    if (!targetColumn) {
+      console.error('Target column not found:', newColumnId);
+      console.log('Available columns:', columns.map(c => ({ id: c.id, title: c.title })));
+      return;
+    }
+
+    // If the task is already in the target column, no need to update
+    if (originalTask.columnId === newColumnId) {
+      console.log('Task already in target column, skipping update');
+      return;
+    }
+
+    console.log('Moving task from', originalTask.columnId, 'to', newColumnId);
 
     // Optimistically update UI
     setTasks((prevTasks) =>
@@ -242,15 +300,25 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
       });
 
       if (!response.ok) {
-        // Revert on error
+        const errorText = await response.text();
+        // Revert on error - use the original task's columnId
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
-            task.id === taskId ? { ...task, columnId: task.columnId } : task
+            task.id === taskId ? { ...task, columnId: originalTask.columnId } : task
           )
         );
-        console.error('Failed to update task');
+        console.error('Failed to update task:', errorText);
+        console.error('Task ID:', taskId, 'Target Column ID:', newColumnId);
+      } else {
+        console.log('Task successfully moved');
       }
     } catch (error) {
+      // Revert on network error - use the original task's columnId
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, columnId: originalTask.columnId } : task
+        )
+      );
       console.error('Error updating task:', error);
     }
   };
@@ -296,17 +364,18 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         <div className="max-w-[1800px] mx-auto">
           {!isMounted ? (
             // Static render during hydration to prevent mismatch
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-cols-fr items-start">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="min-w-0 w-full"
                 >
-                  <div className="h-full">
-                    <div className={`h-full border-t-4 ${column.color} rounded-lg bg-card p-4`}>
-                      <h3 className="font-semibold mb-4">{column.title}</h3>
+                  <div className="w-full">
+                    <div className={`min-h-[200px] border-t-4 ${column.color} rounded-lg bg-card p-4 flex flex-col h-fit`}>
+                      <h3 className="font-semibold mb-4 flex-shrink-0">{column.title}</h3>
                       <div className="space-y-3">
                         {tasks.filter((t) => t.columnId === column.id).map((task) => (
                           <div key={`static-${task.id}`} className="bg-background rounded-lg p-3 shadow-sm border">
@@ -322,17 +391,18 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
           ) : (
             <DndContext
               sensors={sensors}
-              collisionDetection={closestCorners}
+              collisionDetection={customCollisionDetection}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-cols-fr items-start">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="min-w-0 w-full"
                 >
                   <KanbanColumn
                     id={column.id}
