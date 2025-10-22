@@ -2,29 +2,56 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  ArrowRight, 
-  Layers, 
-  Users, 
-  Zap, 
+import {
+  ArrowRight,
+  Layers,
+  Users,
+  Zap,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import { Suspense, lazy, useMemo } from "react";
 import { CTASection } from "@/components/cta-section";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { ErrorBoundaryWrapper } from "@/components/error-boundary";
 
-// Dynamically import 3D component to avoid SSR issues
-const FloatingCards3D = dynamic(() => import("@/components/floating-cards-3d"), {
-  ssr: false,
-  loading: () => <div className="w-full h-[400px] bg-muted/50 rounded-2xl animate-pulse" />
-});
+// Optimized dynamic imports with chunk splitting
+const FloatingCards3D = lazy(() => import("@/components/floating-cards-3d"));
+
+// Memoized loading component to prevent unnecessary re-renders
+const LoadingFallback = () => (
+  <div className="w-full h-[400px] bg-muted/50 rounded-2xl animate-pulse" />
+);
+
+// Memoized feature data to prevent recreation on every render
+const features = [
+  {
+    icon: Layers,
+    title: "Kanban Boards",
+    description: "Visual task management with drag-and-drop simplicity",
+  },
+  {
+    icon: Users,
+    title: "Team Collaboration",
+    description: "Work together seamlessly with real-time updates",
+  },
+  {
+    icon: Zap,
+    title: "Lightning Fast",
+    description: "Built with Next.js for optimal performance",
+  }
+];
 
 export default function Home() {
   const { data: session } = useSession();
+
+  // Memoize CTA button content to prevent unnecessary re-renders
+  const ctaButtonContent = useMemo(() => ({
+    href: session ? "/dashboard" : "/register",
+    text: session ? "Dashboard" : "Get Started Free"
+  }), [session]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30">
@@ -35,9 +62,11 @@ export default function Home() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* 3D Background */}
         <div className="absolute inset-0 w-full h-full">
-          <Suspense fallback={<div className="w-full h-full bg-muted/20" />}>
-            <FloatingCards3D />
-          </Suspense>
+          <ErrorBoundaryWrapper>
+            <Suspense fallback={<LoadingFallback />}>
+              <FloatingCards3D />
+            </Suspense>
+          </ErrorBoundaryWrapper>
         </div>
 
         {/* Hero Content */}
@@ -45,38 +74,42 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center"
           >
-              
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-                <span className="text-foreground">
-                  Organize Tasks
-                </span>
-                <br />
-                <span className="text-primary">
-                  Amplify Results
-                </span>
-              </h1>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
+              <span className="text-foreground">
+                Organize Tasks
+              </span>
+              <br />
+              <span className="text-primary">
+                Amplify Results
+              </span>
+            </h1>
 
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
-                Streamline your workflow with Orba's intuitive Kanban boards.
-                Built for teams that value simplicity, speed, and collaboration.
-              </p>
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
+              Streamline your workflow with Orba's intuitive Kanban boards.
+              Built for teams that value simplicity, speed, and collaboration.
+            </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  size="lg"
-                  className="text-lg h-14 px-8 shadow-lg"
-                  asChild
-                >
-                  <Link href={session ? "/dashboard" : "/register"}>
-                    {session ? "Dashboard" : "Get Started Free"}
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Link>
-                </Button>
-              </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <Button
+                size="lg"
+                className="text-lg h-14 px-8 shadow-lg hover:shadow-xl transition-shadow"
+                asChild
+              >
+                <Link href={ctaButtonContent.href}>
+                  {ctaButtonContent.text}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              </Button>
             </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -89,8 +122,8 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center mb-16"
           >
             <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-foreground">
@@ -102,38 +135,26 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Layers,
-                title: "Kanban Boards",
-                description: "Visual task management with drag-and-drop simplicity",
-              },
-              {
-                icon: Users,
-                title: "Team Collaboration",
-                description: "Work together seamlessly with real-time updates",
-              },
-              {
-                icon: Zap,
-                title: "Lightning Fast",
-                description: "Built with Next.js for optimal performance",
-              }
-            ].map((feature, index) => (
+            {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.1,
+                  ease: "easeOut"
+                }}
               >
-                <Card className="p-6 h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 group">
-                  <div className={`w-12 h-12 rounded-lg bg-foreground flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <feature.icon className="w-6 h-6 text-primary-foreground" />
+                <Card className="p-6 h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 group hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-primary/20">
+                    <feature.icon className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-card-foreground">
                     {feature.title}
                   </h3>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
                 </Card>

@@ -3,16 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import { Suspense, lazy, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ContactSalesDialog } from "@/components/contact-sales-dialog";
+import { ErrorBoundaryWrapper } from "@/components/error-boundary";
 
-const FloatingCards3DStatic = dynamic(() => import("@/components/floating-cards-3d-static"), {
-  ssr: false,
-  loading: () => null
-});
+// Lazy load the 3D component
+const FloatingCards3DStatic = lazy(() => import("@/components/floating-cards-3d-static"));
+
+// Optimized loading fallback
+const Fallback3D = () => (
+  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 animate-pulse" />
+);
 
 interface CTASectionProps {
   badge?: string;
@@ -35,6 +38,12 @@ export function CTASection({
 }: CTASectionProps) {
   const { data: session } = useSession();
 
+  // Memoize CTA button content
+  const ctaContent = useMemo(() => ({
+    href: session ? "/dashboard" : "/register",
+    text: session ? "Dashboard" : primaryButtonText
+  }), [session, primaryButtonText]);
+
   return (
     <section className="pt-40 pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Gradient fade from previous section */}
@@ -42,16 +51,18 @@ export function CTASection({
       
       {/* 3D Cards Background */}
       {showBackground3D && (
-        <motion.div 
+        <motion.div
           className="absolute inset-0 pointer-events-none"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 0.25, scale: 1 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 0.15, scale: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <Suspense fallback={null}>
-            <FloatingCards3DStatic />
-          </Suspense>
+          <ErrorBoundaryWrapper>
+            <Suspense fallback={<Fallback3D />}>
+              <FloatingCards3DStatic />
+            </Suspense>
+          </ErrorBoundaryWrapper>
         </motion.div>
       )}
       
@@ -87,13 +98,13 @@ export function CTASection({
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Button 
-              size="lg" 
-              className="text-lg h-14 px-10 shadow-lg hover:shadow-xl transition-shadow group"
+            <Button
+              size="lg"
+              className="text-lg h-14 px-10 shadow-lg hover:shadow-xl transition-all group hover:scale-105"
               asChild
             >
-              <Link href={session ? "/dashboard" : "/register"}>
-                {session ? "Dashboard" : primaryButtonText}
+              <Link href={ctaContent.href}>
+                {ctaContent.text}
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>

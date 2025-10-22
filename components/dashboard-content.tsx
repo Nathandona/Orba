@@ -105,8 +105,6 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
     // Determine user tier and limits
     const isFreeTier = !user.subscription || user.subscription.plan === 'free';
     const projectLimit = isFreeTier ? 3 : Infinity;
-    const projectsRemaining = Math.max(0, projectLimit - totalProjects);
-    const isNearLimit = projectsRemaining <= 1 && projectsRemaining > 0;
 
     const stats = [
         {
@@ -114,8 +112,6 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
             value: totalProjects.toString(),
             icon: Target,
             color: 'text-blue-600',
-            subtitle: isFreeTier ? `${projectsRemaining} of ${projectLimit} remaining` : undefined,
-            subtitleColor: isNearLimit ? 'text-orange-600' : 'text-muted-foreground',
         },
         {
             title: 'Tasks Completed',
@@ -277,11 +273,6 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-2xl font-bold">{stat.value}</div>
-                                    {stat.subtitle && (
-                                        <div className={`text-xs ${stat.subtitleColor} mt-1`}>
-                                            {stat.subtitle}
-                                        </div>
-                                    )}
                                 </CardContent>
                             </Card>
                         ))}
@@ -294,7 +285,7 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                             <div className="flex items-center gap-3">
                                 {isFreeTier && (
                                     <Badge variant="outline" className="text-xs">
-                                        Free Plan: {totalProjects}/3 projects
+                                        {totalProjects}/3 projects
                                     </Badge>
                                 )}
                                 <NewProjectDialog />

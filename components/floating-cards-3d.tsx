@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { RoundedBox, Float } from '@react-three/drei';
-import { useRef, useEffect, useState, createContext, useContext } from 'react';
+import { useRef, useEffect, useState, createContext, useContext, useMemo, useCallback } from 'react';
 import * as THREE from 'three';
 import { useTheme } from 'next-themes';
 
@@ -13,20 +13,20 @@ function MouseProvider({ children }: { children: React.ReactNode }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      // Convert screen coordinates to normalized coordinates (-1 to 1)
-      const x = (event.clientX / window.innerWidth) * 2 - 1;
-      const y = -(event.clientY / window.innerHeight) * 2 + 1; // Invert Y for 3D coords
+    let rafId: number;
 
-      setMousePos({ x, y });
+    const handleMouseMove = (event: MouseEvent) => {
+      rafId = requestAnimationFrame(() => {
+        // Convert screen coordinates to normalized coordinates (-1 to 1)
+        const x = (event.clientX / window.innerWidth) * 2 - 1;
+        const y = -(event.clientY / window.innerHeight) * 2 + 1; // Invert Y for 3D coords
+
+        setMousePos({ x, y });
+      });
     };
 
     // Track mouse over entire document
-    document.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
   }, []);
 
   return (
@@ -48,32 +48,10 @@ function KanbanCard({ position, color, scale = 1, theme }: {
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const globalMouse = useGlobalMouse();
+  const previousMouse = useRef({ x: 0, y: 0 });
 
-  useFrame((state) => {
-    if (groupRef.current) {
-      // Reduced floating animation to let mouse tracking dominate
-      const floatRotationY = Math.sin(state.clock.elapsedTime * 0.3) * 0.05;
-      const floatRotationX = Math.cos(state.clock.elapsedTime * 0.2) * 0.05;
-
-      // AGGRESSIVE mouse influence using global mouse position - works across entire screen
-      const mouseInfluenceX = -globalMouse.y * 0.6; // Y mouse affects X rotation (up/down tilt) - stronger effect
-      const mouseInfluenceY = globalMouse.x * 0.6;  // X mouse affects Y rotation (left/right turn) - stronger effect
-
-      // Add some easing for more natural movement - always active, no center neutral zone
-      const easedMouseX = mouseInfluenceX * 1.5; // Extra responsiveness across entire screen
-      const easedMouseY = mouseInfluenceY * 1.5;
-
-      // Combine animations with mouse tracking taking priority
-      groupRef.current.rotation.y = floatRotationY + easedMouseY;
-      groupRef.current.rotation.x = floatRotationX + easedMouseX;
-
-      // Fixed Z-axis rotation - more intuitive twisting
-      groupRef.current.rotation.z = (-globalMouse.x * globalMouse.y) * 0.1;
-    }
-  });
-
-  // Theme-aware colors
-  const getThemeColors = () => {
+  // Memoize theme colors to avoid recalculation
+  const colors = useMemo(() => {
     if (theme === 'dark') {
       return {
         cardBase: '#0f172a', // slate-900
@@ -91,15 +69,37 @@ function KanbanCard({ position, color, scale = 1, theme }: {
         avatar: '#3b82f6' // blue-500
       };
     }
-  };
+  }, [theme]);
 
-  const colors = getThemeColors();
+  useFrame((state) => {
+    if (!groupRef.current) return;
+
+    // Throttle mouse updates with lerp for smoothness
+    const lerpFactor = 0.1;
+    const lerpedMouseX = previousMouse.current.x + (globalMouse.x - previousMouse.current.x) * lerpFactor;
+    const lerpedMouseY = previousMouse.current.y + (globalMouse.y - previousMouse.current.y) * lerpFactor;
+
+    previousMouse.current = { x: lerpedMouseX, y: lerpedMouseY };
+
+    // Reduced floating animation frequency for better performance
+    const floatRotationY = Math.sin(state.clock.elapsedTime * 0.2) * 0.03;
+    const floatRotationX = Math.cos(state.clock.elapsedTime * 0.15) * 0.03;
+
+    // Optimized mouse influence
+    const mouseInfluenceX = -lerpedMouseY * 0.4;
+    const mouseInfluenceY = lerpedMouseX * 0.4;
+
+    // Combine animations efficiently
+    groupRef.current.rotation.y = floatRotationY + mouseInfluenceY;
+    groupRef.current.rotation.x = floatRotationX + mouseInfluenceX;
+    groupRef.current.rotation.z = (-lerpedMouseX * lerpedMouseY) * 0.08;
+  });
 
   return (
     <Float
-      speed={2}
-      rotationIntensity={0.5}
-      floatIntensity={0.5}
+      speed={1.5}
+      rotationIntensity={0.3}
+      floatIntensity={0.2}
     >
       <group ref={groupRef} position={position}>
         {/* Main card base */}
@@ -186,6 +186,20 @@ export default function FloatingCards3D() {
   // Get the current theme (dark, light, or system default)
   const currentTheme = theme === 'system' ? systemTheme : theme;
 
+  // Memoize card configurations for better performance
+  const cardConfigs = useMemo(() => [
+    { position: [0, 4, -2.5], color: "hsl(262.1, 83.3%, 57.8%)", scale: 0.8 },
+    { position: [3.5, 2.5, -2.2], color: "hsl(210, 100%, 50%)", scale: 1 },
+    { position: [4.5, 0, -2.8], color: "hsl(142.1, 76.2%, 36.3%)", scale: 0.9 },
+    { position: [3.5, -2.5, -2.1], color: "hsl(341.1, 91.7%, 60.4%)", scale: 0.7 },
+    { position: [0, -4, -2.5], color: "hsl(23.1, 95.4%, 52.9%)", scale: 0.75 },
+    { position: [-3.5, -2.5, -2.7], color: "hsl(48.7, 93.5%, 46.7%)", scale: 0.85 },
+    { position: [-4.5, 0, -2.3], color: "hsl(160, 84%, 39%)" , scale: 0.65 },
+    { position: [-3.5, 2.5, -2.6], color: "hsl(331, 81%, 41%)" , scale: 0.72 },
+    { position: [2, -3.5, -2.4], color: "hsl(15, 74%, 58%)" , scale: 0.76 },
+    { position: [-2, 3.5, -2.1], color: "hsl(271, 76%, 53%)" , scale: 0.82 },
+  ], []);
+
   if (!mounted) {
     return (
       <div className="w-full h-full bg-muted/50 rounded-2xl animate-pulse" />
@@ -197,48 +211,31 @@ export default function FloatingCards3D() {
       <div className="w-full h-full">
         <Canvas
           camera={{ position: [0, 0, 10], fov: 60 }}
-          dpr={[1, 2]}
+          dpr={window.devicePixelRatio > 1 ? [1, 1.5] : [1, 1]}
+          performance={{ min: 0.5 }}
+          frameloop="demand"
         >
-            {currentTheme === 'dark' ? (
-            <ambientLight intensity={0.4} />
-            ) : (
-            <ambientLight intensity={2.5} />
-            )}
-          <ambientLight intensity={0.4} />
-          <pointLight position={[5, 5, 5]} intensity={1.2} color="#ffffff" />
-          <pointLight position={[-10, -10, -10]} intensity={0.4} color="#ffffff" />
+          <ambientLight intensity={currentTheme === 'dark' ? 0.4 : 3} />
+          <pointLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
+          <pointLight position={[-5, -5, -5]} intensity={0.3} color="#ffffff" />
           <spotLight
             position={[0, 5, 5]}
             angle={0.3}
             penumbra={1}
-            intensity={0.8}
+            intensity={0.6}
             castShadow
           />
 
-          {/* Realistic Kanban Cards - Arranged in a circle with card-like structure */}
-          <KanbanCard position={[0, 5.5, -2.5]} color="hsl(262.1, 83.3%, 57.8%)" scale={0.8} theme={currentTheme} />
-          <KanbanCard position={[4.2, 3.8, -2.2]} color="hsl(210, 100%, 50%)" scale={1} theme={currentTheme} />
-          <KanbanCard position={[5.8, 1.5, -2.8]} color="hsl(142.1, 76.2%, 36.3%)" scale={0.9} theme={currentTheme} />
-          <KanbanCard position={[5.2, -1.8, -2.1]} color="hsl(341.1, 91.7%, 60.4%)" scale={0.7} theme={currentTheme} />
-          <KanbanCard position={[3.2, -4.5, -2.5]} color="hsl(23.1, 95.4%, 52.9%)" scale={0.75} theme={currentTheme} />
-          <KanbanCard position={[0.3, -5.8, -2.7]} color="hsl(48.7, 93.5%, 46.7%)" scale={0.85} theme={currentTheme} />
-          <KanbanCard position={[-3.8, -4.8, -2.3]} color="hsl(160, 84%, 39%)" scale={0.65} theme={currentTheme} />
-          <KanbanCard position={[-6.1, -2.2, -2.6]} color="hsl(331, 81%, 41%)" scale={0.72} theme={currentTheme} />
-          <KanbanCard position={[-6.8, 0.8, -2.4]} color="hsl(220, 90%, 56%)" scale={0.88} theme={currentTheme} />
-          <KanbanCard position={[-5.5, 3.2, -2.9]} color="hsl(15, 74%, 58%)" scale={0.76} theme={currentTheme} />
-          <KanbanCard position={[-2.8, 5.1, -2.1]} color="hsl(271, 76%, 53%)" scale={0.82} theme={currentTheme} />
-          <KanbanCard position={[2.1, 5.2, -2.8]} color="hsl(199, 89%, 48%)" scale={0.69} theme={currentTheme} />
-          <KanbanCard position={[6.8, 0.2, -2.2]} color="hsl(45, 92%, 47%)" scale={0.78} theme={currentTheme} />
-          <KanbanCard position={[-1.2, -4.1, -2.5]} color="hsl(311, 78%, 55%)" scale={0.84} theme={currentTheme} />
-          <KanbanCard position={[4.5, -2.8, -2.7]} color="hsl(173, 85%, 41%)" scale={0.71} theme={currentTheme} />
-          <KanbanCard position={[-4.2, 1.8, -2.4]} color="hsl(28, 94%, 61%)" scale={0.87} theme={currentTheme} />
-          <KanbanCard position={[1.5, -5.2, -2.6]} color="hsl(306, 77%, 49%)" scale={0.74} theme={currentTheme} />
-          <KanbanCard position={[-3.5, -1.5, -2.3]} color="hsl(134, 88%, 46%)" scale={0.91} theme={currentTheme} />
-          <KanbanCard position={[2.8, 0.8, -2.8]} color="hsl(92, 68%, 45%)" scale={0.66} theme={currentTheme} />
-          <KanbanCard position={[-0.5, 2.8, -2.1]} color="hsl(338, 82%, 58%)" scale={0.79} theme={currentTheme} />
-          <KanbanCard position={[3.8, -5.8, -2.9]} color="hsl(184, 76%, 42%)" scale={0.73} theme={currentTheme} />
-          <KanbanCard position={[-6.2, 4.2, -2.6]} color="hsl(348, 75%, 57%)" scale={0.77} theme={currentTheme} />
-          <KanbanCard position={[5.5, -5.1, -2.4]} color="hsl(106, 83%, 48%)" scale={0.81} theme={currentTheme} />
+          {/* Optimized number of cards for better performance */}
+          {cardConfigs.map((config, index) => (
+            <KanbanCard
+              key={index}
+              position={config.position as [number, number, number]}
+              color={config.color}
+              scale={config.scale}
+              theme={currentTheme}
+            />
+          ))}
         </Canvas>
       </div>
     </MouseProvider>
