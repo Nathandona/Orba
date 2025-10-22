@@ -140,3 +140,83 @@
     animation: gradient-shift 8s ease infinite;
   }
 }
+
+/* Mobile-specific improvements */
+@layer utilities {
+  /* Hide scrollbar on mobile but keep functionality */
+  .scrollbar-hide-mobile {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .scrollbar-hide-mobile::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+
+  .scrollbar-hide-mobile::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  .scrollbar-hide-mobile::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  /* Better touch targets on mobile */
+  @media (max-width: 640px) {
+    .touch-target-mobile {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Ensure horizontal scrolling works well on touch devices */
+    .horizontal-scroll-mobile {
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .horizontal-scroll-mobile::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .horizontal-scroll-mobile::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .horizontal-scroll-mobile::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 2px;
+    }
+
+    .horizontal-scroll-mobile::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  /* Custom breakpoint for very small screens */
+  @media (max-width: 380px) {
+    .xs\:block {
+      display: block;
+    }
+
+    .xs\:hidden {
+      display: none;
+    }
+
+    .xs\:inline {
+      display: inline;
+    }
+
+    .xs\:flex {
+      display: flex;
+    }
+
+    .xs\:grid {
+      display: grid;
+    }
+
+    .xs\:text-xs {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+  }
+}

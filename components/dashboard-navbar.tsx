@@ -58,38 +58,50 @@ export function DashboardNavbar({
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-4">
+      <div className="flex h-16 items-center justify-between px-3 sm:px-4 lg:px-6 lg:px-8">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
           {showBackButton && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => router.push(backButtonPath)}
+              className="hidden sm:flex"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
           )}
-          
+
+          {showBackButton && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(backButtonPath)}
+              className="sm:hidden p-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+          )}
+
           {!showBackButton && (
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href="/dashboard" className="flex items-center gap-1 sm:gap-2">
               {mounted && (
                 <Image
                   src={theme === 'dark' ? '/logo-light.svg' : '/logo-dark.svg'}
                   alt="Orba Logo"
-                  width={32}
-                  height={32}
-                  className="text-primary-foreground"
+                  width={28}
+                  height={28}
+                  className="sm:w-8 sm:h-8 text-primary-foreground"
                 />
               )}
-              <h1 className="text-2xl font-bold text-primary">Orba</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-primary hidden sm:block">Orba</h1>
             </Link>
           )}
-          
+
           {leftContent}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {rightContent}
           <ModeToggle />
           <DropdownMenu>

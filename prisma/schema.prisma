@@ -29,6 +29,7 @@ model User {
   sessions               Session[]
   subscription           Subscription?
   tasks                  Task[]
+  createdTemplates       ProjectTemplate[]
 }
 
 model Account {
@@ -190,6 +191,27 @@ model Comment {
 
   @@index([taskId])
   @@index([createdAt])
+}
+
+model ProjectTemplate {
+  id            String   @id @default(cuid())
+  name          String
+  description   String
+  category      String
+  plan          String   @default("free") // free, premium
+  color         String   @default("bg-blue-500")
+  columns       Json     // Store template columns as JSON
+  sampleTasks   Json?    // Store sample tasks as JSON (optional)
+  isPublic      Boolean  @default(true)
+  isActive      Boolean  @default(true)
+  createdById   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     User?    @relation(fields: [createdById], references: [id])
+
+  @@index([plan])
+  @@index([category])
+  @@index([isActive])
 }
 
 model Attachment {

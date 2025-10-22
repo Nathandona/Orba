@@ -36,7 +36,7 @@ const pricingPlans = [
     icon: Zap,
     features: [
       { name: "Up to 3 boards", included: true },
-      { name: "5 team members", included: true },
+      { name: "3 team members", included: true },
       { name: "Basic templates", included: true },
       { name: "Email support", included: true },
       { name: "Advanced analytics", included: false },

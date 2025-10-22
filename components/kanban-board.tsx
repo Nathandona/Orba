@@ -326,17 +326,18 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         showBackButton
         backButtonPath="/dashboard"
         leftContent={
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className={`w-3 h-3 rounded-full ${project.color}`} />
-            <h1 className="text-xl font-bold">{project.name}</h1>
+            <h1 className="text-lg sm:text-xl font-bold truncate">{project.name}</h1>
           </div>
         }
         rightContent={
-          <>
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsAddColumnOpen(true)}
+              className="hidden sm:flex"
             >
               Add Column
             </Button>
@@ -345,23 +346,23 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
               projectOwner={user}
               onMembersChange={(members) => setTeamMembers(members)}
             />
-          </>
+          </div>
         }
       />
 
       {/* Kanban Board */}
-      <main className="px-4 sm:px-6 lg:px-8 py-8">
+      <main className="px-2 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         <div className="max-w-[1800px] mx-auto">
           {!isMounted ? (
             // Static render during hydration to prevent mismatch
-            <div className="flex gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent">
+            <div className="flex gap-3 sm:gap-4 lg:gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent snap-x snap-mandatory horizontal-scroll-mobile scrollbar-hide-mobile">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="flex-shrink-0 w-80"
+                  className="flex-shrink-0 w-72 sm:w-80 lg:w-96 snap-start"
                 >
                   <div className="w-full">
                     <div className={`min-h-[200px] border-t-4 ${column.color} rounded-lg bg-card p-4 flex flex-col h-fit`}>
@@ -411,14 +412,14 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <div className="flex gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent">
+              <div className="flex gap-3 sm:gap-4 lg:gap-6 overflow-x-auto pb-4 min-h-[200px] items-start scrollbar-thin scrollbar-thumb-slate-300 hover:scrollbar-thumb-slate-400 scrollbar-track-transparent snap-x snap-mandatory horizontal-scroll-mobile scrollbar-hide-mobile">
               {columns.map((column, index) => (
                 <motion.div
                   key={column.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="flex-shrink-0 w-80"
+                  className="flex-shrink-0 w-72 sm:w-80 lg:w-96 snap-start"
                 >
                   <KanbanColumn
                     id={column.id}
@@ -439,7 +440,7 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: columns.length * 0.1 }}
-                className="flex-shrink-0 w-80"
+                className="flex-shrink-0 w-72 sm:w-80 lg:w-96 snap-start"
               >
                 <Card className="min-h-[200px] border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center hover:border-primary/50 hover:bg-muted/20 transition-all duration-200 cursor-pointer group"
                       onClick={() => setIsAddColumnOpen(true)}>
@@ -481,6 +482,17 @@ export function KanbanBoard({ project, user, initialTasks }: KanbanBoardProps) {
         projectId={project.id}
         onColumnCreated={handleColumnCreated}
       />
+
+      {/* Floating Action Button for Mobile */}
+      <Button
+        onClick={() => setIsAddColumnOpen(true)}
+        className="sm:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
+        size="lg"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      </Button>
     </div>
   );
 }

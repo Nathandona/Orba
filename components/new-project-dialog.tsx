@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -13,12 +13,26 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Plus } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2, Plus, Crown, Lock, CheckCircle, LockOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/toast';
 
 interface NewProjectDialogProps {
   onProjectCreated?: () => void;
+}
+
+interface Template {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  plan: 'free' | 'premium';
+  color: string;
+  columns: Array<{ title: string; color: string; position: number }>;
+  sampleTasks?: Array<{ title: string; description: string; priority: string; column: number }>;
 }
 
 const projectColors = [
@@ -36,6 +50,10 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [activeTab, setActiveTab] = useState<'custom' | 'template'>('custom');
+  const [userTier, setUserTier] = useState<'free' | 'premium'>('free');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -43,6 +61,54 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
     dueDate: '',
   });
   const router = useRouter();
+
+  // Fetch templates when dialog opens
+  useEffect(() => {
+    if (open) {
+      fetchTemplates();
+      fetchUserTier();
+    }
+  }, [open]);
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await fetch('/api/templates');
+      if (response.ok) {
+        const data = await response.json();
+        setTemplates(data);
+      }
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+    }
+  };
+
+  const fetchUserTier = async () => {
+    try {
+      const response = await fetch('/api/profile');
+      if (response.ok) {
+        const user = await response.json();
+        setUserTier(user.subscription?.plan === 'free' || !user.subscription ? 'free' : 'premium');
+      }
+    } catch (error) {
+      console.error('Error fetching user plan:', error);
+    }
+  };
+
+  const handleTemplateSelect = (template: Template) => {
+    if (template.plan === 'premium' && userTier === 'free') {
+      showToast('This template requires a pro subscription. Upgrade to unlock pro templates!', 'destructive');
+      return;
+    }
+
+    setSelectedTemplate(template);
+    setFormData(prev => ({
+      ...prev,
+      name: template.name,
+      description: template.description,
+      color: template.color,
+    }));
+    setActiveTab('custom');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,11 +120,26 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+        ...formData,
+        templateId: selectedTemplate?.id,
+      }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create project');
+        const errorData = await response.json().catch(() => ({}));
+
+        if (errorData.code === 'PROJECT_LIMIT_EXCEEDED') {
+          showToast(errorData.error || 'You have reached your project limit on the free plan.', 'destructive');
+          return;
+        }
+
+        if (errorData.code === 'PREMIUM_TEMPLATE_REQUIRED') {
+          showToast(errorData.error || 'This template requires a premium subscription.', 'destructive');
+          return;
+        }
+
+        throw new Error(errorData.error || 'Failed to create project');
       }
 
       const project = await response.json();
@@ -70,6 +151,8 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
         color: 'bg-blue-500',
         dueDate: '',
       });
+      setSelectedTemplate(null);
+      setActiveTab('custom');
       setOpen(false);
 
       // Callback or refresh
@@ -100,25 +183,153 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
           New Project
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>
-            Add a new project to organize your tasks and track progress.
+            Start from scratch or choose a template to get started quickly.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="project-name">Project Name *</Label>
-            <Input
-              id="project-name"
-              placeholder="Website Redesign"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-              disabled={loading}
-            />
-          </div>
+
+        <Tabs value={activeTab} onValueChange={(value: string) => setActiveTab(value as 'custom' | 'template')} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="custom">Custom Project</TabsTrigger>
+            <TabsTrigger value="template">Choose Template</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="template" className="mt-4">
+            <div className="space-y-4">
+              <div className="text-sm text-muted-foreground">
+                Select a template to pre-configure your project with columns and sample tasks.
+              </div>
+
+              {/* Templates Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+                {templates.map((template) => {
+                  const isLocked = template.plan === 'premium' && userTier === 'free';
+                  return (
+                    <Card
+                      key={template.id}
+                      className={`transition-all hover:shadow-md gap-1 ${
+                        selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''
+                      } ${
+                        isLocked
+                          ? 'opacity-60 cursor-not-allowed relative overflow-hidden'
+                          : 'cursor-pointer'
+                      }`}
+                      onClick={() => !isLocked && handleTemplateSelect(template)}
+                    >
+                      {/* Locked overlay */}
+                      {isLocked && (
+                        <div className="absolute inset-0 bg-black/5 backdrop-blur-[1px] z-10" />
+                      )}
+
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-sm font-medium flex items-center gap-2">
+                              {template.name}
+                              {template.plan === 'premium' && (
+                                <Lock className="w-4 h-4" />
+                              )}
+                            </CardTitle>
+                            <CardDescription className="text-xs mt-1">
+                              {template.category}
+                            </CardDescription>
+                          </div>
+                          <Badge
+                            variant={isLocked ? 'default' : 'secondary'}
+                            className={`text-xs`}
+                          >
+                            {isLocked ? 'Pro' : template.plan.charAt(0).toUpperCase() + template.plan.slice(1)}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <p className="text-xs text-muted-foreground mb-3">
+                          {template.description}
+                        </p>
+
+                        {/* Preview columns */}
+                        <div className="text-xs font-medium mb-2">Columns:</div>
+                        <div className="flex flex-wrap gap-1">
+                          {template.columns.slice(0, 3).map((column, index) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className={`text-xs border-2 ${column.color.replace('bg-', 'border-')} ${isLocked ? 'opacity-50' : ''}`}
+                            >
+                              {column.title}
+                            </Badge>
+                          ))}
+                          {template.columns.length > 3 && (
+                            <Badge variant="outline" className={`text-xs ${isLocked ? 'opacity-50' : ''}`}>
+                              +{template.columns.length - 3} more
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {userTier === 'free' && templates.some(t => t.plan === 'premium') && (
+                <Button
+                  type="button"
+                  onClick={() => router.push('/pricing')}
+                  className="w-full text-sm p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center gap-2 text-amber-700 dark:text-amber-300 cursor-pointer"
+                  aria-label="Upgrade to Pro"
+                >
+                  <LockOpen className="w-4 h-4" />
+                  <span>Upgrade to Pro to unlock all templates</span>
+                </Button>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="custom" className="mt-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {selectedTemplate && (
+                <div className="p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span className="text-sm font-medium">Template:</span>
+                      <span className="text-sm">{selectedTemplate.name}</span>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedTemplate(null);
+                        setFormData({
+                          name: '',
+                          description: '',
+                          color: 'bg-blue-500',
+                          dueDate: '',
+                        });
+                      }}
+                      className="text-xs"
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="project-name">Project Name *</Label>
+                <Input
+                  id="project-name"
+                  placeholder="Website Redesign"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                  disabled={loading}
+                />
+              </div>
 
           <div className="space-y-2">
             <Label htmlFor="project-description">Description</Label>
@@ -165,30 +376,31 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
             />
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => setOpen(false)}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                'Create Project'
-              )}
-            </Button>
-          </div>
-        </form>
+              <div className="flex gap-3 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setOpen(false)}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    'Create Project'
+                  )}
+                </Button>
+              </div>
+            </form>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
 }
-

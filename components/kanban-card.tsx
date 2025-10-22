@@ -134,7 +134,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
           className={`cursor-grab active:cursor-grabbing hover:shadow-lg transition-shadow ${isDragging ? 'shadow-2xl rotate-3' : ''
             }`}
         >
-          <CardContent className="p-4 space-y-3">
+          <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
             {/* Menu in top right */}
             <div className="flex justify-end">
               <DropdownMenu>
@@ -197,16 +197,17 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
             )}
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-2 border-t">
+            <div className="flex items-center justify-between pt-2 border-t gap-2">
               {/* Left group: due date, comments, files, assignee */}
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-1 sm:gap-2 text-muted-foreground flex-wrap">
                 {task.dueDate && (
                   <div className="flex items-center gap-1 text-xs">
                     <Calendar className="w-3 h-3" />
-                    <span>{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                    <span className="hidden xs:inline">{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                    <span className="xs:hidden">{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <div className="flex items-center gap-1 text-xs">
                     <MessageSquare className="w-3 h-3" />
                     <span>{localTask._count?.comments || 0}</span>
@@ -218,8 +219,8 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
                 </div>
                 {/* Assignee */}
                 {task.assignee && (
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="text-xs">
+                  <Avatar className="h-5 w-5 sm:h-6 sm:w-6">
+                    <AvatarFallback className="text-[10px] sm:text-xs">
                       {getInitials(task.assignee.name)}
                     </AvatarFallback>
                   </Avatar>
@@ -229,7 +230,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
               {/* Right group: priority badge */}
               <Badge
                 variant="outline"
-                className={`${getPriorityColor(task.priority)} text-xs`}
+                className={`${getPriorityColor(task.priority)} text-[10px] sm:text-xs px-1 sm:px-2`}
               >
                 {task.priority}
               </Badge>

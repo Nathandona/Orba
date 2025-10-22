@@ -42,6 +42,10 @@ interface DashboardContentProps {
         name?: string | null;
         email?: string | null;
         image?: string | null;
+        subscription?: {
+            plan: string;
+            stripeCurrentPeriodEnd?: Date | null;
+        } | null;
     };
     projects: Array<{
         id: string;
@@ -97,6 +101,10 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
     
     // Calculate unique collaborators across all projects
     const totalCollaborators = projects.reduce((sum, p) => sum + (p.team - 1), 0); // -1 to exclude self
+
+    // Determine user tier and limits
+    const isFreeTier = !user.subscription || user.subscription.plan === 'free';
+    const projectLimit = isFreeTier ? 3 : Infinity;
 
     const stats = [
         {
@@ -274,7 +282,14 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-2xl font-bold tracking-tight">Active Projects</h3>
-                            <NewProjectDialog />
+                            <div className="flex items-center gap-3">
+                                {isFreeTier && (
+                                    <Badge variant="outline" className="text-xs">
+                                        {totalProjects}/3 projects
+                                    </Badge>
+                                )}
+                                <NewProjectDialog />
+                            </div>
                         </div>
 
                         <motion.div
