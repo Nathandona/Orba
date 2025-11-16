@@ -1,88 +1,128 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Users, Zap, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { BookOpen, LayoutGrid, Users, Lock, CreditCard, Lightbulb, Keyboard, HelpCircle, Wrench } from "lucide-react"
 
-export default function DocsHome() {
+export default function DocsOverviewPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/30">
-      {/* Hero Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              <span className="text-foreground">
-                Orba
-              </span>
-              <br />
-              <span className="text-primary">
-                Documentation
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
-              Everything you need to know about Orba's task management platform.
-              Learn how to use our Kanban boards, collaborate with your team, and amplify your results.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Button size="lg" asChild>
-                <Link href="/docs/getting-started">
-                  Get Started
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/docs/api">
-                  API Reference
-                </Link>
-              </Button>
-            </div>
+    <div className="px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex items-center gap-3 mb-6">
+        <BookOpen className="h-6 w-6 text-primary" />
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Documentation Orba</h1>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Bienvenue</CardTitle>
+          <CardDescription>Explorez les guides pour démarrer, collaborer et optimiser votre flux de travail.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-8">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Link href="/docs/getting-started" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Getting Started</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Créer un compte, premier projet, colonnes, tâches.</p>
+              </div>
+            </Link>
+            <Link href="/docs/user-guide" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Guide Utilisateur</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Prise en main avancée des fonctionnalités.</p>
+              </div>
+            </Link>
+            <Link href="/docs/projects" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <LayoutGrid className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Projects</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Créer, configurer et gérer vos projets.</p>
+              </div>
+            </Link>
+            <Link href="/docs/collaboration" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Collaboration</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Invitations, rôles et travail en équipe.</p>
+              </div>
+            </Link>
+            <Link href="/docs/authentication" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <Lock className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Authentification</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Inscription, connexion, récupération de mot de passe.</p>
+              </div>
+            </Link>
+            <Link href="/docs/subscription" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <CreditCard className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Abonnements</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Plans, facturation et gestion de l’abonnement.</p>
+              </div>
+            </Link>
+            <Link href="/docs/tips" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <Lightbulb className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Tips & Tricks</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Conseils pratiques pour gagner en efficacité.</p>
+              </div>
+            </Link>
+            <Link href="/docs/shortcuts" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <Keyboard className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Raccourcis</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Commandes clavier pour accélérer les actions.</p>
+              </div>
+            </Link>
+            <Link href="/docs/faq" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <HelpCircle className="h-4 w-4 text-primary" />
+                  <span className="font-medium">FAQ</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Réponses aux questions les plus fréquentes.</p>
+              </div>
+            </Link>
+            <Link href="/docs/troubleshooting" className="block">
+              <div className="border rounded-md p-4 hover:bg-muted transition">
+                <div className="flex items-center gap-2 mb-2">
+                  <Wrench className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Dépannage</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Solutions aux problèmes courants.</p>
+              </div>
+            </Link>
           </div>
 
-          {/* Documentation Categories */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: BookOpen,
-                title: "Getting Started",
-                description: "Learn the basics of Orba and get up and running quickly",
-                link: "/docs/getting-started"
-              },
-              {
-                icon: Users,
-                title: "User Guide",
-                description: "Comprehensive guide to using Orba's features",
-                link: "/docs/user-guide"
-              },
-              {
-                icon: Code,
-                title: "API Reference",
-                description: "Technical documentation for developers",
-                link: "/docs/api"
-              },
-              {
-                icon: Zap,
-                title: "Quick Tips",
-                description: "Short guides and best practices",
-                link: "/docs/tips"
-              }
-            ].map((category, index) => (
-              <Card key={category.title} className="p-6 hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 group cursor-pointer">
-                <Link href={category.link} className="block">
-                  <div className="w-12 h-12 rounded-lg bg-foreground flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <category.icon className="w-6 h-6 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-card-foreground">
-                    {category.title}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {category.description}
-                  </p>
-                </Link>
-              </Card>
-            ))}
+          <Separator />
+
+          <div className="flex items-center gap-3">
+            <Button asChild>
+              <Link href="/docs/getting-started">Commencer</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/dashboard">Aller au dashboard</Link>
+            </Button>
           </div>
-        </div>
-      </section>
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }
