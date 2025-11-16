@@ -9,13 +9,13 @@ export default function DocsOverviewPage() {
     <div className="px-4 sm:px-6 lg:px-8 py-6">
       <div className="flex items-center gap-3 mb-6">
         <BookOpen className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Documentation Orba</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Orba Documentation</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Bienvenue</CardTitle>
-          <CardDescription>Explorez les guides pour démarrer, collaborer et optimiser votre flux de travail.</CardDescription>
+          <CardTitle>Welcome</CardTitle>
+          <CardDescription>Explore guides to get started, collaborate, and optimize your workflow.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -25,16 +25,16 @@ export default function DocsOverviewPage() {
                   <BookOpen className="h-4 w-4 text-primary" />
                   <span className="font-medium">Getting Started</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Créer un compte, premier projet, colonnes, tâches.</p>
+                <p className="text-sm text-muted-foreground">Create an account, first project, columns, tasks.</p>
               </div>
             </Link>
             <Link href="/docs/user-guide" className="block">
               <div className="border rounded-md p-4 hover:bg-muted transition">
                 <div className="flex items-center gap-2 mb-2">
                   <BookOpen className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Guide Utilisateur</span>
+                  <span className="font-medium">User Guide</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Prise en main avancée des fonctionnalités.</p>
+                <p className="text-sm text-muted-foreground">Advanced walkthrough of core features.</p>
               </div>
             </Link>
             <Link href="/docs/projects" className="block">
@@ -43,7 +43,7 @@ export default function DocsOverviewPage() {
                   <LayoutGrid className="h-4 w-4 text-primary" />
                   <span className="font-medium">Projects</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Créer, configurer et gérer vos projets.</p>
+                <p className="text-sm text-muted-foreground">Create, configure, and manage your projects.</p>
               </div>
             </Link>
             <Link href="/docs/collaboration" className="block">
@@ -52,25 +52,25 @@ export default function DocsOverviewPage() {
                   <Users className="h-4 w-4 text-primary" />
                   <span className="font-medium">Collaboration</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Invitations, rôles et travail en équipe.</p>
+                <p className="text-sm text-muted-foreground">Invitations, roles, and teamwork.</p>
               </div>
             </Link>
             <Link href="/docs/authentication" className="block">
               <div className="border rounded-md p-4 hover:bg-muted transition">
                 <div className="flex items-center gap-2 mb-2">
                   <Lock className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Authentification</span>
+                  <span className="font-medium">Authentication</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Inscription, connexion, récupération de mot de passe.</p>
+                <p className="text-sm text-muted-foreground">Sign up, sign in, password recovery.</p>
               </div>
             </Link>
             <Link href="/docs/subscription" className="block">
               <div className="border rounded-md p-4 hover:bg-muted transition">
                 <div className="flex items-center gap-2 mb-2">
                   <CreditCard className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Abonnements</span>
+                  <span className="font-medium">Subscriptions</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Plans, facturation et gestion de l’abonnement.</p>
+                <p className="text-sm text-muted-foreground">Plans, billing, and subscription management.</p>
               </div>
             </Link>
             <Link href="/docs/tips" className="block">
@@ -79,16 +79,16 @@ export default function DocsOverviewPage() {
                   <Lightbulb className="h-4 w-4 text-primary" />
                   <span className="font-medium">Tips & Tricks</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Conseils pratiques pour gagner en efficacité.</p>
+                <p className="text-sm text-muted-foreground">Practical tips to boost efficiency.</p>
               </div>
             </Link>
             <Link href="/docs/shortcuts" className="block">
               <div className="border rounded-md p-4 hover:bg-muted transition">
                 <div className="flex items-center gap-2 mb-2">
                   <Keyboard className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Raccourcis</span>
+                  <span className="font-medium">Shortcuts</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Commandes clavier pour accélérer les actions.</p>
+                <p className="text-sm text-muted-foreground">Keyboard commands to speed up actions.</p>
               </div>
             </Link>
             <Link href="/docs/faq" className="block">
@@ -97,16 +97,16 @@ export default function DocsOverviewPage() {
                   <HelpCircle className="h-4 w-4 text-primary" />
                   <span className="font-medium">FAQ</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Réponses aux questions les plus fréquentes.</p>
+                <p className="text-sm text-muted-foreground">Answers to common questions.</p>
               </div>
             </Link>
             <Link href="/docs/troubleshooting" className="block">
               <div className="border rounded-md p-4 hover:bg-muted transition">
                 <div className="flex items-center gap-2 mb-2">
                   <Wrench className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Dépannage</span>
+                  <span className="font-medium">Troubleshooting</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Solutions aux problèmes courants.</p>
+                <p className="text-sm text-muted-foreground">Solutions to common problems.</p>
               </div>
             </Link>
           </div>
@@ -115,10 +115,10 @@ export default function DocsOverviewPage() {
 
           <div className="flex items-center gap-3">
             <Button asChild>
-              <Link href="/docs/getting-started">Commencer</Link>
+              <Link href="/docs/getting-started">Get Started</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/dashboard">Aller au dashboard</Link>
+              <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
           </div>
         </CardContent>

@@ -8,7 +8,7 @@ import { BookOpen, LayoutGrid, FileText, Lightbulb, Users, Lock, CreditCard, Key
 export const metadata: Metadata = {
   title: "Orba Documentation",
   description:
-    "Documentation complète de la plateforme de gestion de tâches Orba. Apprenez à utiliser les tableaux Kanban, collaborez avec votre équipe et amplifiez vos résultats.",
+    "Comprehensive documentation for the Orba task management platform. Learn to use Kanban boards, collaborate with your team, and amplify your results.",
   metadataBase: new URL("https://docs.orba.work"),
   alternates: {
     canonical: "https://docs.orba.work",
@@ -60,20 +60,20 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
                   Collaboration
                 </Link>
               </Button>
-              <div className="px-2 mt-3 text-xs font-medium text-muted-foreground">Compte</div>
+              <div className="px-2 mt-3 text-xs font-medium text-muted-foreground">Account</div>
               <Button variant="ghost" className="w-full justify-start h-9 text-sm" asChild>
                 <Link href="/docs/authentication">
                   <Lock className="mr-2 h-4 w-4" />
-                  Authentification
+                  Authentication
                 </Link>
               </Button>
               <Button variant="ghost" className="w-full justify-start h-9 text-sm" asChild>
                 <Link href="/docs/subscription">
                   <CreditCard className="mr-2 h-4 w-4" />
-                  Abonnements
+                  Subscriptions
                 </Link>
               </Button>
-              <div className="px-2 mt-3 text-xs font-medium text-muted-foreground">Ressources</div>
+              <div className="px-2 mt-3 text-xs font-medium text-muted-foreground">Resources</div>
               <Button variant="ghost" className="w-full justify-start h-9 text-sm" asChild>
                 <Link href="/docs/tips">
                   <Lightbulb className="mr-2 h-4 w-4" />
@@ -83,7 +83,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
               <Button variant="ghost" className="w-full justify-start h-9 text-sm" asChild>
                 <Link href="/docs/shortcuts">
                   <Keyboard className="mr-2 h-4 w-4" />
-                  Raccourcis
+                  Shortcuts
                 </Link>
               </Button>
               <Button variant="ghost" className="w-full justify-start h-9 text-sm" asChild>
@@ -95,7 +95,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
               <Button variant="ghost" className="w-full justify-start h-9 text-sm" asChild>
                 <Link href="/docs/troubleshooting">
                   <Wrench className="mr-2 h-4 w-4" />
-                  Dépannage
+                  Troubleshooting
                 </Link>
               </Button>
             </div>
