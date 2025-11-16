@@ -6,34 +6,34 @@ export default function TroubleshootingPage() {
     <div className="px-4 sm:px-6 lg:px-8 py-6">
       <div className="flex items-center gap-3 mb-6">
         <Wrench className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dépannage</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Troubleshooting</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Problèmes courants</CardTitle>
-          <CardDescription>Solutions rapides pour résoudre les soucis fréquents.</CardDescription>
+          <CardTitle>Common issues</CardTitle>
+          <CardDescription>Quick solutions to help resolve frequent problems.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-muted-foreground" />
             <div>
-              <p className="font-medium">Je ne reçois pas l’email d’invitation</p>
-              <p className="text-sm text-muted-foreground">Vérifiez vos spams. Assurez-vous que l’adresse email est correcte. Réessayez l’envoi.</p>
+              <p className="font-medium">I’m not receiving the invitation email</p>
+              <p className="text-sm text-muted-foreground">Check your spam. Ensure the email address is correct. Try sending again.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-muted-foreground" />
             <div>
-              <p className="font-medium">Impossible de déplacer une carte</p>
-              <p className="text-sm text-muted-foreground">Rechargez la page. Vérifiez que vous êtes membre du projet. Essayez un autre navigateur.</p>
+              <p className="font-medium">Unable to move a card</p>
+              <p className="text-sm text-muted-foreground">Reload the page. Verify you’re a project member. Try another browser.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-muted-foreground" />
             <div>
-              <p className="font-medium">Performance lente</p>
-              <p className="text-sm text-muted-foreground">Fermez les onglets lourds, vérifiez la connexion, videz le cache, puis réessayez.</p>
+              <p className="font-medium">Slow performance</p>
+              <p className="text-sm text-muted-foreground">Close heavy tabs, check your connection, clear cache, then retry.</p>
             </div>
           </div>
         </CardContent>

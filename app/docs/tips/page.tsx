@@ -14,22 +14,22 @@ export default function TipsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Boostez votre productivité</CardTitle>
-          <CardDescription>Conseils pratiques pour gérer vos projets efficacement.</CardDescription>
+          <CardTitle>Boost your productivity</CardTitle>
+          <CardDescription>Practical tips to manage your projects effectively.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
-              <p className="font-medium">Templates de colonnes</p>
-              <p className="text-sm text-muted-foreground">Standardisez vos colonnes pour harmoniser l’équipe.</p>
+              <p className="font-medium">Column templates</p>
+              <p className="text-sm text-muted-foreground">Standardize columns to align your team.</p>
             </div>
             <div className="space-y-2">
               <p className="font-medium">Timeboxing</p>
-              <p className="text-sm text-muted-foreground">Fixez des durées pour éviter la dérive des tâches.</p>
+              <p className="text-sm text-muted-foreground">Set time limits to prevent task drift.</p>
             </div>
             <div className="space-y-2">
-              <p className="font-medium">Labels parlants</p>
-              <p className="text-sm text-muted-foreground">Utilisez des tags cohérents pour filtrer rapidement.</p>
+              <p className="font-medium">Descriptive labels</p>
+              <p className="text-sm text-muted-foreground">Use consistent tags for quick filtering.</p>
             </div>
           </div>
 
@@ -44,7 +44,7 @@ export default function TipsPage() {
             </Button>
             <Button variant="ghost" asChild>
               <Link href="/dashboard">
-                Aller au dashboard
+                Go to Dashboard
               </Link>
             </Button>
           </div>

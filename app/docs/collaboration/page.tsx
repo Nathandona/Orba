@@ -12,22 +12,22 @@ export default function CollaborationPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Travail en équipe</CardTitle>
-          <CardDescription>Invitez des membres, définissez des rôles et collaborez en temps réel.</CardDescription>
+          <CardTitle>Teamwork</CardTitle>
+          <CardDescription>Invite members, define roles, and collaborate in real time.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
               <p className="font-medium">Invitations</p>
-              <p className="text-sm text-muted-foreground">Invitez par email depuis un projet. Les invités reçoivent un lien pour rejoindre.</p>
+              <p className="text-sm text-muted-foreground">Invite by email from a project. Guests receive a link to join.</p>
             </div>
             <div className="space-y-2">
-              <p className="font-medium">Rôles</p>
-              <p className="text-sm text-muted-foreground">Propriétaire, Administrateur, Membre. Droits adaptés selon les responsabilités.</p>
+              <p className="font-medium">Roles</p>
+              <p className="text-sm text-muted-foreground">Owner, Admin, Member. Permissions aligned with responsibilities.</p>
             </div>
             <div className="space-y-2">
-              <p className="font-medium">Activité</p>
-              <p className="text-sm text-muted-foreground">Suivez les changements, commentaires et pièces jointes sur les tâches.</p>
+              <p className="font-medium">Activity</p>
+              <p className="text-sm text-muted-foreground">Track changes, comments, and attachments on tasks.</p>
             </div>
           </div>
 
@@ -37,15 +37,15 @@ export default function CollaborationPage() {
             <div className="flex items-start gap-3">
               <Mail className="h-5 w-5 text-primary" />
               <div>
-                <p className="font-medium">Email d’invitation</p>
-                <p className="text-sm text-muted-foreground">Contient le nom du projet, l’expéditeur et un bouton pour créer ou connecter un compte.</p>
+                <p className="font-medium">Invitation email</p>
+                <p className="text-sm text-muted-foreground">Includes project name, sender, and a button to create or sign in.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <Shield className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="font-medium">Permissions</p>
-                <p className="text-sm text-muted-foreground">Contrôles d’accès basés sur le rôle pour créer, modifier et commenter.</p>
+                <p className="text-sm text-muted-foreground">Role-based access controls for create, edit, and comment.</p>
               </div>
             </div>
           </div>

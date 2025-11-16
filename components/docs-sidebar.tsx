@@ -16,6 +16,19 @@ export function DocsSidebar({ children }: { children: ReactNode }) {
         <div className="px-4 py-3 space-y-1">
           {children}
         </div>
+        <div className="mt-auto px-4 py-4 border-t flex items-center justify-between">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="https://orba.work" target="_blank" rel="noopener noreferrer">
+              <Home className="h-4 w-4 mr-2" />
+              Back to App
+            </Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Github className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </aside>
   )

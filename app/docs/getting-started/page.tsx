@@ -14,37 +14,37 @@ export default function GettingStartedPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Bienvenue sur Orba</CardTitle>
-          <CardDescription>Démarrez rapidement avec les fondamentaux d’Orba.</CardDescription>
+          <CardTitle>Welcome to Orba</CardTitle>
+          <CardDescription>Get up and running with the fundamentals of Orba.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-green-600" />
               <div>
-                <p className="font-medium">Créer un compte</p>
-                <p className="text-sm text-muted-foreground">Inscrivez-vous et accédez à votre tableau de bord.</p>
+                <p className="font-medium">Create an account</p>
+                <p className="text-sm text-muted-foreground">Sign up and access your dashboard.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-green-600" />
               <div>
-                <p className="font-medium">Créer un projet</p>
-                <p className="text-sm text-muted-foreground">Initialisez votre premier projet pour organiser vos tâches.</p>
+                <p className="font-medium">Create a project</p>
+                <p className="text-sm text-muted-foreground">Initialize your first project to organize tasks.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-green-600" />
               <div>
-                <p className="font-medium">Configurer le Kanban</p>
-                <p className="text-sm text-muted-foreground">Ajoutez des colonnes et personnalisez votre flux.</p>
+                <p className="font-medium">Set up Kanban</p>
+                <p className="text-sm text-muted-foreground">Add columns and customize your workflow.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-green-600" />
               <div>
-                <p className="font-medium">Collaborer avec l’équipe</p>
-                <p className="text-sm text-muted-foreground">Invitez des membres et assignez des tâches.</p>
+                <p className="font-medium">Collaborate with your team</p>
+                <p className="text-sm text-muted-foreground">Invite members and assign tasks.</p>
               </div>
             </div>
           </div>
@@ -54,13 +54,13 @@ export default function GettingStartedPage() {
           <div className="flex items-center gap-3">
             <Button asChild>
               <Link href="/register">
-                Créer un compte
+                Create an account
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link href="/dashboard">
-                Aller au dashboard
+                Go to Dashboard
               </Link>
             </Button>
           </div>

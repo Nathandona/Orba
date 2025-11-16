@@ -14,22 +14,22 @@ export default function ProjectsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Gérer vos projets</CardTitle>
-          <CardDescription>Créez, modifiez et collaborez efficacement sur vos projets.</CardDescription>
+          <CardTitle>Manage your projects</CardTitle>
+          <CardDescription>Create, edit, and collaborate efficiently on your projects.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
-              <p className="font-medium">Création</p>
-              <p className="text-sm text-muted-foreground">Créez un nouveau projet avec un nom, une description et une couleur.</p>
+              <p className="font-medium">Creation</p>
+              <p className="text-sm text-muted-foreground">Create a new project with a name, description, and color.</p>
             </div>
             <div className="space-y-2">
               <p className="font-medium">Collaboration</p>
-              <p className="text-sm text-muted-foreground">Invitez des membres, gérez les rôles et suivez l’activité.</p>
+              <p className="text-sm text-muted-foreground">Invite members, manage roles, and track activity.</p>
             </div>
             <div className="space-y-2">
-              <p className="font-medium">Paramètres</p>
-              <p className="text-sm text-muted-foreground">Ajustez les préférences du projet et configurez les colonnes.</p>
+              <p className="font-medium">Settings</p>
+              <p className="text-sm text-muted-foreground">Adjust project preferences and configure columns.</p>
             </div>
           </div>
 
@@ -38,13 +38,13 @@ export default function ProjectsPage() {
           <div className="flex items-center gap-3">
             <Button asChild>
               <Link href="/dashboard">
-                Voir mes projets
+                View my projects
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link href="/dashboard">
-                Inviter des membres
+                Invite members
                 <Users className="ml-2 h-4 w-4" />
               </Link>
             </Button>
