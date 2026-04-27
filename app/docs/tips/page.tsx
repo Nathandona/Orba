@@ -1,55 +1,60 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Lightbulb, Timer, LayoutGrid } from "lucide-react"
+import type { Metadata } from "next";
+import { DocPage } from "@/components/docs/doc-page";
+import { DocSection } from "@/components/docs/doc-section";
+import { DocBullets } from "@/components/docs/doc-list";
+import { DocCallout } from "@/components/docs/doc-callout";
+import { DocFooter } from "@/components/docs/doc-footer";
+
+export const metadata: Metadata = {
+  title: "Tips & tricks",
+  description: "Small habits that make Orba feel faster.",
+};
 
 export default function TipsPage() {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Lightbulb className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Tips & Tricks</h1>
-      </div>
+    <DocPage
+      eyebrow="Reference"
+      title="Tips & tricks."
+      lead="Small habits that compound. None of these are required — all of them save minutes a day."
+    >
+      <DocSection title="Run a tighter board">
+        <DocBullets
+          items={[
+            { title: "Three columns by default", description: "Backlog · In progress · Done. Add Review only if every card actually goes through it." },
+            { title: "Cap In progress", description: "Pro plans support WIP limits. Even without them, agree on a number with your team." },
+            { title: "Archive on Friday", description: "Move Done cards to Archive at the end of the week. Keeps the board readable." },
+          ]}
+        />
+      </DocSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Boost your productivity</CardTitle>
-          <CardDescription>Practical tips to manage your projects effectively.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2">
-              <p className="font-medium">Column templates</p>
-              <p className="text-sm text-muted-foreground">Standardize columns to align your team.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Timeboxing</p>
-              <p className="text-sm text-muted-foreground">Set time limits to prevent task drift.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Descriptive labels</p>
-              <p className="text-sm text-muted-foreground">Use consistent tags for quick filtering.</p>
-            </div>
-          </div>
+      <DocSection title="Write better cards">
+        <DocBullets
+          items={[
+            { title: "Verb-led titles", description: "'Migrate auth tokens' beats 'Auth migration thing'." },
+            { title: "Acceptance criteria in the description", description: "Three bullets max. If you can't, the card should be split." },
+            { title: "Tag consistently", description: "Two-word max. 'frontend' not 'front-end stuff that touches React'." },
+          ]}
+        />
+      </DocSection>
 
-          <Separator />
+      <DocSection title="Run a faster standup">
+        <DocBullets
+          items={[
+            { title: "Filter to the assignee", description: "On standup, each person filters the board to their cards. Walks through them in 30 seconds." },
+            { title: "Use search across boards", description: "Cmd/Ctrl + K. Type a name to see what they own everywhere." },
+            { title: "Pin the active sprint", description: "Pinned projects show up at the top of the sidebar." },
+          ]}
+        />
+      </DocSection>
 
-          <div className="flex items-center gap-3">
-            <Button asChild>
-              <Link href="/docs/getting-started">Getting Started</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/docs/projects">Projects</Link>
-            </Button>
-            <Button variant="ghost" asChild>
-              <Link href="/dashboard">
-                Go to Dashboard
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
+      <DocCallout tone="tip" title="The two-minute rule">
+        If a card takes less than two minutes, do it instead of moving it. Less ceremony, less context-switching.
+      </DocCallout>
+
+      <DocFooter
+        prev={{ href: "/docs/subscription", label: "Subscriptions" }}
+        next={{ href: "/docs/shortcuts", label: "Shortcuts" }}
+      />
+    </DocPage>
+  );
 }

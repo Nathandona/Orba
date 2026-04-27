@@ -97,9 +97,6 @@ export function Navbar() {
                     />
                   )}
                   <span className="relative">{link.label}</span>
-                  {link.label === "Docs" && (
-                    <BookOpen className="relative h-3.5 w-3.5" />
-                  )}
                 </span>
               );
               return link.external ? (

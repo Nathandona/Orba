@@ -22,12 +22,61 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
+const SITE_URL = "https://orba.work";
+
 export const metadata: Metadata = {
-  title: "Orba - Modern Project Management",
-  description: "Streamline your workflow with Orba's intuitive Kanban boards. Built for teams that value simplicity, speed, and collaboration.",
-  metadataBase: new URL('https://orba.work'),
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Orba — The Kanban your team will actually open on Monday",
+    template: "%s · Orba",
+  },
+  description:
+    "Orba is a quiet, fast, opinionated Kanban for product teams. Plan the sprint, run the standup, ship the work — without losing an afternoon to the tool.",
+  applicationName: "Orba",
+  keywords: [
+    "Kanban",
+    "project management",
+    "task management",
+    "team collaboration",
+    "agile",
+    "sprint planning",
+    "Orba",
+  ],
+  authors: [{ name: "Orba" }],
+  creator: "Orba",
+  publisher: "Orba",
   alternates: {
-    canonical: 'https://orba.work',
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Orba",
+    title: "Orba — The Kanban your team will actually open on Monday",
+    description:
+      "A quiet, fast, opinionated Kanban for product teams. Plan, track, ship — without losing an afternoon to the tool.",
+    url: SITE_URL,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Orba — The Kanban your team will actually open on Monday",
+    description:
+      "A quiet, fast, opinionated Kanban for product teams.",
+    creator: "@orba",
+  },
+  icons: {
+    icon: "/favicon.ico",
   },
 };
 

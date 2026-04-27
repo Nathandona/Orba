@@ -1,55 +1,72 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Lock, Mail } from "lucide-react"
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DocPage } from "@/components/docs/doc-page";
+import { DocSection } from "@/components/docs/doc-section";
+import { DocBullets } from "@/components/docs/doc-list";
+import { DocCallout } from "@/components/docs/doc-callout";
+import { DocFooter } from "@/components/docs/doc-footer";
+
+export const metadata: Metadata = {
+  title: "Authentication",
+  description: "Sign in, OAuth providers, password reset.",
+};
 
 export default function AuthenticationPage() {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Lock className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Authentication</h1>
-      </div>
+    <DocPage
+      eyebrow="Account"
+      title="Authentication."
+      lead="Sign in with email, Google, or GitHub. Forgot your password? One link, no codes."
+    >
+      <DocSection title="Sign up">
+        <DocBullets
+          items={[
+            { title: "Email + password", description: "Use a real email — we send a confirmation link." },
+            { title: "Continue with Google", description: "One click. Uses the email on your Google account." },
+            { title: "Continue with GitHub", description: "Useful if your team already lives there." },
+          ]}
+        />
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button asChild className="bg-brand text-brand-foreground hover:bg-brand/90">
+            <Link href="/register">
+              Create an account
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="border-hairline">
+            <Link href="/login">Sign in</Link>
+          </Button>
+        </div>
+      </DocSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Account & Access</CardTitle>
-          <CardDescription>Sign up, sign in, and password recovery.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2">
-              <p className="font-medium">Sign up</p>
-              <p className="text-sm text-muted-foreground">Create your account with email/password or an OAuth provider.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Sign in</p>
-              <p className="text-sm text-muted-foreground">Access your secure workspace to manage projects and tasks.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Forgot password</p>
-              <p className="text-sm text-muted-foreground">Receive a reset link by email to set a new password.</p>
-            </div>
-          </div>
+      <DocSection title="Sign in" description="Same providers as sign-up. Same email = same account.">
+        <DocCallout tone="info" title="Multiple providers, one account">
+          If you signed up with email and later click Continue with Google using the same address, we link them. You don&apos;t end up with duplicate accounts.
+        </DocCallout>
+      </DocSection>
 
-          <Separator />
+      <DocSection title="Forgot password" description="Enter your email. We send a link. Click it. Set a new password.">
+        <DocCallout tone="warn" title="Didn't get the email?">
+          Check spam first. If it&apos;s not there after two minutes, try again — the address might be off by a character.
+        </DocCallout>
+      </DocSection>
 
-          <div className="flex items-center gap-3">
-            <Button asChild>
-              <Link href="/register">Create an account</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/login">Sign in</Link>
-            </Button>
-          </div>
+      <DocSection title="Sessions and security">
+        <DocBullets
+          items={[
+            { title: "Sessions are signed", description: "Tokens are HTTP-only cookies. JavaScript on the page can't read them." },
+            { title: "Sign out everywhere", description: "Settings → Security → Sign out of all sessions." },
+            { title: "Account deletion", description: "Settings → Account → Delete. Permanent after a 30-day grace period." },
+          ]}
+        />
+      </DocSection>
 
-          <div className="flex items-start gap-3">
-            <Mail className="h-5 w-5 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">Check your spam folder if you don’t receive the email.</p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
+      <DocFooter
+        prev={{ href: "/docs/collaboration", label: "Collaboration" }}
+        next={{ href: "/docs/subscription", label: "Subscriptions" }}
+      />
+    </DocPage>
+  );
 }

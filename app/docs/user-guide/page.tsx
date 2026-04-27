@@ -1,67 +1,128 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { FileText, LayoutGrid, Users, Keyboard } from "lucide-react"
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DocPage } from "@/components/docs/doc-page";
+import { DocSection } from "@/components/docs/doc-section";
+import { DocBullets } from "@/components/docs/doc-list";
+import { DocCallout } from "@/components/docs/doc-callout";
+import { DocFooter } from "@/components/docs/doc-footer";
+
+export const metadata: Metadata = {
+  title: "User guide",
+  description: "The core Orba workflow — boards, tasks, columns, ownership, comments.",
+};
 
 export default function UserGuidePage() {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <FileText className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">User Guide</h1>
-      </div>
+    <DocPage
+      eyebrow="User guide"
+      title="The core workflow, end to end."
+      lead="Everything you'll touch on a normal week. Nothing you don't need."
+    >
+      <DocSection title="Boards" description="One board per body of work. Read top to bottom, left to right.">
+        <DocBullets
+          items={[
+            {
+              title: "Columns are stages",
+              description: "Backlog, In progress, Done. Move cards rightward as work advances.",
+            },
+            {
+              title: "Cards are work items",
+              description: "One card per ticket, story, or task. Keep titles short and verb-led.",
+            },
+            {
+              title: "Ownership is explicit",
+              description: "Every active card has one owner. Watchers come along for the ride.",
+            },
+          ]}
+        />
+      </DocSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Getting the most out of Orba</CardTitle>
-          <CardDescription>Learn to create projects, manage tasks, and collaborate effectively.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2">
-              <p className="font-medium">Projects</p>
-              <p className="text-sm text-muted-foreground">Create a project, configure columns, and invite members.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Tasks</p>
-              <p className="text-sm text-muted-foreground">Add tasks, assign owners, and track progress.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Collaboration</p>
-              <p className="text-sm text-muted-foreground">Work as a team with comments, attachments, and activity.</p>
-            </div>
-          </div>
+      <DocSection title="Tasks" description="Click a card to open it. The detail panel slides in from the right.">
+        <DocBullets
+          items={[
+            {
+              title: "Title and description",
+              description: "Markdown supported. Paste links — they unfurl.",
+            },
+            {
+              title: "Assignee, due date, tags",
+              description: "Tags filter the board view. Due dates show on the card edge.",
+            },
+            {
+              title: "Comments and activity",
+              description: "Mention with @. Everything is logged in the activity rail.",
+            },
+            {
+              title: "Subtasks",
+              description: "Check off the small steps. Progress shows on the parent card.",
+            },
+          ]}
+        />
+        <DocCallout tone="tip" title="Use the keyboard">
+          Press <kbd className="rounded border border-hairline bg-surface-2 px-1.5 py-0.5 font-mono text-xs">N</kbd>{" "}
+          on any board to create a card without lifting your hands. Full list on the{" "}
+          <Link href="/docs/shortcuts" className="text-brand hover:underline">
+            Shortcuts page
+          </Link>
+          .
+        </DocCallout>
+      </DocSection>
 
-          <Separator />
+      <DocSection title="Columns" description="Columns are how your team agrees on what 'in progress' means.">
+        <DocBullets
+          items={[
+            {
+              title: "Add, rename, reorder",
+              description: "Drag the column header. Double-click to rename.",
+            },
+            {
+              title: "WIP limits (Pro)",
+              description: "Cap the number of cards per column. Exceeded columns turn amber.",
+            },
+            {
+              title: "Hidden columns",
+              description: "Archive columns you no longer use without losing the cards inside.",
+            },
+          ]}
+        />
+      </DocSection>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex items-start gap-3">
-              <LayoutGrid className="h-5 w-5 text-primary" />
-              <div>
-                <p className="font-medium">Kanban board</p>
-                <p className="text-sm text-muted-foreground">Move tasks between columns to visualize progress.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Keyboard className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="font-medium">Helpful shortcuts</p>
-                <p className="text-sm text-muted-foreground">Speed up with navigation and editing shortcuts.</p>
-              </div>
-            </div>
-          </div>
+      <DocSection
+        title="Filters and views"
+        description="The same board, sliced different ways. Filters are scoped to your session — they don't change what your teammates see."
+      >
+        <DocBullets
+          items={[
+            { title: "Filter by assignee", description: "See only your cards, or only one teammate's." },
+            { title: "Filter by tag", description: "Cluster the work by area: backend, design, infra." },
+            { title: "Search", description: "Cmd/Ctrl + K opens search across every board you can see." },
+          ]}
+        />
+      </DocSection>
 
-          <div className="flex items-center gap-3">
-            <Button asChild>
-              <Link href="/docs/projects">Go to Projects</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/docs/collaboration">See Collaboration</Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
+      <DocSection title="Ready to keep going?" description="The next pages cover the parts most teams ask about.">
+        <div className="flex flex-wrap gap-3">
+          <Button asChild variant="outline" className="border-hairline">
+            <Link href="/docs/projects">
+              Projects
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="border-hairline">
+            <Link href="/docs/collaboration">
+              Collaboration
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </DocSection>
+
+      <DocFooter
+        prev={{ href: "/docs/getting-started", label: "Getting started" }}
+        next={{ href: "/docs/projects", label: "Projects" }}
+      />
+    </DocPage>
+  );
 }

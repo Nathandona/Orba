@@ -1,128 +1,126 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { BookOpen, LayoutGrid, Users, Lock, CreditCard, Lightbulb, Keyboard, HelpCircle, Wrench } from "lucide-react"
+import Link from "next/link";
+import {
+  Compass,
+  FileText,
+  LayoutGrid,
+  Users,
+  Lock,
+  CreditCard,
+  Lightbulb,
+  Keyboard,
+  HelpCircle,
+  Wrench,
+  ArrowRight,
+} from "lucide-react";
+import { DocPage } from "@/components/docs/doc-page";
+import { DocSection } from "@/components/docs/doc-section";
+import { DocCardLink } from "@/components/docs/doc-card-link";
+import { DocFooter } from "@/components/docs/doc-footer";
 
 export default function DocsOverviewPage() {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <BookOpen className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Orba Documentation</h1>
-      </div>
+    <DocPage
+      eyebrow="Documentation"
+      title="Everything you need to run Orba."
+      lead="Plain-English guides for setting up boards, inviting your team, and shipping work — without losing an afternoon to the tool."
+    >
+      <DocSection title="Start here" description="If you have ten minutes, start with these.">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <DocCardLink
+            href="/docs/getting-started"
+            icon={Compass}
+            eyebrow="10 min read"
+            title="Getting started"
+            description="Sign up, create a board, drop in your first tasks."
+          />
+          <DocCardLink
+            href="/docs/user-guide"
+            icon={FileText}
+            eyebrow="20 min read"
+            title="User guide"
+            description="The core workflow — boards, tasks, columns, ownership."
+          />
+        </div>
+      </DocSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Welcome</CardTitle>
-          <CardDescription>Explore guides to get started, collaborate, and optimize your workflow.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href="/docs/getting-started" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <BookOpen className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Getting Started</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Create an account, first project, columns, tasks.</p>
-              </div>
-            </Link>
-            <Link href="/docs/user-guide" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <BookOpen className="h-4 w-4 text-primary" />
-                  <span className="font-medium">User Guide</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Advanced walkthrough of core features.</p>
-              </div>
-            </Link>
-            <Link href="/docs/projects" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <LayoutGrid className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Projects</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Create, configure, and manage your projects.</p>
-              </div>
-            </Link>
-            <Link href="/docs/collaboration" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Collaboration</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Invitations, roles, and teamwork.</p>
-              </div>
-            </Link>
-            <Link href="/docs/authentication" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <Lock className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Authentication</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Sign up, sign in, password recovery.</p>
-              </div>
-            </Link>
-            <Link href="/docs/subscription" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <CreditCard className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Subscriptions</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Plans, billing, and subscription management.</p>
-              </div>
-            </Link>
-            <Link href="/docs/tips" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <Lightbulb className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Tips & Tricks</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Practical tips to boost efficiency.</p>
-              </div>
-            </Link>
-            <Link href="/docs/shortcuts" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <Keyboard className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Shortcuts</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Keyboard commands to speed up actions.</p>
-              </div>
-            </Link>
-            <Link href="/docs/faq" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <HelpCircle className="h-4 w-4 text-primary" />
-                  <span className="font-medium">FAQ</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Answers to common questions.</p>
-              </div>
-            </Link>
-            <Link href="/docs/troubleshooting" className="block">
-              <div className="border rounded-md p-4 hover:bg-muted transition">
-                <div className="flex items-center gap-2 mb-2">
-                  <Wrench className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Troubleshooting</span>
-                </div>
-                <p className="text-sm text-muted-foreground">Solutions to common problems.</p>
-              </div>
-            </Link>
-          </div>
+      <DocSection title="Guides" description="Go deeper on the parts of Orba you use every day.">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <DocCardLink
+            href="/docs/projects"
+            icon={LayoutGrid}
+            title="Projects"
+            description="Create, configure, and archive boards."
+          />
+          <DocCardLink
+            href="/docs/collaboration"
+            icon={Users}
+            title="Collaboration"
+            description="Invitations, roles, and how teams share boards."
+          />
+          <DocCardLink
+            href="/docs/authentication"
+            icon={Lock}
+            title="Authentication"
+            description="Sign in, OAuth providers, password reset."
+          />
+          <DocCardLink
+            href="/docs/subscription"
+            icon={CreditCard}
+            title="Subscriptions"
+            description="Plans, billing, and the customer portal."
+          />
+        </div>
+      </DocSection>
 
-          <Separator />
+      <DocSection title="Reference" description="Short pages you'll come back to.">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <DocCardLink
+            href="/docs/tips"
+            icon={Lightbulb}
+            title="Tips & tricks"
+            description="Small habits that make Orba feel faster."
+          />
+          <DocCardLink
+            href="/docs/shortcuts"
+            icon={Keyboard}
+            title="Keyboard shortcuts"
+            description="Move through Orba without leaving the keyboard."
+          />
+          <DocCardLink
+            href="/docs/faq"
+            icon={HelpCircle}
+            title="FAQ"
+            description="Quick answers to the most common questions."
+          />
+          <DocCardLink
+            href="/docs/troubleshooting"
+            icon={Wrench}
+            title="Troubleshooting"
+            description="When something looks wrong, start here."
+          />
+        </div>
+      </DocSection>
 
-          <div className="flex items-center gap-3">
-            <Button asChild>
-              <Link href="/docs/getting-started">Get Started</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/dashboard">Go to Dashboard</Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
+      <DocSection title="Still stuck?" description="The fastest way to get unblocked is usually a quick search.">
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-hairline bg-surface-2 px-5 py-4 text-sm text-ink-2">
+          <span>
+            Can&apos;t find what you need? Email{" "}
+            <a className="text-brand hover:underline" href="mailto:hello@orba.work">
+              hello@orba.work
+            </a>{" "}
+            and a human will reply.
+          </span>
+          <Link
+            href="/dashboard"
+            className="ml-auto inline-flex items-center gap-1.5 text-brand hover:underline"
+          >
+            Open dashboard
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </DocSection>
+
+      <DocFooter next={{ href: "/docs/getting-started", label: "Getting started" }} />
+    </DocPage>
+  );
 }

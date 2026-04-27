@@ -1,59 +1,73 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { CreditCard, Star, Shield } from "lucide-react"
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DocPage } from "@/components/docs/doc-page";
+import { DocSection } from "@/components/docs/doc-section";
+import { DocBullets } from "@/components/docs/doc-list";
+import { DocCallout } from "@/components/docs/doc-callout";
+import { DocFooter } from "@/components/docs/doc-footer";
+
+export const metadata: Metadata = {
+  title: "Subscriptions",
+  description: "Plans, billing, and the Stripe customer portal.",
+};
 
 export default function SubscriptionPage() {
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <CreditCard className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Subscriptions</h1>
-      </div>
+    <DocPage
+      eyebrow="Account"
+      title="Subscriptions."
+      lead="One plan covers your team. Pay monthly or annually. Cancel any time, keep your data."
+    >
+      <DocSection title="Plans" description="The full breakdown lives on the pricing page — here's the short version.">
+        <DocBullets
+          items={[
+            { title: "Free", description: "Up to 3 members, 3 boards. Real-time, comments, mobile. No card." },
+            { title: "Pro", description: "Unlimited members and boards. WIP limits, automations, analytics." },
+            { title: "Enterprise", description: "SSO, audit logs, dedicated support, custom DPA. Talk to us." },
+          ]}
+        />
+        <div className="mt-6">
+          <Button asChild className="bg-brand text-brand-foreground hover:bg-brand/90">
+            <Link href="/pricing">
+              See pricing
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </DocSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Plans & Billing</CardTitle>
-          <CardDescription>Choose a plan that fits and manage your subscription.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2">
-              <p className="font-medium">Free</p>
-              <p className="text-sm text-muted-foreground">Essential features to get started.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Premium</p>
-              <p className="text-sm text-muted-foreground">Advanced templates, extended collaboration, detailed analytics.</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium">Security</p>
-              <p className="text-sm text-muted-foreground">Secure payments, customer portal management, synchronization.</p>
-            </div>
-          </div>
+      <DocSection title="Upgrade or downgrade">
+        <DocBullets
+          items={[
+            { title: "Upgrade", description: "Settings → Billing → Upgrade. Stripe handles the checkout. Effective immediately." },
+            { title: "Downgrade", description: "Same path. Takes effect at the end of the current billing period." },
+            { title: "Annual switch", description: "Toggle annual on the pricing page before checkout — saves you about two months." },
+          ]}
+        />
+      </DocSection>
 
-          <Separator />
+      <DocSection title="Customer portal" description="The Stripe portal is where receipts, payment methods, and tax IDs live.">
+        <DocBullets
+          items={[
+            { title: "Update card", description: "Without re-doing checkout." },
+            { title: "Download invoices", description: "PDFs, sent to billing email by default." },
+            { title: "Add tax ID", description: "Required for VAT-registered teams in the EU." },
+          ]}
+        />
+      </DocSection>
 
-          <div className="flex items-center gap-3">
-            <Button asChild>
-              <Link href="/pricing">
-                View plans
-              </Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/dashboard">
-                Manage my subscription
-              </Link>
-            </Button>
-          </div>
+      <DocSection title="Cancellation">
+        <DocCallout tone="info" title="Your data sticks around">
+          Cancel and your team drops to Free at the next renewal. Boards stay accessible — they just respect the Free limits. Pull data via export at any time.
+        </DocCallout>
+      </DocSection>
 
-          <div className="flex items-start gap-3">
-            <Shield className="h-5 w-5 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">Reliable, secure billing aligned with best practices.</p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
+      <DocFooter
+        prev={{ href: "/docs/authentication", label: "Authentication" }}
+        next={{ href: "/docs/tips", label: "Tips & tricks" }}
+      />
+    </DocPage>
+  );
 }
