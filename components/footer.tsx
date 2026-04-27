@@ -14,30 +14,61 @@ export function Footer() {
   }, [])
 
   return (
-    <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <Link href="/">
-            <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+    <footer className="border-t border-hairline px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[80rem]">
+        <div className="grid gap-10 md:grid-cols-12 md:gap-8">
+          <div className="md:col-span-5">
+            <Link href="/" className="inline-flex items-center gap-2 transition-opacity hover:opacity-80">
+              <div className="flex h-7 w-7 items-center justify-center">
                 {mounted && (
                   <Images
                     src={theme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"}
-                    alt="Orba Logo"
+                    alt="Orba"
                     width={24}
                     height={24}
-                    className="text-primary-foreground"
                   />
                 )}
               </div>
-              <span className="text-xl font-bold text-primary">
-                Orba
-              </span>
+              <span className="text-lg font-medium tracking-tight text-ink-1">Orba</span>
+            </Link>
+            <p className="mt-4 max-w-[28rem] text-sm text-ink-2">
+              The Kanban your team will actually open on Monday.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-8 md:col-span-7 md:grid-cols-3">
+            <div>
+              <div className="text-eyebrow font-medium uppercase tracking-[0.18em] text-ink-3">
+                Product
+              </div>
+              <ul className="mt-4 space-y-2.5 text-sm">
+                <li><Link href="/features" className="text-ink-2 hover:text-ink-1">Features</Link></li>
+                <li><Link href="/pricing" className="text-ink-2 hover:text-ink-1">Pricing</Link></li>
+                <li><a href="https://docs.orba.work" className="text-ink-2 hover:text-ink-1">Docs</a></li>
+              </ul>
             </div>
-          </Link>
-          <p className="text-muted-foreground">
-            © 2025 Orba. All rights reserved.
-          </p>
+            <div>
+              <div className="text-eyebrow font-medium uppercase tracking-[0.18em] text-ink-3">
+                Company
+              </div>
+              <ul className="mt-4 space-y-2.5 text-sm">
+                <li><Link href="/login" className="text-ink-2 hover:text-ink-1">Sign in</Link></li>
+                <li><Link href="/register" className="text-ink-2 hover:text-ink-1">Create account</Link></li>
+              </ul>
+            </div>
+            <div>
+              <div className="text-eyebrow font-medium uppercase tracking-[0.18em] text-ink-3">
+                Legal
+              </div>
+              <ul className="mt-4 space-y-2.5 text-sm">
+                <li><Link href="/terms" className="text-ink-2 hover:text-ink-1">Terms</Link></li>
+                <li><Link href="/privacy" className="text-ink-2 hover:text-ink-1">Privacy</Link></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-hairline pt-6 text-xs text-ink-3 sm:flex-row sm:items-center">
+          <p>© {new Date().getFullYear()} Orba. All rights reserved.</p>
+          <p className="font-serif italic">Made for teams that ship.</p>
         </div>
       </div>
     </footer>

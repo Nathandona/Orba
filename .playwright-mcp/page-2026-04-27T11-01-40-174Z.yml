@@ -1,0 +1,112 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Nathan Donadey" [ref=e4] [cursor=pointer]:
+        - /url: "#top"
+      - list [ref=e5]:
+        - listitem [ref=e6]:
+          - link "Home" [ref=e7] [cursor=pointer]:
+            - /url: "#top"
+        - listitem [ref=e8]:
+          - link "Work" [ref=e9] [cursor=pointer]:
+            - /url: "#work"
+        - listitem [ref=e10]:
+          - link "Contact" [ref=e11] [cursor=pointer]:
+            - /url: "#contact"
+  - main [ref=e12]:
+    - region "Nathan Donadey" [ref=e13]:
+      - generic [ref=e14]:
+        - img "Portrait of Nathan Donadey" [ref=e16]
+        - generic [ref=e17]:
+          - heading "Nathan Donadey" [level=1] [ref=e18]
+          - paragraph [ref=e19]: Software Engineer · OVHcloud
+        - paragraph [ref=e20]: Clarity beats complexity.
+        - paragraph [ref=e21]: Available for collaboration
+    - region "About" [ref=e23]:
+      - heading "About" [level=2] [ref=e26]
+      - generic [ref=e29]:
+        - paragraph [ref=e30]: Engineer building software that's quiet, clear, and durable. Currently on the AI Core team at OVHcloud, modernizing internal diagnostic tooling for AI infrastructure.
+        - paragraph [ref=e31]: Most engineering work is finding what to remove. The best systems read like prose, a stranger should be able to follow them.
+    - region "Experience" [ref=e32]:
+      - heading "Experience" [level=2] [ref=e35]
+      - list [ref=e37]:
+        - listitem [ref=e39]:
+          - generic [ref=e40]: 2026 — ∞
+          - generic [ref=e41]:
+            - heading "Software Engineer" [level=3] [ref=e42]
+            - paragraph [ref=e43]: OVHcloud · Toulouse
+            - paragraph [ref=e44]: AI Core team. Modernizing AI-Atelier, an internal diagnostic tool for AI infrastructure. UX/UI, Vue.js, Kubernetes (Docker · Helm).
+        - listitem [ref=e46]:
+          - generic [ref=e47]: 2025 — 2026
+          - generic [ref=e48]:
+            - heading "Full-Stack Developer" [level=3] [ref=e49]
+            - paragraph [ref=e50]: NETexcom · Monaco
+            - paragraph [ref=e51]: ASP.NET cloud platform for accounting firms. Dashboard UX overhaul and collaborative production tooling.
+        - listitem [ref=e53]:
+          - generic [ref=e54]: 2022 — 2024
+          - generic [ref=e55]:
+            - heading "Full-Stack Developer" [level=3] [ref=e56]
+            - paragraph [ref=e57]: BASE SUD · Nice
+            - paragraph [ref=e58]: Web agency work on PHP/WordPress client sites. Performance and security hardening; theme and plugin customization.
+    - region "Projects" [ref=e59]:
+      - heading "Projects" [level=2] [ref=e62]
+      - list [ref=e64]:
+        - listitem [ref=e66]:
+          - link "Exogen AI-powered crypto trading bot platform. Real-time market analysis and automated strategies across BTC, ETH, SOL, and more. 2026" [ref=e67] [cursor=pointer]:
+            - /url: https://www.exogen.app/en
+            - generic [ref=e68]:
+              - generic [ref=e69]:
+                - heading "Exogen" [level=3] [ref=e70]
+                - img [ref=e71]
+              - generic [ref=e74]:
+                - paragraph [ref=e75]: AI-powered crypto trading bot platform. Real-time market analysis and automated strategies across BTC, ETH, SOL, and more.
+                - generic [ref=e76]: "2026"
+        - listitem [ref=e78]:
+          - link "Orba Kanban-based project management for teams. Intuitive boards built for speed, collaboration, and a clear workflow. 2025" [ref=e79] [cursor=pointer]:
+            - /url: https://orba.work/
+            - generic [ref=e80]:
+              - generic [ref=e81]:
+                - heading "Orba" [level=3] [ref=e82]
+                - img [ref=e83]
+              - generic [ref=e86]:
+                - paragraph [ref=e87]: Kanban-based project management for teams. Intuitive boards built for speed, collaboration, and a clear workflow.
+                - generic [ref=e88]: "2025"
+        - listitem [ref=e90]:
+          - generic [ref=e92]:
+            - heading "AREA" [level=3] [ref=e94]
+            - generic [ref=e95]:
+              - paragraph [ref=e96]: IFTTT-style automation platform. Node.js + MongoDB; OAuth2 service connectors for Spotify, GitHub, Gmail; cron and webhook job runner.
+              - generic [ref=e97]: "2023"
+        - listitem [ref=e99]:
+          - generic [ref=e101]:
+            - heading "DEX" [level=3] [ref=e103]
+            - generic [ref=e104]:
+              - paragraph [ref=e105]: Decentralized exchange UI in React + Web3. MetaMask wallet integration; Solidity contracts deployed on testnet via Hardhat.
+              - generic [ref=e106]: "2023"
+    - generic "Elsewhere" [ref=e107]:
+      - heading "Elsewhere" [level=2] [ref=e110]
+      - generic [ref=e113]:
+        - button "nathan.donadey@epitech.eu" [ref=e114]:
+          - img [ref=e115]
+          - generic [ref=e118]:
+            - text: nathan.donadey@epitech.eu
+            - generic [ref=e119]: Copied
+        - list [ref=e120]:
+          - listitem [ref=e121]:
+            - link "GitHub" [ref=e122] [cursor=pointer]:
+              - /url: https://github.com/Nathandona
+              - generic [ref=e123]: GitHub
+              - img [ref=e124]
+          - listitem [ref=e127]:
+            - link "LinkedIn" [ref=e128] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/nathan-donadey
+              - generic [ref=e129]: LinkedIn
+              - img [ref=e130]
+          - listitem [ref=e133]:
+            - link "X" [ref=e134] [cursor=pointer]:
+              - /url: https://x.com/NathanDona_
+              - generic [ref=e135]: X
+              - img [ref=e136]
+      - paragraph [ref=e141]: © 2026 Nathan Donadey. Built with Next.js.
+  - button "Open Next.js Dev Tools" [ref=e147] [cursor=pointer]:
+    - img [ref=e148]

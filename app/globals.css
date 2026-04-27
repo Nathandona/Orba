@@ -8,6 +8,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-instrument-serif);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -37,10 +38,46 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* Marketing brand accent (used by landing/pricing/features only) */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-tint: var(--brand-tint);
+
+  /* Layered neutrals for editorial layouts */
+  --color-ink-1: var(--ink-1);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-hairline: var(--hairline);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Fluid editorial type scale */
+  --text-eyebrow: 0.75rem;
+  --text-display: clamp(2.75rem, 6.2vw, 5.75rem);
+  --text-h1: clamp(2.25rem, 4.6vw, 4rem);
+  --text-h2: clamp(1.875rem, 3.4vw, 3rem);
+  --text-h3: clamp(1.375rem, 2vw, 1.875rem);
+  --text-lead: clamp(1.125rem, 1.4vw, 1.375rem);
+
+  /* Containers */
+  --container-narrow: 64rem;
+  --container: 80rem;
+  --container-wide: 96rem;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 200ms;
+  --dur-base: 400ms;
+  --dur-slow: 700ms;
 }
 
 :root {
@@ -76,6 +113,20 @@
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
+
+  /* Marketing brand accent — calm product blue */
+  --brand: oklch(0.58 0.18 252);
+  --brand-foreground: oklch(0.985 0.001 106.423);
+  --brand-muted: oklch(0.58 0.18 252 / 0.10);
+  --brand-tint: oklch(0.972 0.018 250);
+
+  /* Layered neutrals — barely-blue off-white for surface-2 */
+  --ink-1: oklch(0.18 0.02 250);
+  --ink-2: oklch(0.36 0.018 250);
+  --ink-3: oklch(0.58 0.014 250);
+  --surface-1: oklch(1 0 0);
+  --surface-2: oklch(0.985 0.008 252);
+  --hairline: oklch(0.92 0.012 250);
 }
 
 .dark {
@@ -110,6 +161,20 @@
   --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.553 0.013 58.071);
+
+  /* Marketing brand accent — slightly brighter on dark */
+  --brand: oklch(0.72 0.16 252);
+  --brand-foreground: oklch(0.18 0.02 250);
+  --brand-muted: oklch(0.72 0.16 252 / 0.14);
+  --brand-tint: oklch(0.28 0.06 250);
+
+  /* Layered neutrals */
+  --ink-1: oklch(0.985 0.001 106.423);
+  --ink-2: oklch(0.82 0.012 252);
+  --ink-3: oklch(0.62 0.014 252);
+  --surface-1: oklch(0.18 0.02 250);
+  --surface-2: oklch(0.22 0.022 250);
+  --hairline: oklch(1 0 0 / 8%);
 }
 
 @layer base {
@@ -138,6 +203,11 @@
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 }
 

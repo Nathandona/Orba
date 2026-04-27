@@ -24,11 +24,6 @@ const nextConfig: NextConfig = {
             name: 'vendors',
             chunks: 'all',
           },
-          three: {
-            test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
-            name: 'three',
-            chunks: 'all',
-          },
         },
       };
     }

@@ -1,330 +1,448 @@
-'use client';
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useSession } from "next-auth/react";
+import {
+  ArrowRight,
+  BarChart3,
+  Bell,
+  CheckCircle2,
+  GitBranch,
+  Layers,
+  Lock,
+  PlayCircle,
+  Shuffle,
+  Target,
+  Users,
+  Workflow,
+  Zap,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowRight,
-  Layers,
-  Users,
-  Zap,
-  Lock,
-  BarChart3,
-  Workflow,
-  Globe,
-  Sparkles,
-  Clock,
-  Target,
-  CheckCircle2,
-  MessageSquare,
-  Bell,
-  Shuffle
-} from "lucide-react";
-import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { CTASection } from "@/components/cta-section";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
 
-const mainFeatures = [
+import { Section } from "@/components/marketing/section";
+import { Eyebrow } from "@/components/marketing/eyebrow";
+import { DisplayHeading, SerifEm } from "@/components/marketing/display-heading";
+import { BentoGrid, BentoCell } from "@/components/marketing/bento";
+import { KanbanMockup, type Preset } from "@/components/marketing/kanban-mockup";
+import { CtaBand } from "@/components/marketing/cta-band";
+
+import { fadeUp, viewportOnce } from "@/lib/motion";
+import { cn } from "@/lib/utils";
+
+const ANATOMY: {
+  eyebrow: string;
+  icon: typeof Layers;
+  title: string;
+  body: string;
+  bullets: string[];
+  preset: Preset;
+}[] = [
   {
+    eyebrow: "Boards",
     icon: Layers,
-    title: "Intuitive Kanban Boards",
-    description: "Visualize your workflow with drag-and-drop simplicity. Create unlimited boards and customize columns to match your process.",
-    color: "from-blue-500 to-cyan-500",
-    benefits: [
-      "Unlimited boards & columns",
-      "Drag & drop interface",
-      "Custom workflows",
-      "Card templates"
-    ]
+    title: "Kanban that respects your wrist.",
+    body: "Every interaction is a single keypress away. Drag, archive, assign, label — without a second click and without a modal.",
+    bullets: [
+      "Unlimited boards, columns, swimlanes",
+      "Drag, multi-select, bulk move",
+      "WIP limits with soft warnings",
+      "Templates for sprints, launches, hiring",
+    ],
+    preset: "design",
   },
   {
+    eyebrow: "Collaboration",
     icon: Users,
-    title: "Real-Time Collaboration",
-    description: "Work together seamlessly with your team. See updates instantly, comment on tasks, and stay in sync across all devices.",
-    color: "from-purple-500 to-pink-500",
-    benefits: [
-      "Live updates",
-      "Team mentions",
-      "Activity feed",
-      "Role-based access"
-    ]
+    title: "Real-time, not real-tense.",
+    body: "Cards move when teammates move them. Comments live on the card, not in a parallel chat. Mentions show up where you'll see them.",
+    bullets: [
+      "Live cursors and typing indicators",
+      "Threaded comments with mentions",
+      "Role-based access on every project",
+      "Audit trail per task",
+    ],
+    preset: "hiring",
   },
   {
+    eyebrow: "Velocity",
     icon: Zap,
-    title: "Lightning Performance",
-    description: "Built with Next.js and optimized for speed. Experience instant loading and smooth interactions, even with thousands of tasks.",
-    color: "from-orange-500 to-red-500",
-    benefits: [
-      "Sub-100ms response",
-      "Offline mode",
-      "Smart caching",
-      "Edge deployment"
-    ]
-  }
+    title: "Fast in a way you can feel.",
+    body: "Sub-100ms interactions, edge-deployed reads, and an offline mode that doesn't pretend. Built on the same primitives we use ourselves.",
+    bullets: [
+      "Sub-100ms drag and edits",
+      "Offline mode with conflict resolution",
+      "Smart caching for shared boards",
+      "Edge-deployed reads worldwide",
+    ],
+    preset: "reviews",
+  },
 ];
 
-const powerFeatures = [
+const POWER = [
   {
     icon: BarChart3,
-    title: "Advanced Analytics",
-    description: "Track team performance with detailed insights and visualizations"
+    title: "Analytics",
+    description: "Cycle time, throughput, burn-down — the numbers that change a standup, not just decorate one.",
+    span: "3" as const,
   },
   {
     icon: Lock,
-    title: "Enterprise Security",
-    description: "Bank-level encryption, SSO, and compliance certifications"
+    title: "Security",
+    description: "SOC 2 Type II, SSO/SCIM on every paid plan, and audit logs that actually answer the question.",
+    span: "3" as const,
   },
   {
     icon: Bell,
-    title: "Smart Notifications",
-    description: "Stay updated with customizable alerts and digests"
-  }
+    title: "Notifications",
+    description: "Digests by default. Push only the cards that name you. Sleep on weekends — Orba does too.",
+    span: "2" as const,
+  },
+  {
+    icon: Workflow,
+    title: "Automations",
+    description: "When-this-then-that without learning a DSL. Built into the card menu, not a separate module.",
+    span: "2" as const,
+  },
+  {
+    icon: GitBranch,
+    title: "Integrations",
+    description: "GitHub, Slack, Linear, Figma, Notion, Google. Two-way sync that doesn't drop updates.",
+    span: "2" as const,
+  },
 ];
 
-const workflow = [
+const WORKFLOW = [
   {
     step: "01",
     title: "Create",
-    description: "Start with a template or build from scratch",
-    icon: Target
+    description: "Open a template or build from scratch. Three columns is enough.",
+    icon: Target,
   },
   {
     step: "02",
     title: "Organize",
-    description: "Structure your work with boards and cards",
-    icon: Shuffle
+    description: "Drop the work in. Tag, assign, set due dates. Skip the meeting.",
+    icon: Shuffle,
   },
   {
     step: "03",
     title: "Collaborate",
-    description: "Invite team members and work together",
-    icon: Users
+    description: "Invite the team. Real-time presence, mentions, threaded comments.",
+    icon: Users,
   },
   {
     step: "04",
     title: "Track",
-    description: "Monitor progress and measure success",
-    icon: CheckCircle2
-  }
+    description: "Watch cycle time fall. Send the changelog. Archive. Repeat.",
+    icon: CheckCircle2,
+  },
 ];
+
+const INTEGRATIONS = [
+  "GitHub",
+  "Slack",
+  "Linear",
+  "Figma",
+  "Notion",
+  "Google",
+  "Vercel",
+  "Sentry",
+  "Loom",
+  "Calendly",
+  "Zapier",
+  "Webhooks",
+];
+
+function WorkflowTimeline() {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 80%", "end 30%"],
+  });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return (
+    <div ref={ref} className="relative">
+      <div className="absolute left-4 top-0 hidden h-full w-px bg-hairline lg:left-1/2 lg:block" />
+      <motion.div
+        style={{ height: lineHeight }}
+        className="absolute left-4 top-0 hidden w-px bg-brand lg:left-1/2 lg:block"
+      />
+      <div className="space-y-16 lg:space-y-24">
+        {WORKFLOW.map((step, i) => {
+          const Icon = step.icon;
+          const right = i % 2 === 1;
+          return (
+            <motion.div
+              key={step.step}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className={cn(
+                "relative grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-16",
+                right && "lg:[&>div:first-child]:col-start-2",
+              )}
+            >
+              <div className={cn(right && "lg:text-right")}>
+                <div
+                  className={cn(
+                    "flex items-center gap-4",
+                    right && "lg:flex-row-reverse",
+                  )}
+                >
+                  <span className="font-serif text-5xl italic leading-none text-brand">
+                    {step.step}
+                  </span>
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline text-ink-2">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                </div>
+                <h3 className="mt-5 text-h3 font-medium tracking-[-0.01em]">
+                  {step.title}
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-ink-2">
+                  {step.description}
+                </p>
+              </div>
+              <div
+                aria-hidden
+                className="absolute left-4 top-2 hidden h-3 w-3 rounded-full border-2 border-background bg-brand lg:left-1/2 lg:block lg:-translate-x-1/2"
+              />
+              <div className="hidden lg:block" />
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export default function FeaturesPage() {
   const { data: session } = useSession();
+  const heroHref = session ? "/dashboard" : "/register";
+  const heroLabel = session ? "Open dashboard" : "Try it free";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+    <div className="min-h-screen bg-background text-ink-1">
       <Navbar />
 
-      {/* Hero Section - Clean & Minimal */}
-      <section className="pt-32 pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+      {/* Hero */}
+      <section className="relative overflow-hidden pt-32 pb-20 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-28">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 -top-32 h-[600px] bg-[radial-gradient(circle_at_70%_0%,var(--brand-muted),transparent_60%)]"
+        />
+        <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center space-y-8"
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            className="mx-auto max-w-[52rem]"
           >
-
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-              Features that work
-              <br />
-              <span className="text-muted-foreground">for your team</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Simple, powerful tools designed to help your team stay organized and get more done.
+            <Eyebrow className="justify-center">Every feature, deliberate</Eyebrow>
+            <DisplayHeading as="h1" size="display" className="mt-6">
+              Built for the work, <SerifEm>not the demo</SerifEm>.
+            </DisplayHeading>
+            <p className="mx-auto mt-7 max-w-[40rem] text-lead leading-relaxed text-ink-2">
+              We didn't ship every feature on the roadmap. We shipped the ones that
+              earn their place on a real team's screen.
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" className="text-lg h-12 px-8" asChild>
-                <Link href={session ? "/dashboard" : "/register"}>
-                  {session ? "Dashboard" : "Get Started Free"}
-                  <ArrowRight className="ml-2 w-5 h-5" />
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <Button
+                asChild
+                size="lg"
+                className="h-12 bg-brand px-7 text-base text-brand-foreground hover:bg-brand/90"
+              >
+                <Link href={heroHref}>
+                  {heroLabel}
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-lg h-12 px-8">
-                View Demo
+              <Button asChild size="lg" variant="outline" className="h-12 border-hairline px-7 text-base">
+                <Link href="#anatomy">
+                  Tour the product
+                  <PlayCircle className="h-4 w-4" />
+                </Link>
               </Button>
             </div>
           </motion.div>
+
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            transition={{ delay: 0.15 }}
+            className="mt-20"
+          >
+            <KanbanMockup preset="content" />
+          </motion.div>
         </div>
       </section>
 
-      {/* Main Features - Clean Grid */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {mainFeatures.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="p-8 h-full hover:shadow-lg transition-all duration-300 group">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <feature.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  
-                  <h3 className="text-2xl font-bold mb-3 text-foreground">
-                    {feature.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {feature.description}
-                  </p>
+      {/* Anatomy */}
+      <Section tone="muted" id="anatomy">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportOnce}
+          className="mx-auto max-w-[48rem] text-center"
+        >
+          <Eyebrow className="justify-center">Anatomy of Orba</Eyebrow>
+          <DisplayHeading size="h1" className="mt-6">
+            Three pillars, <SerifEm>nothing extra</SerifEm>.
+          </DisplayHeading>
+        </motion.div>
 
-                  <div className="space-y-3 pt-4 border-t">
-                    {feature.benefits.map((benefit) => (
-                      <div key={benefit} className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">{benefit}</span>
-                      </div>
+        <div className="mt-20 space-y-24 lg:space-y-32">
+          {ANATOMY.map((section, i) => {
+            const Icon = section.icon;
+            return (
+              <motion.div
+                key={section.eyebrow}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={viewportOnce}
+                className={cn(
+                  "grid items-center gap-10 lg:grid-cols-12 lg:gap-16",
+                  i % 2 === 1 && "lg:[&>div:first-child]:order-2",
+                )}
+              >
+                <div className="lg:col-span-5">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline text-brand">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <Eyebrow className="mt-6">{section.eyebrow}</Eyebrow>
+                  <DisplayHeading as="h3" size="h2" className="mt-5">
+                    {section.title}
+                  </DisplayHeading>
+                  <p className="mt-5 text-lead leading-relaxed text-ink-2">
+                    {section.body}
+                  </p>
+                  <ul className="mt-7 space-y-3 text-base text-ink-2">
+                    {section.bullets.map((b) => (
+                      <li key={b} className="flex items-start gap-3">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                        {b}
+                      </li>
                     ))}
+                  </ul>
+                </div>
+                <div className="lg:col-span-7">
+                  <div className="rounded-2xl border border-hairline bg-surface-1 p-4 sm:p-5">
+                    <KanbanMockup variant="embed" tilt={false} preset={section.preset} />
                   </div>
-                </Card>
+                </div>
               </motion.div>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      </section>
+      </Section>
 
-      {/* Power Features Grid */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 relative">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-foreground">
-              Even more powerful features
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Advanced capabilities designed for modern teams
-            </p>
-          </motion.div>
+      {/* Power features */}
+      <Section tone="default">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportOnce}
+          className="mx-auto max-w-[48rem] text-center"
+        >
+          <Eyebrow className="justify-center">More inside</Eyebrow>
+          <DisplayHeading size="h1" className="mt-6">
+            The <SerifEm>quiet</SerifEm> features that earn their keep.
+          </DisplayHeading>
+          <p className="mt-5 text-lead leading-relaxed text-ink-2">
+            Not every feature needs a hero shot.
+          </p>
+        </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {powerFeatures.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="p-6 h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 group cursor-pointer">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <feature.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-card-foreground">
-                    {feature.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    {feature.description}
-                  </p>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+        <BentoGrid className="mt-16">
+          {POWER.map((p, i) => {
+            const Icon = p.icon;
+            const tone = i === 0 || i === 1 ? "brand" : "default";
+            return (
+              <BentoCell key={p.title} colSpan={p.span} tone={tone}>
+                <Icon className="h-5 w-5 text-brand" />
+                <h3 className="mt-5 text-h3 font-medium tracking-[-0.01em]">{p.title}</h3>
+                <p className="mt-3 text-base leading-relaxed text-ink-2">
+                  {p.description}
+                </p>
+              </BentoCell>
+            );
+          })}
+        </BentoGrid>
+      </Section>
+
+      {/* Workflow timeline */}
+      <Section tone="muted">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportOnce}
+          className="mx-auto max-w-[48rem] text-center"
+        >
+          <Eyebrow className="justify-center">How it goes</Eyebrow>
+          <DisplayHeading size="h1" className="mt-6">
+            Four steps to a board your team <SerifEm>actually&nbsp;uses</SerifEm>.
+          </DisplayHeading>
+        </motion.div>
+
+        <div className="mx-auto mt-20 max-w-[64rem]">
+          <WorkflowTimeline />
         </div>
-      </section>
+      </Section>
 
-      {/* Workflow Timeline */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-background pointer-events-none" />
-        
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-20"
-          >
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-foreground">
-              How it works
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Get started in minutes with our simple workflow
-            </p>
-          </motion.div>
+      {/* Integrations */}
+      <Section tone="default">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportOnce}
+          className="mx-auto max-w-[48rem] text-center"
+        >
+          <Eyebrow className="justify-center">Connects to your stack</Eyebrow>
+          <DisplayHeading size="h1" className="mt-6">
+            Plays well with the <SerifEm>tools you already pay for</SerifEm>.
+          </DisplayHeading>
+          <p className="mt-5 text-lead leading-relaxed text-ink-2">
+            Two-way sync. Real webhooks. No duct tape.
+          </p>
+        </motion.div>
 
-          <div className="relative">
-            {/* Connecting line */}
-            <div className="absolute top-0 left-1/2 h-full w-0.5 bg-gradient-to-b from-primary/50 via-primary to-primary/50 hidden lg:block" />
-
-            <div className="space-y-16">
-              {workflow.map((step, index) => (
-                <motion.div
-                  key={step.step}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: false, amount: 0.3 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className={`flex items-center gap-8 ${
-                    index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-                  }`}
-                >
-                  <div className="flex-1">
-                    <Card className={`p-8 border-2 hover:border-primary/50 transition-all duration-300 ${
-                      index % 2 === 1 ? 'lg:text-right' : ''
-                    }`}>
-                      <div className={`inline-flex items-center gap-3 mb-4 ${
-                        index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-                      }`}>
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <step.icon className="w-6 h-6 text-primary" />
-                        </div>
-                        <span className="text-4xl font-bold text-primary/20">
-                          {step.step}
-                        </span>
-                      </div>
-                      <h3 className="text-2xl font-bold mb-2 text-foreground">
-                        {step.title}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {step.description}
-                      </p>
-                    </Card>
-                  </div>
-
-                  {/* Center dot */}
-                  <div className="hidden lg:block">
-                    <motion.div
-                      className="w-6 h-6 rounded-full bg-primary border-4 border-background"
-                      initial={{ scale: 0 }}
-                      whileInView={{ scale: 1 }}
-                      viewport={{ once: false, amount: 0.3 }}
-                      transition={{ duration: 0.4, delay: 0.4 }}
-                    />
-                  </div>
-
-                  <div className="flex-1 hidden lg:block" />
-                </motion.div>
-              ))}
+        <div className="mt-16 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {INTEGRATIONS.map((name) => (
+            <div
+              key={name}
+              className="group flex aspect-[5/3] items-center justify-center rounded-xl border border-hairline bg-surface-1 transition-colors hover:border-brand/40 hover:bg-brand-tint"
+            >
+              <span className="font-serif text-2xl text-ink-2 transition-colors group-hover:text-brand">
+                {name}
+              </span>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </Section>
 
-      {/* CTA Section */}
-      <CTASection 
-        title="Ready to supercharge"
-        titleHighlight="your productivity?"
-        description="Join thousands of teams already using Orba to work smarter and achieve more."
-        badge=""
-        primaryButtonText="Try Orba Free"
-        secondaryButtonText="See All Features"
-        showBackground3D={true}
+      <CtaBand
+        eyebrow="Try Orba"
+        heading={
+          <>
+            Open a board. <SerifEm>Move</SerifEm> something.
+          </>
+        }
+        description="That's the demo. No call required."
+        primaryText="Start free"
+        secondaryText="See pricing"
       />
 
       <Footer />
