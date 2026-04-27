@@ -8,7 +8,8 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { ArrowRight, BookOpen, LayoutDashboard, LogOut, User } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { ArrowRight, BookOpen, LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/mode-toggle";
@@ -35,6 +36,7 @@ export function Navbar() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -43,6 +45,20 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [mobileOpen]);
 
   return (
     <motion.nav
@@ -119,7 +135,9 @@ export function Navbar() {
 
         {/* Right cluster */}
         <div className="flex items-center gap-2">
-          <ModeToggle />
+          <div className="hidden sm:block">
+            <ModeToggle />
+          </div>
           {session ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -176,14 +194,14 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="hidden text-sm text-ink-2 hover:text-ink-1 sm:inline-flex"
+                className="hidden text-sm text-ink-2 hover:text-ink-1 md:inline-flex"
                 asChild
               >
                 <Link href="/login">Sign in</Link>
               </Button>
               <Button
                 size="sm"
-                className="h-9 bg-brand pl-3.5 pr-3 text-sm text-brand-foreground shadow-[0_8px_24px_-12px_var(--brand)] hover:bg-brand/90"
+                className="hidden h-9 bg-brand pl-3.5 pr-3 text-sm text-brand-foreground shadow-[0_8px_24px_-12px_var(--brand)] hover:bg-brand/90 sm:inline-flex"
                 asChild
               >
                 <Link href="/register">
@@ -193,8 +211,85 @@ export function Navbar() {
               </Button>
             </>
           )}
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
+            onClick={() => setMobileOpen((v) => !v)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-background/40 text-ink-1 backdrop-blur transition-colors hover:bg-background/70 md:hidden"
+          >
+            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile panel */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            id="mobile-nav"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="border-t border-hairline bg-background/95 backdrop-blur-xl md:hidden"
+          >
+            <div className="mx-auto flex max-w-[80rem] flex-col gap-1 px-4 py-4 sm:px-6">
+              {NAV_LINKS.map((link) => {
+                const active = pathname === link.href;
+                const cls = cn(
+                  "flex items-center justify-between rounded-xl px-3 py-3 text-base transition-colors",
+                  active
+                    ? "bg-brand-tint text-ink-1"
+                    : "text-ink-2 hover:bg-surface-2 hover:text-ink-1",
+                );
+                return link.external ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cls}
+                  >
+                    <span>{link.label}</span>
+                    <ArrowRight className="h-4 w-4 opacity-60" />
+                  </a>
+                ) : (
+                  <Link key={link.href} href={link.href} className={cls}>
+                    <span>{link.label}</span>
+                    <ArrowRight className="h-4 w-4 opacity-60" />
+                  </Link>
+                );
+              })}
+
+              {!session && (
+                <div className="mt-2 flex flex-col gap-2 border-t border-hairline pt-4">
+                  <Button variant="ghost" className="h-11 justify-center text-base" asChild>
+                    <Link href="/login">Sign in</Link>
+                  </Button>
+                  <Button
+                    className="h-11 justify-center bg-brand text-base text-brand-foreground hover:bg-brand/90"
+                    asChild
+                  >
+                    <Link href="/register">
+                      Get started
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              )}
+
+              <div className="mt-2 flex items-center justify-between border-t border-hairline pt-4">
+                <span className="text-xs text-ink-3">Theme</span>
+                <ModeToggle />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }

@@ -757,6 +757,14 @@ export function KanbanMockup({
 }: KanbanMockupProps) {
   const ref = React.useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const [isNarrow, setIsNarrow] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -765,7 +773,7 @@ export function KanbanMockup({
   const rotateY = useTransform(scrollYProgress, [0, 1], [-6, 6]);
   const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
-  const enableTilt = tilt && !reduce;
+  const enableTilt = tilt && !reduce && !isNarrow;
   const board = PRESETS[preset];
   const ProjectIcon = board.icon;
   const totalTasks = board.columns.reduce((n, c) => n + c.tasks.length, 0);
@@ -835,9 +843,17 @@ export function KanbanMockup({
         </div>
 
         {/* Columns */}
-        <div className="grid grid-cols-3 gap-3 p-3 sm:gap-4 sm:p-5">
+        <div
+          className={cn(
+            "flex snap-x snap-mandatory gap-3 overflow-x-auto p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+            "md:grid md:grid-cols-3 md:overflow-visible md:gap-4 md:p-5",
+          )}
+        >
           {board.columns.map((col) => (
-            <div key={col.id} className="flex flex-col gap-3">
+            <div
+              key={col.id}
+              className="flex w-[78%] shrink-0 snap-start flex-col gap-3 sm:w-[44%] md:w-auto md:shrink"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className={cn("h-1.5 w-1.5 rounded-full", col.accent)} />
