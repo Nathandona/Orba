@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" fill="none" role="img" aria-label="Orba - Modern Kanban project management">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A84FF"/>
+      <stop offset="0.55" stop-color="#0A6BE0"/>
+      <stop offset="1" stop-color="#0048C2"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(250 100) rotate(40) scale(620 420)">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="round">
+      <rect width="1280" height="360" rx="20"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#round)">
+    <rect width="1280" height="360" fill="url(#bg)"/>
+    <rect width="1280" height="360" fill="url(#glow)"/>
+
+    <!-- Kanban decoration -->
+    <g opacity="0.9">
+      <!-- column 1 -->
+      <rect x="812" y="64" width="132" height="232" rx="16" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.14"/>
+      <rect x="828" y="82" width="64" height="10" rx="5" fill="#ffffff" fill-opacity="0.30"/>
+      <rect x="828" y="106" width="100" height="36" rx="8" fill="#ffffff" fill-opacity="0.16"/>
+      <rect x="828" y="106" width="4" height="36" rx="2" fill="#ffffff" fill-opacity="0.55"/>
+      <rect x="828" y="152" width="100" height="36" rx="8" fill="#ffffff" fill-opacity="0.16"/>
+      <rect x="828" y="152" width="4" height="36" rx="2" fill="#ffffff" fill-opacity="0.40"/>
+      <rect x="828" y="198" width="100" height="36" rx="8" fill="#ffffff" fill-opacity="0.16"/>
+      <rect x="828" y="198" width="4" height="36" rx="2" fill="#ffffff" fill-opacity="0.55"/>
+      <!-- column 2 -->
+      <rect x="962" y="64" width="132" height="232" rx="16" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.14"/>
+      <rect x="978" y="82" width="52" height="10" rx="5" fill="#ffffff" fill-opacity="0.30"/>
+      <rect x="978" y="106" width="100" height="36" rx="8" fill="#ffffff" fill-opacity="0.20"/>
+      <rect x="978" y="106" width="4" height="36" rx="2" fill="#ffffff" fill-opacity="0.55"/>
+      <rect x="978" y="152" width="100" height="52" rx="8" fill="#ffffff" fill-opacity="0.16"/>
+      <rect x="978" y="152" width="4" height="52" rx="2" fill="#ffffff" fill-opacity="0.40"/>
+      <!-- column 3 -->
+      <rect x="1112" y="64" width="132" height="232" rx="16" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.14"/>
+      <rect x="1128" y="82" width="58" height="10" rx="5" fill="#ffffff" fill-opacity="0.30"/>
+      <rect x="1128" y="106" width="100" height="36" rx="8" fill="#ffffff" fill-opacity="0.16"/>
+      <rect x="1128" y="106" width="4" height="36" rx="2" fill="#ffffff" fill-opacity="0.40"/>
+      <rect x="1128" y="152" width="100" height="36" rx="8" fill="#ffffff" fill-opacity="0.16"/>
+      <rect x="1128" y="152" width="4" height="36" rx="2" fill="#ffffff" fill-opacity="0.55"/>
+      <rect x="1128" y="198" width="100" height="36" rx="8" fill="#ffffff" fill-opacity="0.16"/>
+      <rect x="1128" y="198" width="4" height="36" rx="2" fill="#ffffff" fill-opacity="0.40"/>
+    </g>
+
+    <!-- Logo mark -->
+    <g transform="translate(80,114) scale(0.10732) translate(-902.349,-8.187)">
+      <path fill="#ffffff" d="M 1580.1 8.187 C 1746.29 8.187 1896.45 63.857 2030.6 175.167 C 2164.75 286.485 2231.83 433.801 2231.83 617.109 C 2231.83 799.266 2165.75 948.315 2033.61 1064.26 C 1901.46 1180.2 1744.95 1238.17 1564.08 1238.17 C 1363.19 1238.17 1202.68 1177.16 1082.54 1055.16 C 962.416 933.135 902.349 787.7 902.349 618.846 C 902.349 436.114 969.927 288.655 1105.07 176.469 C 1240.22 64.288 1398.57 8.187 1580.1 8.187 Z M 1561.08 71.517 C 1431.6 71.517 1327.65 117.92 1249.23 210.731 C 1170.81 303.545 1131.6 438.426 1131.6 615.375 C 1131.6 780.762 1168.31 915.643 1241.73 1020.02 C 1315.14 1124.4 1421.93 1176.57 1562.08 1176.57 C 1698.23 1176.57 1805.69 1130.77 1884.44 1039.11 C 1963.19 947.449 2002.57 814.301 2002.57 639.663 C 2002.57 462.712 1965.7 323.784 1891.95 222.874 C 1818.2 121.966 1707.91 71.517 1561.08 71.517 Z M 1325.82 413.271 L 1363.86 413.271 C 1363.86 463.003 1375.54 498.568 1398.9 519.962 C 1422.26 541.358 1465.31 552.056 1528.04 552.055 L 1609.13 552.055 C 1668.53 552.056 1710.25 541.504 1734.27 520.394 C 1758.3 499.288 1770.31 463.581 1770.31 413.271 L 1808.36 413.271 L 1808.36 832.227 L 1770.31 832.227 C 1770.31 783.074 1758.63 747.8 1735.27 726.404 C 1711.91 705.009 1669.2 694.311 1607.13 694.31 L 1524.04 694.31 C 1464.64 694.311 1423.09 705.009 1399.4 726.404 C 1375.71 747.8 1363.86 783.074 1363.86 832.227 L 1325.82 832.227 L 1325.82 413.271 Z"/>
+    </g>
+
+    <!-- Wordmark -->
+    <text x="250" y="172" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="104" font-weight="800" fill="#ffffff" letter-spacing="-2">Orba</text>
+    <text x="252" y="226" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="30" font-weight="500" fill="#ffffff" fill-opacity="0.88">Modern Kanban project management</text>
+    <text x="252" y="268" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#ffffff" fill-opacity="0.62">Boards, drag and drop, teams, and billing in one workspace</text>
+  </g>
+</svg>
