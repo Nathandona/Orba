@@ -10,7 +10,7 @@ import { DocFooter } from "@/components/docs/doc-footer";
 
 export const metadata: Metadata = {
   title: "User guide",
-  description: "The core Orba workflow — boards, tasks, columns, ownership, comments.",
+  description: "The core Orba workflow: boards, tasks, columns, ownership, comments.",
 };
 
 export default function UserGuidePage() {
@@ -44,7 +44,7 @@ export default function UserGuidePage() {
           items={[
             {
               title: "Title and description",
-              description: "Markdown supported. Paste links — they unfurl.",
+              description: "Markdown supported. Paste links and they unfurl.",
             },
             {
               title: "Assignee, due date, tags",
@@ -91,7 +91,7 @@ export default function UserGuidePage() {
 
       <DocSection
         title="Filters and views"
-        description="The same board, sliced different ways. Filters are scoped to your session — they don't change what your teammates see."
+        description="The same board, sliced different ways. Filters are scoped to your session; they don't change what your teammates see."
       >
         <DocBullets
           items={[

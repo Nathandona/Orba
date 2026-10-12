@@ -15,7 +15,7 @@ export default function TipsPage() {
     <DocPage
       eyebrow="Reference"
       title="Tips & tricks."
-      lead="Small habits that compound. None of these are required — all of them save minutes a day."
+      lead="Small habits that compound. None of these are required. All of them save minutes a day."
     >
       <DocSection title="Run a tighter board">
         <DocBullets

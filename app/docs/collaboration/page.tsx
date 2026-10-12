@@ -30,7 +30,7 @@ export default function CollaborationPage() {
             { title: "Open project Settings → Members", description: "Or use the Invite button on the board header." },
             { title: "Type an email", description: "One at a time, or paste a comma-separated list." },
             { title: "Pick a role", description: "Member is the default. Change it later if needed." },
-            { title: "Send", description: "They get a one-click link. Sign-in or sign-up — both routes work." },
+            { title: "Send", description: "They get a one-click link. Sign in or sign up, both routes work." },
           ]}
         />
         <DocCallout tone="info" title="Pending invites">
@@ -54,10 +54,10 @@ export default function CollaborationPage() {
               {roleRows.map((r) => (
                 <tr key={r.role}>
                   <td className="px-4 py-3 font-medium text-ink-1">{r.role}</td>
-                  <td className="px-4 py-3 text-center text-ink-2">{r.view ? "✓" : "—"}</td>
-                  <td className="px-4 py-3 text-center text-ink-2">{r.edit ? "✓" : "—"}</td>
-                  <td className="px-4 py-3 text-center text-ink-2">{r.invite ? "✓" : "—"}</td>
-                  <td className="px-4 py-3 text-center text-ink-2">{r.billing ? "✓" : "—"}</td>
+                  <td className="px-4 py-3 text-center text-ink-2">{r.view ? "✓" : "·"}</td>
+                  <td className="px-4 py-3 text-center text-ink-2">{r.edit ? "✓" : "·"}</td>
+                  <td className="px-4 py-3 text-center text-ink-2">{r.invite ? "✓" : "·"}</td>
+                  <td className="px-4 py-3 text-center text-ink-2">{r.billing ? "✓" : "·"}</td>
                 </tr>
               ))}
             </tbody>
@@ -65,7 +65,7 @@ export default function CollaborationPage() {
         </div>
       </DocSection>
 
-      <DocSection title="Real-time" description="What you see is what your teammates see — within a few hundred milliseconds.">
+      <DocSection title="Real-time" description="What you see is what your teammates see, within a few hundred milliseconds.">
         <DocBullets
           items={[
             { title: "Live cursors", description: "See where others are clicking on the board." },

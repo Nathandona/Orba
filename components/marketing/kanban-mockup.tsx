@@ -178,7 +178,7 @@ const hiring: BoardPreset = {
       tasks: [
         {
           id: "h1",
-          title: "Priya R. — ex Stripe, Notion",
+          title: "Priya R. · ex Stripe, Notion",
           tag: { label: "Strong fit", tone: "green" },
           due: "Apr 26",
           comments: 2,
@@ -186,14 +186,14 @@ const hiring: BoardPreset = {
         },
         {
           id: "h2",
-          title: "Tomás A. — agency background",
+          title: "Tomás A. · agency background",
           tag: { label: "Maybe", tone: "amber" },
           due: "Apr 27",
           assignees: ["EL"],
         },
         {
           id: "h3",
-          title: "Yuki K. — referral from Linear",
+          title: "Yuki K. · referral from Linear",
           tag: { label: "Referral", tone: "violet" },
           due: "Apr 28",
           comments: 5,
@@ -208,7 +208,7 @@ const hiring: BoardPreset = {
       tasks: [
         {
           id: "h4",
-          title: "Sara L. — case study round",
+          title: "Sara L. · case study round",
           tag: { label: "Round 2/3", tone: "blue" },
           priority: "high",
           due: "Apr 29",
@@ -219,7 +219,7 @@ const hiring: BoardPreset = {
         },
         {
           id: "h5",
-          title: "Daniel O. — culture interview",
+          title: "Daniel O. · culture interview",
           tag: { label: "Round 3/3", tone: "blue" },
           priority: "high",
           due: "Apr 30",
@@ -237,7 +237,7 @@ const hiring: BoardPreset = {
       tasks: [
         {
           id: "h6",
-          title: "Ava M. — verbal accepted",
+          title: "Ava M. · verbal accepted",
           tag: { label: "Closing", tone: "lime" },
           due: "May 01",
           comments: 3,

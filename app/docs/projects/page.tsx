@@ -18,7 +18,7 @@ export default function ProjectsPage() {
     <DocPage
       eyebrow="Guides"
       title="Projects."
-      lead="A project is a board. One per body of work. Configure columns, invite a team, and ship — then archive."
+      lead="A project is a board. One per body of work. Configure columns, invite a team, ship, then archive."
     >
       <DocSection
         step="01"
@@ -28,7 +28,7 @@ export default function ProjectsPage() {
         <DocSteps
           items={[
             { title: "Pick a name", description: "Short and verb-led. 'Q3 launch' beats 'Q3 launch project for marketing'." },
-            { title: "Pick a color", description: "Used everywhere the project shows up — sidebar, cards, search." },
+            { title: "Pick a color", description: "Used everywhere the project shows up: sidebar, cards, search." },
             { title: "Add a description (optional)", description: "Helpful if more than one team uses Orba." },
             { title: "Choose a template", description: "Or skip and start from blank columns." },
           ]}

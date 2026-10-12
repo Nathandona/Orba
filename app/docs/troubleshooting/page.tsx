@@ -21,7 +21,7 @@ const groups: { title: string; issues: Issue[] }[] = [
       {
         title: "Invitation email never arrived",
         steps: [
-          "Check the spam folder — first emails often land there.",
+          "Check the spam folder: first emails often land there.",
           "Confirm the address in Settings → Members → Pending. One typo and the email goes nowhere.",
           "Resend from the Pending list. Resends use a fresh signed link.",
         ],
@@ -29,7 +29,7 @@ const groups: { title: string; issues: Issue[] }[] = [
       {
         title: "Password reset email is stuck",
         steps: [
-          "Wait two minutes — corporate inboxes can lag.",
+          "Wait two minutes. Corporate inboxes can lag.",
           "Try a different address if you have multiple.",
           "Email hello@orba.work and we'll reset manually.",
         ],
@@ -42,7 +42,7 @@ const groups: { title: string; issues: Issue[] }[] = [
       {
         title: "I can't move a card",
         steps: [
-          "Refresh the page — a stale session can drop the WebSocket connection.",
+          "Refresh the page. A stale session can drop the WebSocket connection.",
           "Check your role. Guests can't move cards.",
           "Try a different browser to rule out an extension blocking drag events.",
         ],
@@ -63,7 +63,7 @@ const groups: { title: string; issues: Issue[] }[] = [
       {
         title: "The board feels slow",
         steps: [
-          "Close other heavy tabs — the editor and a video call together can saturate memory.",
+          "Close other heavy tabs. The editor and a video call together can saturate memory.",
           "Disable browser extensions for orba.work and reload.",
           "Clear the site cache: Settings → Privacy → Clear data for orba.work.",
         ],
@@ -73,7 +73,7 @@ const groups: { title: string; issues: Issue[] }[] = [
         steps: [
           "Search is scoped to projects you can see. Confirm you're a member of the project.",
           "Newly created cards take a second or two to be indexed.",
-          "Try the card title verbatim — partial matches need at least three characters.",
+          "Try the card title verbatim. Partial matches need at least three characters.",
         ],
       },
     ],

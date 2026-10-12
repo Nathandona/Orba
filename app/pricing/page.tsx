@@ -141,7 +141,7 @@ const MATRIX: MatrixGroup[] = [
 const FAQ = [
   {
     q: "Can I switch plans whenever I want?",
-    a: "Yes. Upgrade or downgrade at any time — we prorate the difference and the change takes effect right away.",
+    a: "Yes. Upgrade or downgrade at any time: we prorate the difference and the change takes effect right away.",
   },
   {
     q: "What happens after the 14-day trial?",
@@ -149,7 +149,7 @@ const FAQ = [
   },
   {
     q: "Do you offer a discount for nonprofits or students?",
-    a: "Yes — 50% off Pro for registered nonprofits and accredited educational institutions. Email sales@orba.work.",
+    a: "Yes. 50% off Pro for registered nonprofits and accredited educational institutions. Email sales@orba.work.",
   },
   {
     q: "Which payment methods do you accept?",
@@ -328,15 +328,16 @@ function PricingContent() {
       </Section>
 
       <CtaBand
-        eyebrow="Get started"
         heading={
           <>
-            Three boards, <SerifEm>free forever</SerifEm>.
+            <span className="text-ink-3">Three boards, free.</span>
+            <br />
+            Your first one takes a minute.
           </>
         }
-        description="No card. No demo gating. Open Orba and start moving."
-        primaryText="Start free"
-        secondaryText="Talk to sales"
+        description="No card, no demo, no sales call. Name a board, pick the columns, invite two people."
+        secondaryHref="/features"
+        secondaryText="See features"
       />
 
       <Footer />

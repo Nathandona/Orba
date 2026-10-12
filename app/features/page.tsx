@@ -46,7 +46,7 @@ const ANATOMY: {
     eyebrow: "Boards",
     icon: Layers,
     title: "Kanban that respects your wrist.",
-    body: "Every interaction is a single keypress away. Drag, archive, assign, label — without a second click and without a modal.",
+    body: "Every interaction is a single keypress away. Drag, archive, assign, label, without a second click and without a modal.",
     bullets: [
       "Unlimited boards, columns, swimlanes",
       "Drag, multi-select, bulk move",
@@ -87,7 +87,7 @@ const POWER = [
   {
     icon: BarChart3,
     title: "Analytics",
-    description: "Cycle time, throughput, burn-down — the numbers that change a standup, not just decorate one.",
+    description: "Cycle time, throughput, burn-down: the numbers that change a standup, not just decorate one.",
     span: "3" as const,
   },
   {
@@ -99,7 +99,7 @@ const POWER = [
   {
     icon: Bell,
     title: "Notifications",
-    description: "Digests by default. Push only the cards that name you. Sleep on weekends — Orba does too.",
+    description: "Digests by default. Push only the cards that name you. Sleep on weekends. Orba does too.",
     span: "2" as const,
   },
   {
@@ -365,11 +365,10 @@ export default function FeaturesPage() {
         </motion.div>
 
         <BentoGrid className="mt-16">
-          {POWER.map((p, i) => {
+          {POWER.map((p) => {
             const Icon = p.icon;
-            const tone = i === 0 || i === 1 ? "brand" : "default";
             return (
-              <BentoCell key={p.title} colSpan={p.span} tone={tone}>
+              <BentoCell key={p.title} colSpan={p.span}>
                 <Icon className="h-5 w-5 text-brand" />
                 <h3 className="mt-5 text-h3 font-medium tracking-[-0.01em]">{p.title}</h3>
                 <p className="mt-3 text-base leading-relaxed text-ink-2">
@@ -434,7 +433,6 @@ export default function FeaturesPage() {
       </Section>
 
       <CtaBand
-        eyebrow="Try Orba"
         heading={
           <>
             Open a board. <SerifEm>Move</SerifEm> something.

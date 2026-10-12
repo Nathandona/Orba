@@ -22,7 +22,7 @@ export default function DocsOverviewPage() {
     <DocPage
       eyebrow="Documentation"
       title="Everything you need to run Orba."
-      lead="Plain-English guides for setting up boards, inviting your team, and shipping work — without losing an afternoon to the tool."
+      lead="Plain-English guides for setting up boards, inviting your team, and shipping work, without losing an afternoon to the tool."
     >
       <DocSection title="Start here" description="If you have ten minutes, start with these.">
         <div className="grid gap-3 sm:grid-cols-2">
@@ -38,7 +38,7 @@ export default function DocsOverviewPage() {
             icon={FileText}
             eyebrow="20 min read"
             title="User guide"
-            description="The core workflow — boards, tasks, columns, ownership."
+            description="The core workflow: boards, tasks, columns, ownership."
           />
         </div>
       </DocSection>

@@ -124,11 +124,9 @@ export function LegalPage({
 
       {cta && (
         <CtaBand
-          eyebrow={cta.eyebrow ?? "Questions"}
           heading={cta.heading}
           description={cta.description}
           primaryText="Start free"
-          secondaryText="Talk to legal"
         />
       )}
 

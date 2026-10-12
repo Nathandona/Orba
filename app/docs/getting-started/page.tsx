@@ -23,7 +23,7 @@ export default function GettingStartedPage() {
       <DocSection
         step="01"
         title="Create your account"
-        description="One step. Email and a password — or sign in with Google or GitHub if you prefer."
+        description="One step. Email and a password, or sign in with Google or GitHub if you prefer."
       >
         <DocSteps
           items={[
@@ -33,7 +33,7 @@ export default function GettingStartedPage() {
             },
             {
               title: "Confirm your email",
-              description: "We send one link. Click it and you're in — no SMS codes, no captcha hell.",
+              description: "We send one link. Click it and you're in. No SMS codes, no captcha hell.",
             },
             {
               title: "Land on your dashboard",
@@ -54,7 +54,7 @@ export default function GettingStartedPage() {
       <DocSection
         step="02"
         title="Create your first project"
-        description="Projects are boards. One project per body of work — a sprint, a launch, a hiring pipeline."
+        description="Projects are boards. One project per body of work: a sprint, a launch, a hiring pipeline."
       >
         <DocSteps
           items={[
@@ -64,7 +64,7 @@ export default function GettingStartedPage() {
             },
             {
               title: "Name it and pick a color",
-              description: "The color shows up on cards across the app — make it count.",
+              description: "The color shows up on cards across the app, so make it count.",
             },
             {
               title: "Choose a starter template, or skip",
@@ -96,7 +96,7 @@ export default function GettingStartedPage() {
           ]}
         />
         <DocCallout tone="tip" title="Don't over-engineer">
-          Five columns max. Anything more and cards get lost. You can always add a column later — you can&apos;t reclaim
+          Five columns max. Anything more and cards get lost. You can always add a column later; you can&apos;t reclaim
           attention spent on the wrong workflow.
         </DocCallout>
       </DocSection>
@@ -114,7 +114,7 @@ export default function GettingStartedPage() {
             },
             {
               title: "Invite by email",
-              description: "Members get a one-click link. They sign in or sign up — both routes work.",
+              description: "Members get a one-click link. They sign in or sign up, both routes work.",
             },
             {
               title: "Pick a role",

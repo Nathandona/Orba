@@ -20,7 +20,7 @@ export default function SubscriptionPage() {
       title="Subscriptions."
       lead="One plan covers your team. Pay monthly or annually. Cancel any time, keep your data."
     >
-      <DocSection title="Plans" description="The full breakdown lives on the pricing page — here's the short version.">
+      <DocSection title="Plans" description="The full breakdown lives on the pricing page. Here's the short version.">
         <DocBullets
           items={[
             { title: "Free", description: "Up to 3 members, 3 boards. Real-time, comments, mobile. No card." },
@@ -43,7 +43,7 @@ export default function SubscriptionPage() {
           items={[
             { title: "Upgrade", description: "Settings → Billing → Upgrade. Stripe handles the checkout. Effective immediately." },
             { title: "Downgrade", description: "Same path. Takes effect at the end of the current billing period." },
-            { title: "Annual switch", description: "Toggle annual on the pricing page before checkout — saves you about two months." },
+            { title: "Annual switch", description: "Toggle annual on the pricing page before checkout to save about two months." },
           ]}
         />
       </DocSection>
@@ -60,7 +60,7 @@ export default function SubscriptionPage() {
 
       <DocSection title="Cancellation">
         <DocCallout tone="info" title="Your data sticks around">
-          Cancel and your team drops to Free at the next renewal. Boards stay accessible — they just respect the Free limits. Pull data via export at any time.
+          Cancel and your team drops to Free at the next renewal. Boards stay accessible; they just respect the Free limits. Pull data via export at any time.
         </DocCallout>
       </DocSection>
 

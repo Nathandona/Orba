@@ -23,7 +23,7 @@ export default function AuthenticationPage() {
       <DocSection title="Sign up">
         <DocBullets
           items={[
-            { title: "Email + password", description: "Use a real email — we send a confirmation link." },
+            { title: "Email + password", description: "Use a real email: we send a confirmation link." },
             { title: "Continue with Google", description: "One click. Uses the email on your Google account." },
             { title: "Continue with GitHub", description: "Useful if your team already lives there." },
           ]}
@@ -49,7 +49,7 @@ export default function AuthenticationPage() {
 
       <DocSection title="Forgot password" description="Enter your email. We send a link. Click it. Set a new password.">
         <DocCallout tone="warn" title="Didn't get the email?">
-          Check spam first. If it&apos;s not there after two minutes, try again — the address might be off by a character.
+          Check spam first. If it&apos;s not there after two minutes, try again. The address might be off by a character.
         </DocCallout>
       </DocSection>
 

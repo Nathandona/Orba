@@ -2,97 +2,89 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 
-import { Button } from "@/components/ui/button";
-import { ContactSalesDialog } from "@/components/contact-sales-dialog";
-import { DisplayHeading, SerifEm } from "@/components/marketing/display-heading";
-import { Eyebrow } from "@/components/marketing/eyebrow";
+import { NewBoardCard } from "@/components/marketing/new-board-card";
 import { fadeUp, viewportOnce } from "@/lib/motion";
+import { FREE_LIMITS, PRO_PRICE } from "@/lib/plans";
+import { focusRing, inkButton } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 interface CtaBandProps {
-  eyebrow?: string;
-  heading: React.ReactNode;
+  heading?: React.ReactNode;
   description?: string;
   primaryText?: string;
+  secondaryHref?: string;
   secondaryText?: string;
   className?: string;
 }
 
+const ctaFadeUp = {
+  ...fadeUp,
+  hidden: { opacity: 0, y: 12 },
+};
+
+const DEFAULT_HEADING = (
+  <>
+    <span className="text-ink-3">Three boards, free.</span>
+    <br />
+    Your first one takes a minute.
+  </>
+);
+
 export function CtaBand({
-  eyebrow = "Get started",
-  heading,
-  description,
+  heading = DEFAULT_HEADING,
+  description = "No card, no demo, no sales call. Name a board, pick the columns, invite two people.",
   primaryText = "Start free",
-  secondaryText = "Talk to sales",
+  secondaryHref = "/pricing",
+  secondaryText = "See pricing",
   className,
 }: CtaBandProps) {
   const { data: session } = useSession();
   const href = session ? "/dashboard" : "/register";
 
   return (
-    <section
-      className={cn(
-        "relative overflow-hidden bg-background px-4 sm:px-6 lg:px-8",
-        className,
-      )}
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,var(--background)_0%,var(--brand-tint)_22%,var(--brand-tint)_78%,var(--background)_100%)]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_50%_60%,var(--brand-muted),transparent_60%)]"
-      />
+    <section className={cn("bg-background px-4 sm:px-6 lg:px-8", className)}>
       <motion.div
-        variants={fadeUp}
+        variants={ctaFadeUp}
         initial="hidden"
         whileInView="show"
         viewport={viewportOnce}
-        className="relative mx-auto flex max-w-[64rem] flex-col items-center gap-8 py-24 text-center sm:py-28 lg:py-32"
+        className="mx-auto grid max-w-[80rem] items-center gap-12 border-t border-hairline py-20 lg:grid-cols-12 lg:py-28"
       >
-        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-        <DisplayHeading size="h1" as="h2" className="max-w-[24ch] text-ink-1">
-          {heading}
-        </DisplayHeading>
-        {description && (
-          <p className="max-w-[36rem] text-lead leading-relaxed text-ink-2">
-            {description}
-          </p>
-        )}
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Button
-            size="lg"
-            className="h-12 bg-brand px-7 text-base text-brand-foreground shadow-[0_10px_30px_-12px_var(--brand)] hover:bg-brand/90"
-            asChild
-          >
-            <Link href={href}>
+        <div className="lg:col-span-7">
+          <h2 className="max-w-[20ch] text-h1 font-medium leading-[1.02] tracking-[-0.02em] text-balance text-ink-1">
+            {heading}
+          </h2>
+          {description && (
+            <p className="mt-6 max-w-[34rem] text-lead leading-relaxed text-ink-2">{description}</p>
+          )}
+          <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <Link href={href} className={cn(inkButton, "h-11 px-6 text-base")}>
               {session ? "Open dashboard" : primaryText}
               <ArrowRight className="h-4 w-4" />
             </Link>
-          </Button>
-          <ContactSalesDialog
-            trigger={
-              <Button
-                size="lg"
-                variant="outline"
-                className="h-12 border-hairline bg-background/60 px-7 text-base backdrop-blur"
-              >
-                {secondaryText}
-              </Button>
-            }
-          />
+            <Link
+              href={secondaryHref}
+              className={cn(
+                "inline-flex items-center gap-1.5 self-start rounded-sm text-sm font-medium text-ink-2 transition-colors hover:text-ink-1 sm:self-auto",
+                focusRing,
+              )}
+            >
+              {secondaryText}
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <p className="mt-6 font-mono text-xs text-ink-3">
+            Free for {FREE_LIMITS.boards} boards · Pro ${PRO_PRICE.annualPerMonth}/mo per team, billed yearly
+          </p>
         </div>
-        <p className="text-xs text-ink-3">
-          Free for teams of three. No card required.
-        </p>
+        <div className="flex lg:col-span-5 lg:justify-end">
+          <NewBoardCard />
+        </div>
       </motion.div>
     </section>
   );
 }
-
-export { SerifEm };
