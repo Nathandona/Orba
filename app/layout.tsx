@@ -28,11 +28,11 @@ const SITE_URL = "https://orba.work";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Orba — The Kanban your team will actually open on Monday",
+    default: "Orba: the Kanban your team will actually open on Monday",
     template: "%s · Orba",
   },
   description:
-    "Orba is a quiet, fast, opinionated Kanban for product teams. Plan the sprint, run the standup, ship the work — without losing an afternoon to the tool.",
+    "Orba is a quiet, fast, opinionated Kanban for product teams. Plan the sprint, run the standup, ship the work, without losing an afternoon to the tool.",
   applicationName: "Orba",
   keywords: [
     "Kanban",
@@ -63,15 +63,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Orba",
-    title: "Orba — The Kanban your team will actually open on Monday",
+    title: "Orba: the Kanban your team will actually open on Monday",
     description:
-      "A quiet, fast, opinionated Kanban for product teams. Plan, track, ship — without losing an afternoon to the tool.",
+      "A quiet, fast, opinionated Kanban for product teams. Plan, track, ship, without losing an afternoon to the tool.",
     url: SITE_URL,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Orba — The Kanban your team will actually open on Monday",
+    title: "Orba: the Kanban your team will actually open on Monday",
     description:
       "A quiet, fast, opinionated Kanban for product teams.",
     creator: "@orba",
@@ -93,11 +93,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+    >
       <head />
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
-      >
+      <body className="font-sans antialiased">
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
             <ToastProvider>

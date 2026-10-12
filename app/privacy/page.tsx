@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalPage, SerifEm, type LegalSection } from "@/components/marketing/legal-page";
+import { LegalPage, type LegalSection } from "@/components/marketing/legal-page";
 
 export const metadata: Metadata = {
   title: "Privacy Policy · Orba",
@@ -13,13 +13,13 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          We collect the minimum we need to run Orba, never sell your data, and give you
-          the tools to export or delete it on demand. The rest of this page explains how.
+          We collect the minimum we need to run Orba, never sell your data, and delete it
+          when you ask. The rest of this page explains how.
         </p>
         <ul>
           <li><strong>Minimum collection.</strong> If we don&rsquo;t need it, we don&rsquo;t store it.</li>
           <li><strong>No sale, ever.</strong> Your data is not a product line.</li>
-          <li><strong>Your data, your call.</strong> Export or delete from settings.</li>
+          <li><strong>Your data, your call.</strong> Ask for a copy or for deletion by email.</li>
         </ul>
       </>
     ),
@@ -32,16 +32,17 @@ const SECTIONS: LegalSection[] = [
         <p>We collect three buckets of data:</p>
         <ul>
           <li>
-            <strong>Account data.</strong> Email, name, password hash, profile photo (if
-            provided), workspace name, billing info via Stripe.
+            <strong>Account data.</strong> Email, name, password hash (or your Google or
+            GitHub account if you sign in with one), profile photo if provided, and billing
+            details handled by Stripe.
           </li>
           <li>
             <strong>Workspace content.</strong> Boards, columns, tasks, comments,
             attachments, and metadata you and your teammates create.
           </li>
           <li>
-            <strong>Usage and device data.</strong> IP address, browser, OS, pages
-            visited, performance metrics. Used to keep the Service running.
+            <strong>Usage and device data.</strong> IP address, browser, operating system and
+            pages visited, through our host and its analytics. Used to keep the Service running.
           </li>
         </ul>
       </>
@@ -57,8 +58,7 @@ const SECTIONS: LegalSection[] = [
           <li>Provide and improve the Service.</li>
           <li>Authenticate you and prevent abuse.</li>
           <li>Process payments via Stripe.</li>
-          <li>Send transactional email (confirmations, security alerts, billing receipts).</li>
-          <li>Send product updates if you opt in. You can unsubscribe at any time.</li>
+          <li>Send transactional email (invitations, password resets, replies to contact requests). Stripe sends billing receipts.</li>
         </ul>
         <p>We do not use your workspace content to train machine learning models. Period.</p>
       </>
@@ -71,10 +71,11 @@ const SECTIONS: LegalSection[] = [
       <>
         <p>We only share data with sub-processors strictly necessary to run the Service:</p>
         <ul>
-          <li><strong>Stripe</strong> &mdash; payments.</li>
-          <li><strong>OVHcloud</strong> &mdash; hosting (EU region).</li>
-          <li><strong>ZeptoMail</strong> &mdash; transactional email.</li>
-          <li><strong>Cloudflare</strong> &mdash; DDoS mitigation and edge caching.</li>
+          <li><strong>Vercel</strong>: hosting and privacy-friendly page analytics (Vercel Web Analytics).</li>
+          <li><strong>A managed PostgreSQL database</strong>: storage of your account and workspace data.</li>
+          <li><strong>Stripe</strong>: payments.</li>
+          <li><strong>ZeptoMail</strong>: transactional email.</li>
+          <li><strong>Google</strong> and <strong>GitHub</strong>: sign-in, only if you choose to use them.</li>
         </ul>
         <p>
           Each sub-processor is bound by a data-processing agreement. We never sell or
@@ -91,7 +92,7 @@ const SECTIONS: LegalSection[] = [
         <p>We use cookies for two things and two things only:</p>
         <ul>
           <li><strong>Strictly necessary.</strong> Authentication, CSRF protection, theme preference.</li>
-          <li><strong>First-party analytics.</strong> Aggregate page views, no cross-site tracking, no third-party adtech.</li>
+          <li><strong>Analytics.</strong> Aggregate page views through Vercel Web Analytics, no cross-site tracking, no adtech.</li>
         </ul>
       </>
     ),
@@ -101,14 +102,12 @@ const SECTIONS: LegalSection[] = [
     title: "How long we keep it",
     body: (
       <>
+        {/* TODO(Nathan): confirm deletion delay and any backup retention; nothing in the code sets them. */}
         <p>
-          Workspace content lives as long as your account does. When you delete your
-          account, we delete content within 30 days. Backups are purged within 90 days.
+          Workspace content lives as long as your account does. When you ask us to delete
+          your account, we delete your content.
         </p>
-        <p>
-          Billing records are retained for 7 years to comply with tax law. Logs are
-          retained for 30 days for security.
-        </p>
+        <p>Billing records are kept for as long as tax law requires.</p>
       </>
     ),
   },
@@ -118,15 +117,13 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Data is encrypted in transit (TLS 1.3) and at rest (AES-256). Production
-          access is gated by SSO with hardware keys, audited monthly. We&rsquo;re working
-          toward SOC 2 Type II certification &mdash; status updates at
-          <a href="https://orba.work/security"> orba.work/security</a>.
+          All traffic to Orba is encrypted in transit over HTTPS, and passwords are stored
+          as salted hashes, never in plain text.
         </p>
         <p>
           Found a vulnerability? Email
-          <a href="mailto:security@orba.work"> security@orba.work</a>. We respond within
-          24 hours and credit responsible disclosure.
+          <a href="mailto:security@orba.work"> security@orba.work</a>. We credit responsible
+          disclosure.
         </p>
       </>
     ),
@@ -141,11 +138,11 @@ const SECTIONS: LegalSection[] = [
           <li><strong>Access</strong> a copy of your data.</li>
           <li><strong>Correct</strong> it if it&rsquo;s wrong.</li>
           <li><strong>Delete</strong> it.</li>
-          <li><strong>Port</strong> it to another tool (CSV or JSON export).</li>
+          <li><strong>Port</strong> it to another tool.</li>
           <li><strong>Object</strong> to processing based on legitimate interest.</li>
         </ul>
         <p>
-          Most of these are one-click in your account settings. For anything else, email
+          You can update your name and photo in your profile. For anything else, email
           <a href="mailto:privacy@orba.work"> privacy@orba.work</a>.
         </p>
       </>
@@ -156,9 +153,8 @@ const SECTIONS: LegalSection[] = [
     title: "International transfers",
     body: (
       <p>
-        Orba is hosted in the EU. If you access the Service from outside the EU, your
-        data is transferred to and stored in the EU. We rely on Standard Contractual
-        Clauses for any onward transfer.
+        Our providers may process data in countries other than yours. Where the law
+        requires it, these transfers rely on Standard Contractual Clauses.
       </p>
     ),
   },
@@ -177,6 +173,7 @@ const SECTIONS: LegalSection[] = [
     title: "Contact",
     body: (
       <p>
+        {/* TODO(Nathan): confirm the dpo@ mailbox exists, or remove it. */}
         Privacy questions? Email
         <a href="mailto:privacy@orba.work"> privacy@orba.work</a>. EU users may also
         contact our DPO at
@@ -189,16 +186,10 @@ const SECTIONS: LegalSection[] = [
 export default function PrivacyPage() {
   return (
     <LegalPage
-      eyebrow="Legal"
-      title={<>Privacy, <SerifEm>without&nbsp;the dark patterns</SerifEm>.</>}
-      intro="What we collect, what we don't, and what you can do about it. No legalese, no fine print."
-      lastUpdated="April 27, 2026"
+      title={["Privacy Policy.", { text: "Without the dark patterns.", className: "text-ink-3" }]}
+      intro="What we collect, what we don't, and what you can do about it. No fine print."
+      lastUpdated="October 12, 2026"
       sections={SECTIONS}
-      cta={{
-        eyebrow: "Still have questions",
-        heading: <>Email a <SerifEm>real human</SerifEm>.</>,
-        description: "Privacy questions go to a small team that actually replies.",
-      }}
     />
   );
 }

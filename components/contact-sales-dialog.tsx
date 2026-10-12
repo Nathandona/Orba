@@ -82,9 +82,9 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Contact Sales</DialogTitle>
+          <DialogTitle>Contact</DialogTitle>
           <DialogDescription>
-            Fill out the form below and our team will get back to you within 24 hours.
+            Questions about Orba, billing or a bigger team. Send a message and we will reply by email.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleContactSales} className="space-y-4 pt-4">
@@ -92,7 +92,7 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
             <Label htmlFor="contact-name">Name *</Label>
             <Input
               id="contact-name"
-              placeholder="John Doe"
+              placeholder="Your name"
               value={contactForm.name}
               onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
               required
@@ -103,7 +103,7 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
             <Input
               id="contact-email"
               type="email"
-              placeholder="john@company.com"
+              placeholder="you@company.com"
               value={contactForm.email}
               onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
               required
@@ -113,7 +113,7 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
             <Label htmlFor="contact-company">Company</Label>
             <Input
               id="contact-company"
-              placeholder="Acme Inc."
+              placeholder="Company (optional)"
               value={contactForm.company}
               onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
             />
@@ -122,7 +122,7 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
             <Label htmlFor="contact-message">Message *</Label>
             <Textarea
               id="contact-message"
-              placeholder="Tell us about your needs..."
+              placeholder="What can we help with?"
               value={contactForm.message}
               onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
               required
@@ -150,7 +150,7 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
                   Sending...
                 </>
               ) : (
-                'Submit'
+                'Send message'
               )}
             </Button>
           </div>

@@ -1,21 +1,14 @@
 import * as React from "react";
-import { Info, Lightbulb, AlertTriangle, ShieldCheck } from "lucide-react";
+import { AlertTriangle, Info, Lightbulb, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Tone = "info" | "tip" | "warn" | "secure";
 
-const config: Record<
-  Tone,
-  { icon: React.ComponentType<{ className?: string }>; ring: string; iconColor: string }
-> = {
-  info: { icon: Info, ring: "border-brand/30 bg-brand/[0.04]", iconColor: "text-brand" },
-  tip: { icon: Lightbulb, ring: "border-brand/30 bg-brand/[0.04]", iconColor: "text-brand" },
-  warn: {
-    icon: AlertTriangle,
-    ring: "border-amber-300/60 bg-amber-50/60 dark:border-amber-500/30 dark:bg-amber-500/[0.06]",
-    iconColor: "text-amber-600 dark:text-amber-400",
-  },
-  secure: { icon: ShieldCheck, ring: "border-hairline bg-surface-2", iconColor: "text-ink-2" },
+const icons: Record<Tone, React.ComponentType<{ className?: string }>> = {
+  info: Info,
+  tip: Lightbulb,
+  warn: AlertTriangle,
+  secure: ShieldCheck,
 };
 
 interface DocCalloutProps {
@@ -25,18 +18,13 @@ interface DocCalloutProps {
   className?: string;
 }
 
+/* A hairline box with an ink icon. Tone only changes the icon, never the colour. */
 export function DocCallout({ tone = "info", title, children, className }: DocCalloutProps) {
-  const { icon: Icon, ring, iconColor } = config[tone];
+  const Icon = icons[tone];
   return (
-    <aside
-      className={cn(
-        "flex gap-4 rounded-xl border px-5 py-4 text-sm leading-relaxed text-ink-2",
-        ring,
-        className,
-      )}
-    >
-      <Icon className={cn("mt-0.5 h-5 w-5 shrink-0", iconColor)} />
-      <div className="space-y-1">
+    <aside className={cn("flex gap-3 rounded-lg border border-hairline px-4 py-3.5 text-[15px] leading-relaxed text-ink-2", className)}>
+      <Icon className={cn("mt-[3px] h-4 w-4 shrink-0", tone === "warn" ? "text-ink-1" : "text-ink-3")} />
+      <div className="min-w-0 space-y-1">
         {title && <p className="font-medium text-ink-1">{title}</p>}
         <div>{children}</div>
       </div>

@@ -8,7 +8,7 @@ type Cell = boolean | string;
 
 export interface MatrixRow {
   label: string;
-  values: [Cell, Cell, Cell];
+  values: [Cell, Cell];
   hint?: string;
 }
 
@@ -18,81 +18,57 @@ export interface MatrixGroup {
 }
 
 interface PricingMatrixProps {
-  plans: [string, string, string];
+  plans: [string, string];
   groups: MatrixGroup[];
-  featuredIndex?: 0 | 1 | 2;
   className?: string;
 }
 
 function renderCell(value: Cell) {
-  if (value === true) return <Check className="mx-auto h-4 w-4 text-brand" />;
-  if (value === false) return <Minus className="mx-auto h-4 w-4 text-ink-3/40" />;
-  return <span className="text-sm text-ink-1">{value}</span>;
+  if (value === true) return <Check aria-label="Included" className="mx-auto h-4 w-4 text-ink-1" />;
+  if (value === false) return <Minus aria-label="Not included" className="mx-auto h-4 w-4 text-ink-3/50" />;
+  return <span className="font-mono text-xs text-ink-1">{value}</span>;
 }
 
-export function PricingMatrix({
-  plans,
-  groups,
-  featuredIndex = 1,
-  className,
-}: PricingMatrixProps) {
+/* Two plans fit at 360px, so this is a plain table with no horizontal scroll. */
+export function PricingMatrix({ plans, groups, className }: PricingMatrixProps) {
   return (
-    <div className={cn("overflow-x-auto", className)}>
-      <table className="w-full min-w-[640px] border-collapse text-left">
-        <thead>
-          <tr>
-            <th className="sticky left-0 z-10 w-1/3 bg-background py-5 text-eyebrow font-medium uppercase tracking-[0.18em] text-ink-3">
-              Compare plans
+    <table className={cn("w-full table-fixed border-collapse text-left", className)}>
+      <thead>
+        <tr>
+          <th className="w-[46%] pb-4 text-sm font-medium text-ink-1 sm:w-1/2">
+            <span className="sr-only">Feature</span>
+          </th>
+          {plans.map((p) => (
+            <th key={p} className="pb-4 text-center text-sm font-medium text-ink-1">
+              {p}
             </th>
-            {plans.map((p, i) => (
-              <th
-                key={p}
-                className={cn(
-                  "w-[22%] py-5 text-center text-sm font-medium",
-                  i === featuredIndex ? "text-brand" : "text-ink-2",
-                )}
-              >
-                {p}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {groups.map((group) => (
-            <React.Fragment key={group.title}>
-              <tr>
-                <td
-                  colSpan={4}
-                  className="border-t border-hairline pt-8 pb-3 text-eyebrow font-medium uppercase tracking-[0.18em] text-ink-3"
-                >
-                  {group.title}
-                </td>
-              </tr>
-              {group.rows.map((row) => (
-                <tr key={row.label} className="border-t border-hairline/60">
-                  <td className="sticky left-0 z-10 bg-background py-4 pr-4 align-top text-sm text-ink-1">
-                    {row.label}
-                    {row.hint && (
-                      <div className="mt-1 text-xs text-ink-3">{row.hint}</div>
-                    )}
-                  </td>
-                  {row.values.map((v, i) => (
-                    <td
-                      key={i}
-                      className={cn(
-                        "py-4 text-center align-top",
-                        i === featuredIndex && "bg-brand-tint/40",
-                      )}
-                    >
-                      {renderCell(v)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </React.Fragment>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </tr>
+      </thead>
+      <tbody>
+        {groups.map((group) => (
+          <React.Fragment key={group.title}>
+            <tr>
+              <th colSpan={3} scope="colgroup" className="border-t border-hairline pt-8 pb-3 text-sm font-medium text-ink-2">
+                {group.title}
+              </th>
+            </tr>
+            {group.rows.map((row) => (
+              <tr key={row.label} className="border-t border-hairline">
+                <th scope="row" className="py-3.5 pr-3 align-top text-sm font-normal text-ink-1">
+                  {row.label}
+                  {row.hint && <div className="mt-1 text-xs text-ink-3">{row.hint}</div>}
+                </th>
+                {row.values.map((v, i) => (
+                  <td key={i} className="py-3.5 text-center align-top">
+                    {renderCell(v)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </React.Fragment>
+        ))}
+      </tbody>
+    </table>
   );
 }

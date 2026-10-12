@@ -3,196 +3,138 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import {
-  AlertCircle,
-  Building2,
-  Check,
-  Loader2,
-  Users,
-  Zap,
-} from "lucide-react";
+import { AlertCircle, Check, Loader2 } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 
 import { Section } from "@/components/marketing/section";
-import { Eyebrow } from "@/components/marketing/eyebrow";
-import { DisplayHeading, SerifEm } from "@/components/marketing/display-heading";
+import { DisplayHeading } from "@/components/marketing/display-heading";
 import { PricingCard, type PricingPlan, type Billing } from "@/components/marketing/pricing-card";
 import { PricingMatrix, type MatrixGroup } from "@/components/marketing/pricing-matrix";
 import { FaqAccordion } from "@/components/marketing/faq-accordion";
-import { StatGroup } from "@/components/marketing/stat-block";
 import { CtaBand } from "@/components/marketing/cta-band";
 
+import { FREE_LIMITS, PRO_PRICE } from "@/lib/plans";
 import { fadeUp, viewportOnce } from "@/lib/motion";
+import { focusRing } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+
+const { boards, membersPerBoard } = FREE_LIMITS;
 
 const PLANS: PricingPlan[] = [
   {
-    name: "Starter",
-    description: "For small teams trying us out.",
+    name: "Free",
+    description: "For a small team getting started.",
     price: { monthly: 0, annual: 0 },
     priceId: { monthly: null, annual: null },
-    icon: Zap,
     variant: "free",
     features: [
-      { name: "Up to 3 boards", included: true },
-      { name: "3 team members", included: true },
-      { name: "Basic templates", included: true },
-      { name: "Email support", included: true },
-      { name: "Advanced analytics", included: false },
-      { name: "Custom workflows", included: false },
-      { name: "Priority support", included: false },
-      { name: "SSO & advanced security", included: false },
+      `${boards} boards`,
+      `${membersPerBoard} people on each board`,
+      "Custom columns, drag and drop",
+      "Comments and files on cards",
+      "Free templates",
     ],
     cta: "Start free",
   },
   {
     name: "Pro",
-    description: "For growing teams that want the full instrument.",
-    price: { monthly: 12, annual: 10 },
+    description: "For a team that has outgrown three boards.",
+    price: { monthly: PRO_PRICE.monthly, annual: PRO_PRICE.annualPerMonth },
     priceId: {
       monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO_MONTHLY,
       annual: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO_ANNUAL,
     },
-    icon: Users,
     variant: "paid",
-    featured: true,
     features: [
-      { name: "Unlimited boards", included: true },
-      { name: "Unlimited team members", included: true },
-      { name: "Premium templates", included: true },
-      { name: "Priority email support", included: true },
-      { name: "Advanced analytics", included: true },
-      { name: "Custom workflows", included: true },
-      { name: "Integrations", included: true },
-      { name: "SSO & advanced security", included: false },
+      "Unlimited boards",
+      "Unlimited people on each board",
+      "Everything in Free",
+      "Pro templates",
+      "Cancel any time",
     ],
-    cta: "Start 14-day trial",
+    cta: "Upgrade to Pro",
   },
-  {
-    name: "Enterprise",
-    description: "For organizations that read SOC 2 reports for fun.",
-    price: { monthly: null, annual: null },
-    priceId: { monthly: null, annual: null },
-    icon: Building2,
-    variant: "enterprise",
-    features: [
-      { name: "Everything in Pro", included: true },
-      { name: "Unlimited workspaces", included: true },
-      { name: "Advanced security & SSO", included: true },
-      { name: "Dedicated account manager", included: true },
-      { name: "24/7 phone support", included: true },
-      { name: "Custom integrations", included: true },
-      { name: "On-premise deployment", included: true },
-      { name: "SLA guarantee", included: true },
-      { name: "Training & onboarding", included: true },
-    ],
-    cta: "Talk to sales",
-  },
-];
-
-const TRUST = [
-  { value: "SOC 2", label: "Type II", detail: "Audited annually." },
-  { value: "24/7", label: "Support", detail: "Real humans on Pro and above." },
-  { value: "99.9%", label: "Uptime", detail: "Backed by an SLA on every paid plan." },
 ];
 
 const MATRIX: MatrixGroup[] = [
   {
-    title: "Boards",
+    title: "Limits",
     rows: [
-      { label: "Boards", values: ["3", "Unlimited", "Unlimited"] },
-      { label: "Team members", values: ["3", "Unlimited", "Unlimited"] },
-      { label: "Templates", values: ["Basic", "Premium", "Custom"] },
-      { label: "WIP limits", values: [false, true, true] },
+      { label: "Boards", values: [String(boards), "Unlimited"] },
+      { label: "People per board", values: [String(membersPerBoard), "Unlimited"] },
+      { label: "Templates", values: ["Free", "Free + Pro"] },
     ],
   },
   {
-    title: "Collaboration",
+    title: "Boards and cards",
     rows: [
-      { label: "Real-time presence", values: [true, true, true] },
-      { label: "Comments & mentions", values: [true, true, true] },
-      { label: "Custom workflows", values: [false, true, true] },
-      { label: "Audit log", values: [false, true, true] },
+      { label: "Custom columns", values: [true, true] },
+      { label: "Drag and drop", values: [true, true] },
+      { label: "Priority, due date, labels, assignee", values: [true, true] },
+      { label: "Comments", values: [true, true] },
+      { label: "File attachments", hint: "Up to 10 MB each", values: [true, true] },
     ],
   },
   {
-    title: "Security",
+    title: "Team",
     rows: [
-      { label: "TLS 1.3 encryption", values: [true, true, true] },
-      { label: "SSO / SCIM", values: [false, false, true] },
-      { label: "On-premise deployment", values: [false, false, true] },
-      { label: "SOC 2 Type II report", values: [false, true, true] },
+      { label: "Invite by email", values: [true, true] },
+      { label: "Owner, admin and member roles", values: [true, true] },
     ],
   },
   {
-    title: "Support",
+    title: "Billing",
     rows: [
-      { label: "Email", values: [true, "Priority", true] },
-      { label: "Phone & video", values: [false, false, true] },
-      { label: "Dedicated account manager", values: [false, false, true] },
-      { label: "SLA", values: [false, "99.9%", "Custom"] },
+      { label: "Card required", values: [false, true] },
+      { label: "Price", hint: "Flat, for the whole team", values: ["$0", `$${PRO_PRICE.annualPerMonth}/mo`] },
     ],
   },
 ];
 
 const FAQ = [
   {
-    q: "Can I switch plans whenever I want?",
-    a: "Yes. Upgrade or downgrade at any time — we prorate the difference and the change takes effect right away.",
+    q: "Is Pro priced per person?",
+    a: `No. Pro is one flat price for the whole team: $${PRO_PRICE.annualPerMonth} a month billed yearly ($${PRO_PRICE.annualTotal}), or $${PRO_PRICE.monthly} month to month.`,
   },
   {
-    q: "What happens after the 14-day trial?",
-    a: "Nothing dramatic. If you don't upgrade, your workspace converts to the free Starter plan. We don't lock your data.",
+    q: "What does Free include?",
+    a: `${boards} boards with up to ${membersPerBoard} people on each, the free templates, comments and files. No card, and no time limit.`,
   },
   {
-    q: "Do you offer a discount for nonprofits or students?",
-    a: "Yes — 50% off Pro for registered nonprofits and accredited educational institutions. Email sales@orba.work.",
+    q: "What is the difference between monthly and yearly?",
+    a: `Only the price. Yearly is $${PRO_PRICE.annualTotal} up front, which works out to two months free compared with paying $${PRO_PRICE.monthly} every month.`,
+  },
+  {
+    q: "How do I cancel?",
+    a: "From your profile, open billing and cancel the subscription. When it ends, your account goes back to Free: your boards stay, and the Free limits apply to new boards and invites.",
   },
   {
     q: "Which payment methods do you accept?",
-    a: "All major credit cards. Annual plans can be invoiced for ACH/wire transfer.",
-  },
-  {
-    q: "Is my data really mine?",
-    a: "Yes. Export to CSV or JSON at any time, no friction. Cancel and we delete your data within 30 days.",
+    a: "Cards, handled by Stripe. Orba never sees your card number.",
   },
 ];
 
-function BillingToggle({
-  value,
-  onChange,
-}: {
-  value: Billing;
-  onChange: (b: Billing) => void;
-}) {
+function BillingToggle({ value, onChange }: { value: Billing; onChange: (b: Billing) => void }) {
   return (
-    <div className="inline-flex items-center rounded-full border border-hairline bg-surface-1 p-1 text-sm">
+    <div role="radiogroup" aria-label="Billing period" className="inline-flex rounded-md border border-hairline p-0.5">
       {(["monthly", "annual"] as const).map((opt) => (
         <button
           key={opt}
           type="button"
+          role="radio"
+          aria-checked={value === opt}
           onClick={() => onChange(opt)}
           className={cn(
-            "relative inline-flex items-center gap-2 rounded-full px-4 py-1.5 transition-colors",
-            value === opt ? "text-ink-1" : "text-ink-3 hover:text-ink-1",
+            "inline-flex h-8 items-center gap-2 rounded-[5px] px-3 text-sm transition-colors",
+            value === opt ? "bg-surface-2 text-ink-1" : "text-ink-3 hover:text-ink-1",
+            focusRing,
           )}
         >
-          {value === opt && (
-            <motion.span
-              layoutId="billing-pill"
-              transition={{ type: "spring", stiffness: 380, damping: 30 }}
-              className="absolute inset-0 rounded-full bg-brand-tint"
-            />
-          )}
-          <span className="relative">{opt === "monthly" ? "Monthly" : "Annual"}</span>
-          {opt === "annual" && (
-            <span className="relative inline-flex items-center rounded-full bg-brand px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-brand-foreground">
-              -20%
-            </span>
-          )}
+          {opt === "monthly" ? "Monthly" : "Yearly"}
+          {opt === "annual" && <span className="font-mono text-[11px] text-ink-3">2 months free</span>}
         </button>
       ))}
     </div>
@@ -200,7 +142,7 @@ function BillingToggle({
 }
 
 function PricingContent() {
-  const [billing, setBilling] = React.useState<Billing>("monthly");
+  const [billing, setBilling] = React.useState<Billing>("annual");
   const [error, setError] = React.useState<string | null>(null);
   const searchParams = useSearchParams();
   const success = searchParams.get("success");
@@ -210,43 +152,30 @@ function PricingContent() {
     <div className="min-h-screen bg-background text-ink-1">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden pt-32 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 -top-24 h-[500px] bg-[radial-gradient(circle_at_50%_0%,var(--brand-muted),transparent_60%)]"
-        />
-        <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            className="mx-auto max-w-[52rem]"
-          >
-            <Eyebrow className="justify-center">Pricing</Eyebrow>
-            <DisplayHeading as="h1" size="display" className="mt-6">
-              <SerifEm>Honest</SerifEm> pricing.
-              <br />
-              No surprises.
-            </DisplayHeading>
-            <p className="mx-auto mt-7 max-w-[36rem] text-lead leading-relaxed text-ink-2">
-              Start free. Pay flat per seat when you outgrow it. Talk to us only if you
-              actually need to talk to us.
-            </p>
-
-            <div className="mt-10 flex justify-center">
-              <BillingToggle value={billing} onChange={setBilling} />
-            </div>
-          </motion.div>
+      {/* Header */}
+      <section className="pt-32 pb-14 sm:pt-36 lg:pt-44 lg:pb-16">
+        <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12 lg:gap-12">
+            <h1 className="min-w-0 text-display leading-[0.98] font-semibold tracking-[-0.035em] text-balance text-ink-1 lg:col-span-7">
+              Free to start. <span className="text-ink-3">One flat price after that.</span>
+            </h1>
+            <motion.div variants={fadeUp} initial="hidden" animate="show" className="min-w-0 lg:col-span-5 lg:pb-2">
+              <p className="max-w-[36ch] text-lead leading-relaxed text-ink-2">
+                {boards} boards with {membersPerBoard} people on each, free. Pro lifts both limits for the whole team at
+                ${PRO_PRICE.annualPerMonth} a month.
+              </p>
+              <div className="mt-8">
+                <BillingToggle value={billing} onChange={setBilling} />
+              </div>
+            </motion.div>
+          </div>
 
           {(success || canceled || error) && (
-            <div className="mx-auto mt-10 max-w-2xl">
+            <div className="mt-10 max-w-2xl" role="status">
               {success && (
-                <Alert className="bg-brand-tint border-brand/30">
-                  <Check className="h-4 w-4 text-brand" />
-                  <AlertDescription className="text-ink-1">
-                    Subscription active. Welcome to Pro.
-                  </AlertDescription>
+                <Alert className="border-hairline">
+                  <Check className="h-4 w-4" />
+                  <AlertDescription className="text-ink-1">Subscription active. Welcome to Pro.</AlertDescription>
                 </Alert>
               )}
               {canceled && (
@@ -266,14 +195,14 @@ function PricingContent() {
         </div>
       </section>
 
-      {/* Plan cards */}
-      <Section tone="default" className="pt-0">
+      {/* Plans */}
+      <Section tone="default" className="pt-0 sm:pt-0 lg:pt-0">
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="show"
           viewport={viewportOnce}
-          className="grid gap-6 lg:grid-cols-3 lg:gap-8"
+          className="grid grid-cols-1 gap-4 md:grid-cols-2"
         >
           {PLANS.map((plan) => (
             <PricingCard key={plan.name} plan={plan} billing={billing} onError={setError} />
@@ -281,62 +210,44 @@ function PricingContent() {
         </motion.div>
       </Section>
 
-      {/* Comparison matrix */}
+      {/* Comparison */}
       <Section tone="muted">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={viewportOnce}
-          className="mx-auto max-w-[48rem] text-center"
-        >
-          <Eyebrow className="justify-center">Compare every feature</Eyebrow>
-          <DisplayHeading size="h1" className="mt-6">
-            All the small print, <SerifEm>large&nbsp;and clear</SerifEm>.
-          </DisplayHeading>
-        </motion.div>
-
-        <div className="mt-16 rounded-2xl border border-hairline bg-surface-1 p-4 sm:p-8">
-          <PricingMatrix plans={["Starter", "Pro", "Enterprise"]} groups={MATRIX} />
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="min-w-0 lg:col-span-4">
+            <DisplayHeading size="h2">Everything on one page.</DisplayHeading>
+            <p className="mt-4 max-w-[36ch] text-base leading-relaxed text-ink-2">
+              The two plans run the same product. Pro only removes the limits.
+            </p>
+          </div>
+          <div className="min-w-0 rounded-2xl border border-hairline bg-surface-1 p-5 sm:p-8 lg:col-span-8">
+            <PricingMatrix plans={["Free", "Pro"]} groups={MATRIX} />
+          </div>
         </div>
       </Section>
 
-      {/* Trust */}
-      <Section tone="default" className="py-16 sm:py-20">
-        <StatGroup stats={TRUST} />
-      </Section>
-
       {/* FAQ */}
-      <Section tone="default" className="pt-0">
-        <div className="mx-auto max-w-[48rem]">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={viewportOnce}
-            className="text-center"
-          >
-            <Eyebrow className="justify-center">FAQ</Eyebrow>
-            <DisplayHeading size="h1" className="mt-6">
-              Questions, <SerifEm>answered</SerifEm>.
-            </DisplayHeading>
-          </motion.div>
-          <div className="mt-12">
+      <Section tone="default">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="min-w-0 lg:col-span-4">
+            <DisplayHeading size="h2">Questions about billing.</DisplayHeading>
+          </div>
+          <div className="min-w-0 lg:col-span-8">
             <FaqAccordion items={FAQ} />
           </div>
         </div>
       </Section>
 
       <CtaBand
-        eyebrow="Get started"
         heading={
           <>
-            Three boards, <SerifEm>free forever</SerifEm>.
+            <span className="text-ink-3">Three boards, free.</span>
+            <br />
+            Your first one takes a minute.
           </>
         }
-        description="No card. No demo gating. Open Orba and start moving."
-        primaryText="Start free"
-        secondaryText="Talk to sales"
+        description="No card, no demo, no sales call. Name a board, pick the columns, invite two people."
+        secondaryHref="/features"
+        secondaryText="See features"
       />
 
       <Footer />
@@ -351,7 +262,7 @@ export default function PricingPage() {
         <div className="min-h-screen bg-background">
           <Navbar />
           <div className="flex min-h-[60vh] items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-brand" />
+            <Loader2 className="h-6 w-6 animate-spin text-ink-3" />
           </div>
           <Footer />
         </div>

@@ -4,25 +4,21 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ArrowRight, Check, Loader2, Minus } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight, Check, Loader2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ContactSalesDialog } from "@/components/contact-sales-dialog";
+import { inkButton, outlineButton } from "@/lib/ui";
 
 export type Billing = "monthly" | "annual";
 
 export interface PricingPlan {
   name: string;
   description: string;
-  icon: LucideIcon;
-  price: { monthly: number | null; annual: number | null };
+  price: { monthly: number; annual: number };
   priceId: { monthly: string | null | undefined; annual: string | null | undefined };
-  features: { name: string; included: boolean }[];
+  features: string[];
   cta: string;
-  featured?: boolean;
-  variant?: "free" | "paid" | "enterprise";
+  variant: "free" | "paid";
 }
 
 interface PricingCardProps {
@@ -36,20 +32,12 @@ export function PricingCard({ plan, billing, onError, className }: PricingCardPr
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
-  const Icon = plan.icon;
-  const featured = plan.featured;
-
-  const priceLabel = (() => {
-    if (plan.variant === "enterprise" || plan.price.monthly === null) return "Custom";
-    if (plan.price.monthly === 0) return "Free";
-    return `$${billing === "monthly" ? plan.price.monthly : plan.price.annual}`;
-  })();
-
-  const priceSuffix = plan.price.monthly && plan.price.monthly > 0 ? "/user/month" : null;
+  const paid = plan.variant === "paid";
+  const price = billing === "monthly" ? plan.price.monthly : plan.price.annual;
 
   const handleClick = async () => {
     onError?.(null);
-    if (plan.variant === "free") {
+    if (!paid) {
       router.push(session ? "/dashboard" : "/register?callbackUrl=/pricing");
       return;
     }
@@ -79,106 +67,66 @@ export function PricingCard({ plan, billing, onError, className }: PricingCardPr
     }
   };
 
-  const ButtonContent = (
+  const label = loading ? (
     <>
-      {loading ? (
-        <>
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Processing
-        </>
-      ) : (
-        <>
-          {plan.variant === "free" && session ? "Go to dashboard" : plan.cta}
-          <ArrowRight className="h-4 w-4" />
-        </>
-      )}
+      <Loader2 className="h-4 w-4 animate-spin" />
+      Processing
+    </>
+  ) : (
+    <>
+      {!paid && session ? "Go to dashboard" : plan.cta}
+      <ArrowRight className="h-4 w-4" />
     </>
   );
+
+  const buttonClass = cn(paid ? inkButton : outlineButton, "h-11 w-full text-sm");
 
   return (
     <article
       className={cn(
-        "relative flex h-full flex-col rounded-2xl border bg-surface-1 p-7 sm:p-8",
-        featured ? "border-brand bg-brand-tint" : "border-hairline",
+        "flex h-full min-w-0 flex-col rounded-2xl border border-hairline p-6 sm:p-8",
+        paid ? "bg-surface-1" : "bg-background",
         className,
       )}
     >
-      {featured && (
-        <span className="absolute -top-3 left-7 inline-flex items-center gap-2 rounded-full border border-brand/40 bg-background px-3 py-1 text-eyebrow font-medium uppercase tracking-[0.18em] text-brand">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-60" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand" />
-          </span>
-          Most chosen
-        </span>
-      )}
-
-      <div className="flex items-center gap-3">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline text-brand">
-          <Icon className="h-4 w-4" />
-        </span>
-        <h3 className="text-xl font-medium text-ink-1">{plan.name}</h3>
-      </div>
-      <p className="mt-3 text-sm text-ink-2">{plan.description}</p>
+      <h3 className="text-sm font-medium text-ink-2">{plan.name}</h3>
+      <p className="mt-1 text-sm text-ink-3">{plan.description}</p>
 
       <div className="mt-8 flex items-baseline gap-2">
-        <span className="font-serif text-[clamp(2.75rem,5vw,3.75rem)] leading-none text-ink-1">
-          {priceLabel}
+        <span className="text-[clamp(2.5rem,4vw,3.5rem)] leading-none font-medium tracking-[-0.03em] tabular-nums text-ink-1">
+          ${price}
         </span>
-        {priceSuffix && <span className="text-sm text-ink-3">{priceSuffix}</span>}
+        <span className="text-base text-ink-3">{paid ? "/ month" : "forever"}</span>
       </div>
-      {billing === "annual" && (plan.price.annual ?? 0) > 0 ? (
-        <p className="mt-1 text-xs text-ink-3">
-          Billed annually · ${(plan.price.annual ?? 0) * 12}/user/year
-        </p>
-      ) : null}
+      <p className="mt-2 min-h-[1.25rem] text-sm text-ink-3">
+        {paid
+          ? billing === "annual"
+            ? `For the whole team, billed yearly ($${plan.price.annual * 12}).`
+            : "For the whole team, billed monthly."
+          : "No card needed."}
+      </p>
 
       <div className="mt-8">
-        {plan.variant === "enterprise" ? (
-          <ContactSalesDialog
-            trigger={
-              <Button variant="outline" size="lg" className="w-full">
-                {ButtonContent}
-              </Button>
-            }
-          />
-        ) : session ? (
-          <Button
-            size="lg"
-            variant={featured ? "default" : "outline"}
-            className={cn(
-              "w-full",
-              featured && "bg-brand text-brand-foreground hover:bg-brand/90",
-            )}
-            onClick={handleClick}
-            disabled={loading}
-          >
-            {ButtonContent}
-          </Button>
+        {paid && session ? (
+          <button type="button" onClick={handleClick} disabled={loading} className={cn(buttonClass, "disabled:opacity-70")}>
+            {label}
+          </button>
+        ) : paid ? (
+          <Link href="/register?callbackUrl=/pricing" className={buttonClass}>
+            {label}
+          </Link>
         ) : (
-          <Button
-            size="lg"
-            variant={featured ? "default" : "outline"}
-            className={cn(
-              "w-full",
-              featured && "bg-brand text-brand-foreground hover:bg-brand/90",
-            )}
-            asChild
-          >
-            <Link href="/register?callbackUrl=/pricing">{ButtonContent}</Link>
-          </Button>
+          <button type="button" onClick={handleClick} className={buttonClass}>
+            {label}
+          </button>
         )}
       </div>
 
       <ul className="mt-8 space-y-3 border-t border-hairline pt-6 text-sm">
         {plan.features.map((f) => (
-          <li key={f.name} className="flex items-start gap-3">
-            {f.included ? (
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
-            ) : (
-              <Minus className="mt-0.5 h-4 w-4 shrink-0 text-ink-3/50" />
-            )}
-            <span className={cn(f.included ? "text-ink-1" : "text-ink-3/70")}>{f.name}</span>
+          <li key={f} className="flex items-start gap-3 text-ink-1">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-ink-2" />
+            <span>{f}</span>
           </li>
         ))}
       </ul>

@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { inkButton } from "@/lib/ui";
+import { FREE_LIMITS, PRO_PRICE } from "@/lib/plans";
 import { DocPage } from "@/components/docs/doc-page";
 import { DocSection } from "@/components/docs/doc-section";
 import { DocBullets } from "@/components/docs/doc-list";
 import { DocCallout } from "@/components/docs/doc-callout";
-import { DocFooter } from "@/components/docs/doc-footer";
 
 export const metadata: Metadata = {
   title: "Subscriptions",
-  description: "Plans, billing, and the Stripe customer portal.",
+  description: "Free and Pro, billing through Stripe, and cancellation.",
 };
 
 export default function SubscriptionPage() {
@@ -18,56 +19,48 @@ export default function SubscriptionPage() {
     <DocPage
       eyebrow="Account"
       title="Subscriptions."
-      lead="One plan covers your team. Pay monthly or annually. Cancel any time, keep your data."
+      lead="Two plans. Pro is one flat price for the whole team, monthly or yearly. Cancel any time."
     >
-      <DocSection title="Plans" description="The full breakdown lives on the pricing page — here's the short version.">
+      <DocSection title="Plans">
         <DocBullets
           items={[
-            { title: "Free", description: "Up to 3 members, 3 boards. Real-time, comments, mobile. No card." },
-            { title: "Pro", description: "Unlimited members and boards. WIP limits, automations, analytics." },
-            { title: "Enterprise", description: "SSO, audit logs, dedicated support, custom DPA. Talk to us." },
+            { title: "Free", description: `${FREE_LIMITS.boards} projects, up to ${FREE_LIMITS.membersPerBoard} people on each. No card.` },
+            { title: "Pro", description: `Unlimited projects and people, plus the Pro templates. $${PRO_PRICE.annualPerMonth} a month billed yearly ($${PRO_PRICE.annualTotal}), or $${PRO_PRICE.monthly} month to month. One price for the whole team.` },
           ]}
         />
         <div className="mt-6">
-          <Button asChild className="bg-brand text-brand-foreground hover:bg-brand/90">
-            <Link href="/pricing">
-              See pricing
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <Link href="/pricing" className={cn(inkButton, "h-10 px-4 text-sm")}>
+            See pricing
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </DocSection>
 
-      <DocSection title="Upgrade or downgrade">
+      <DocSection title="Upgrade">
         <DocBullets
           items={[
-            { title: "Upgrade", description: "Settings → Billing → Upgrade. Stripe handles the checkout. Effective immediately." },
-            { title: "Downgrade", description: "Same path. Takes effect at the end of the current billing period." },
-            { title: "Annual switch", description: "Toggle annual on the pricing page before checkout — saves you about two months." },
+            { title: "From the pricing page", description: "Pick monthly or yearly. Stripe handles the checkout, and Pro starts as soon as the payment goes through." },
+            { title: "No trial", description: "Free has no time limit, so there is nothing to trial." },
           ]}
         />
       </DocSection>
 
-      <DocSection title="Customer portal" description="The Stripe portal is where receipts, payment methods, and tax IDs live.">
+      <DocSection title="Manage billing" description="Profile, Billing tab, Manage subscription opens the Stripe customer portal.">
         <DocBullets
           items={[
-            { title: "Update card", description: "Without re-doing checkout." },
-            { title: "Download invoices", description: "PDFs, sent to billing email by default." },
-            { title: "Add tax ID", description: "Required for VAT-registered teams in the EU." },
+            { title: "Payment method", description: "Update your card without going through checkout again." },
+            { title: "Invoices", description: "Download past invoices." },
+            { title: "Cancel", description: "Cancel from the portal. Pro stays active until the end of the period you paid for." },
           ]}
         />
       </DocSection>
 
-      <DocSection title="Cancellation">
-        <DocCallout tone="info" title="Your data sticks around">
-          Cancel and your team drops to Free at the next renewal. Boards stay accessible — they just respect the Free limits. Pull data via export at any time.
+      <DocSection title="After you cancel">
+        <DocCallout tone="info" title="Nothing is deleted">
+          Your projects, cards and files stay. The Free limits apply again to anything new: you cannot create more than{" "}
+          {FREE_LIMITS.boards} projects or add people past {FREE_LIMITS.membersPerBoard} per project until you upgrade.
         </DocCallout>
       </DocSection>
-
-      <DocFooter
-        prev={{ href: "/docs/authentication", label: "Authentication" }}
-        next={{ href: "/docs/tips", label: "Tips & tricks" }}
-      />
     </DocPage>
   );
 }
