@@ -68,7 +68,16 @@ export function Footer() {
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-hairline pt-6 text-xs text-ink-3 sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} Orba. All rights reserved.</p>
-          <p className="font-serif italic">Made for teams that ship.</p>
+          <a
+            href="https://altair-studio.com/en/work/orba"
+            className="inline-flex items-center gap-2 transition-colors hover:text-ink-1"
+          >
+            <svg width="16" height="16" viewBox="0 0 64 64" aria-hidden="true" className="shrink-0 rounded-[4px] dark:ring-1 dark:ring-white/25">
+              <rect width="64" height="64" rx="15" fill="#161616" />
+              <path d="M28.6 14h6.8L51 50h-7.4L32 22.4 20.4 50H13z" fill="#fff" />
+            </svg>
+            Designed and built by Altair Studio
+          </a>
         </div>
       </div>
     </footer>
