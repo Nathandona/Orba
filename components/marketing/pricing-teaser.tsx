@@ -6,10 +6,11 @@ import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { Section } from "@/components/marketing/section";
-import { easeOutExpo, fadeUp, viewportOnce } from "@/lib/motion";
+import { easeOutExpo, viewportOnce } from "@/lib/motion";
 import { FREE_LIMITS, PRO_PRICE } from "@/lib/plans";
 import { outlineButton } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+import { Reveal, RevealText, afterWords, wordCount } from "@/components/marketing/reveal";
 
 /* A usage meter drawn like a workspace billing screen. `limit === null` is the
    unlimited row: no bar, a dashed hairline for "no ceiling". */
@@ -87,29 +88,26 @@ function PlanColumn({
 
 export function PricingTeaser() {
   const { boards, membersPerBoard } = FREE_LIMITS;
+  const heading = ["Free up to three.", { text: `$${PRO_PRICE.annualPerMonth} a month after that.`, className: "text-ink-3" }];
 
   return (
     <Section tone="default">
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={viewportOnce}
-        className="grid gap-12 border-t border-hairline pt-16 lg:grid-cols-12 lg:gap-x-12"
-      >
+      <div className="grid gap-12 border-t border-hairline pt-16 lg:grid-cols-12 lg:gap-x-12">
         <div className="lg:col-span-5">
-          <h2 className="text-h2 font-medium leading-[1.05] tracking-[-0.02em] text-balance text-ink-1">
-            Free up to three. <br className="hidden lg:block" />
-            ${PRO_PRICE.annualPerMonth} a month after that.
-          </h2>
-          <p className="mt-5 max-w-[32rem] text-base leading-relaxed text-ink-2">
+          <RevealText
+            segments={heading}
+            className="text-h2 font-medium leading-[1.05] tracking-[-0.02em] text-balance text-ink-1"
+          />
+          <Reveal as="p" delay={afterWords(wordCount(heading))} className="mt-5 max-w-[32rem] text-base leading-relaxed text-ink-2">
             {boards} boards, {membersPerBoard} people on each, no card. Pro lifts both
             limits for the whole team at one flat price.
-          </p>
-          <Link href="/pricing" className={cn(outlineButton, "mt-8 hidden h-11 px-5 text-sm lg:inline-flex")}>
-            Compare plans
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          </Reveal>
+          <Reveal delay={afterWords(wordCount(heading)) + 90} className="mt-8 hidden lg:block">
+            <Link href="/pricing" className={cn(outlineButton, "h-11 px-5 text-sm")}>
+              Compare plans
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
         </div>
 
         <div className="lg:col-span-7">
@@ -136,7 +134,7 @@ export function PricingTeaser() {
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-      </motion.div>
+      </div>
     </Section>
   );
 }

@@ -4,7 +4,6 @@ import * as React from "react";
 import { motion } from "framer-motion";
 
 import { Section } from "@/components/marketing/section";
-import { DisplayHeading } from "@/components/marketing/display-heading";
 import { BentoCell, BentoGrid } from "@/components/marketing/bento";
 import {
   BoardsVisual,
@@ -14,7 +13,7 @@ import {
   TemplatesVisual,
   ThreadVisual,
 } from "@/components/marketing/feature-visuals";
-import { fadeUp, viewportOnce } from "@/lib/motion";
+import { Reveal, RevealText, afterWords, wordCount } from "@/components/marketing/reveal";
 
 /* Only features the app has today. Keep in step with the product. */
 const CELLS = [
@@ -59,22 +58,21 @@ const CELLS = [
   },
 ] as const;
 
+const HEADING = ["One workspace.", "\n", "Every moving piece."];
+
 export function FeaturesSection() {
   return (
     <Section tone="default" id="features">
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={viewportOnce}
-        className="mx-auto max-w-[40rem] text-center"
-      >
-        <DisplayHeading size="h1">One workspace. Every moving piece.</DisplayHeading>
-        <p className="mt-5 text-lead leading-relaxed text-ink-2">
+      <div className="mx-auto max-w-[40rem] text-center">
+        <RevealText
+          segments={HEADING}
+          className="text-h1 leading-[1.02] font-medium tracking-[-0.02em] text-balance text-ink-1"
+        />
+        <Reveal as="p" delay={afterWords(wordCount(HEADING))} className="mt-5 text-lead leading-relaxed text-ink-2">
           Columns you define, cards that carry the detail, and a team you invite by email. That is the
           whole product, and it stays fast.
-        </p>
-      </motion.div>
+        </Reveal>
+      </div>
 
       <BentoGrid className="mt-14 lg:mt-16">
         {CELLS.map((c) => (

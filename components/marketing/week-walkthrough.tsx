@@ -4,11 +4,11 @@ import * as React from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 
 import { Section } from "@/components/marketing/section";
-import { DisplayHeading } from "@/components/marketing/display-heading";
 import { PlanVisual, ShipVisual, TrackVisual } from "@/components/marketing/week-visuals";
 import { cn } from "@/lib/utils";
-import { easeOutExpo, fadeUp, viewportOnce } from "@/lib/motion";
+import { easeOutExpo } from "@/lib/motion";
 import { focusRing } from "@/lib/ui";
+import { Reveal, RevealText, afterWords, wordCount } from "@/components/marketing/reveal";
 
 const ADVANCE_MS = 7000;
 
@@ -203,23 +203,20 @@ function MobileCard({ step }: { step: (typeof STEPS)[number] }) {
   );
 }
 
+const HEADING = ["A week with Orba,", { text: "start to finish.", className: "text-ink-3" }];
+
 export function WeekWalkthrough() {
   return (
     <Section tone="muted">
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={viewportOnce}
-        className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end"
-      >
-        <DisplayHeading size="h1" className="lg:col-span-7">
-          A week with Orba, start to finish.
-        </DisplayHeading>
-        <p className="text-lead leading-relaxed text-ink-2 lg:col-span-5">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end">
+        <RevealText
+          segments={HEADING}
+          className="text-h1 leading-[1.02] font-medium tracking-[-0.02em] text-balance text-ink-1 lg:col-span-7"
+        />
+        <Reveal as="p" delay={afterWords(wordCount(HEADING))} className="text-lead leading-relaxed text-ink-2 lg:col-span-5">
           Follow one task from Monday&apos;s plan to Friday&apos;s done. Three moments, one board, nothing you have to configure first.
-        </p>
-      </motion.div>
+        </Reveal>
+      </div>
 
       <Tabs />
 

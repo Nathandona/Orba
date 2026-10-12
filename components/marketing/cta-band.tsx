@@ -7,13 +7,13 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 
 import { NewBoardCard } from "@/components/marketing/new-board-card";
-import { fadeUp, viewportOnce } from "@/lib/motion";
 import { FREE_LIMITS, PRO_PRICE } from "@/lib/plans";
 import { focusRing, inkButton } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+import { Reveal, RevealText, afterWords, wordCount, type Segment } from "@/components/marketing/reveal";
 
 interface CtaBandProps {
-  heading?: React.ReactNode;
+  heading?: React.ReactNode | Segment[];
   description?: string;
   primaryText?: string;
   secondaryHref?: string;
@@ -21,18 +21,12 @@ interface CtaBandProps {
   className?: string;
 }
 
-const ctaFadeUp = {
-  ...fadeUp,
-  hidden: { opacity: 0, y: 12 },
-};
-
-const DEFAULT_HEADING = (
-  <>
-    <span className="text-ink-3">Three boards, free.</span>
-    <br />
-    Your first one takes a minute.
-  </>
-);
+const DEFAULT_HEADING: Segment[] = [
+  { text: "Three boards, free.", className: "text-ink-3" },
+  "\n",
+  "Your first one takes a minute.",
+];
+const HEADING_CLASS = "max-w-[20ch] text-h1 font-medium leading-[1.02] tracking-[-0.02em] text-balance text-ink-1";
 
 export function CtaBand({
   heading = DEFAULT_HEADING,
@@ -44,24 +38,25 @@ export function CtaBand({
 }: CtaBandProps) {
   const { data: session } = useSession();
   const href = session ? "/dashboard" : "/register";
+  const after = Array.isArray(heading) ? afterWords(wordCount(heading as Segment[])) : 200;
 
   return (
     <section className={cn("bg-background px-4 sm:px-6 lg:px-8", className)}>
-      <motion.div
-        variants={ctaFadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={viewportOnce}
-        className="mx-auto grid max-w-[80rem] items-center gap-12 border-t border-hairline py-20 lg:grid-cols-12 lg:py-28"
-      >
+      <div className="mx-auto grid max-w-[80rem] items-center gap-12 border-t border-hairline py-20 lg:grid-cols-12 lg:py-28">
         <div className="lg:col-span-7">
-          <h2 className="max-w-[20ch] text-h1 font-medium leading-[1.02] tracking-[-0.02em] text-balance text-ink-1">
-            {heading}
-          </h2>
-          {description && (
-            <p className="mt-6 max-w-[34rem] text-lead leading-relaxed text-ink-2">{description}</p>
+          {Array.isArray(heading) ? (
+            <RevealText segments={heading as Segment[]} className={HEADING_CLASS} />
+          ) : (
+            <Reveal as="div" className={HEADING_CLASS}>
+              <h2>{heading}</h2>
+            </Reveal>
           )}
-          <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+          {description && (
+            <Reveal as="p" delay={after} className="mt-6 max-w-[34rem] text-lead leading-relaxed text-ink-2">
+              {description}
+            </Reveal>
+          )}
+          <Reveal delay={after + 90} className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <Link href={href} className={cn(inkButton, "h-11 px-6 text-base")}>
               {session ? "Open dashboard" : primaryText}
               <ArrowRight className="h-4 w-4" />
@@ -76,15 +71,15 @@ export function CtaBand({
               {secondaryText}
               <ArrowUpRight className="h-4 w-4" />
             </Link>
-          </div>
-          <p className="mt-6 font-mono text-xs text-ink-3">
+          </Reveal>
+          <Reveal as="p" delay={after + 180} className="mt-6 font-mono text-xs text-ink-3">
             Free for {FREE_LIMITS.boards} boards · Pro ${PRO_PRICE.annualPerMonth}/mo per team, billed yearly
-          </p>
+          </Reveal>
         </div>
         <div className="flex lg:col-span-5 lg:justify-end">
           <NewBoardCard />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

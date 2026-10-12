@@ -290,3 +290,84 @@
     }
   }
 }
+
+/* ---------- Text reveal (marketing) ----------
+   Headings rise word by word from behind a mask, in reading order. Supporting
+   copy follows with a short blur-to-sharp settle. Load variants run in CSS so
+   the hero never waits for hydration; in-view variants flip data-reveal. */
+:root {
+  --ease-reveal: cubic-bezier(0.23, 1, 0.32, 1);
+}
+.reveal-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* room for ascenders/descenders without changing the line box */
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+.reveal-word > span {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 800ms var(--ease-reveal);
+  transition-delay: calc(var(--i, 0) * 45ms + var(--d, 0ms));
+  will-change: transform;
+}
+[data-reveal="in"] .reveal-word > span {
+  transform: translateY(0);
+}
+.reveal-load .reveal-word > span {
+  animation: reveal-rise 850ms var(--ease-reveal) both;
+  animation-delay: calc(var(--i, 0) * 45ms + var(--d, 0ms));
+}
+@keyframes reveal-rise {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+
+.reveal-soft {
+  opacity: 0;
+  transform: translateY(6px);
+  filter: blur(4px);
+  transition:
+    opacity 600ms ease-out,
+    transform 700ms var(--ease-reveal),
+    filter 600ms ease-out;
+  transition-delay: var(--d, 0ms);
+}
+.reveal-soft[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.reveal-soft.reveal-load {
+  animation: reveal-settle 700ms var(--ease-reveal) both;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes reveal-settle {
+  from { opacity: 0; transform: translateY(6px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-word > span {
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal-soft,
+  .reveal-soft.reveal-load {
+    transform: none;
+    filter: none;
+    animation: reveal-fade 200ms ease-out both;
+    animation-delay: 0ms;
+  }
+  .reveal-soft:not(.reveal-load) {
+    animation: none;
+    transition: opacity 200ms ease-out;
+  }
+}
+@keyframes reveal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
