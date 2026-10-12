@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { LegalPage, SerifEm, type LegalSection } from "@/components/marketing/legal-page";
+import { LegalPage, type LegalSection } from "@/components/marketing/legal-page";
+import { FREE_LIMITS, PRO_PRICE } from "@/lib/plans";
 
 export const metadata: Metadata = {
   title: "Terms of Service · Orba",
@@ -71,9 +72,11 @@ const SECTIONS: LegalSection[] = [
           royalty-free license to host, display, and process your Content solely for the
           purpose of providing the Service to you and your team.
         </p>
+        {/* TODO(Nathan): confirm. There is no in-app export or account deletion; deletion is on request. */}
         <p>
-          You can export your Content at any time from your workspace settings. We delete
-          Content within 30 days of account closure unless retention is required by law.
+          To close your account and delete your Content, email
+          <a href="mailto:privacy@orba.work"> privacy@orba.work</a>. We delete it unless
+          retention is required by law.
         </p>
       </>
     ),
@@ -84,13 +87,16 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Free plans include the features listed on our
-          <a href="/pricing"> pricing page</a>. Paid plans are billed in advance on a
-          monthly or annual basis through Stripe. You authorize us to charge your payment
-          method on each renewal until you cancel.
+          The Free plan includes {FREE_LIMITS.boards} boards with {FREE_LIMITS.membersPerBoard} people
+          on each, as described on our <a href="/pricing">pricing page</a>. Pro is one flat price
+          for the boards you own, billed in advance through Stripe, monthly or yearly. You
+          authorize us to charge your payment method on each renewal until you cancel.
         </p>
         <ul>
-          <li>Annual plans include a 20% discount and are billed up front.</li>
+          <li>
+            Monthly billing is ${PRO_PRICE.monthly} a month. Yearly billing is ${PRO_PRICE.annualTotal}{" "}
+            a year (${PRO_PRICE.annualPerMonth} a month), billed up front.
+          </li>
           <li>Cancel any time from billing settings; cancellations take effect at the end of the current period.</li>
           <li>Refunds are issued at our discretion for service-impacting incidents.</li>
         </ul>
@@ -166,16 +172,10 @@ const SECTIONS: LegalSection[] = [
 export default function TermsPage() {
   return (
     <LegalPage
-      eyebrow="Legal"
-      title={<>The terms, in <SerifEm>plain&nbsp;English</SerifEm>.</>}
-      intro="Short, fair, and free of dark patterns. The agreement between you and Orba when you use the Service."
-      lastUpdated="April 27, 2026"
+      title={["Terms of Service.", { text: "In plain English.", className: "text-ink-3" }]}
+      intro="The agreement between you and Orba when you use the Service. Short, and free of dark patterns."
+      lastUpdated="October 12, 2026"
       sections={SECTIONS}
-      cta={{
-        eyebrow: "Still have questions",
-        heading: <>Talk to a <SerifEm>real human</SerifEm>.</>,
-        description: "Our legal team reads every email. Most replies land within a business day.",
-      }}
     />
   );
 }
