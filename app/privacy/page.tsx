@@ -71,10 +71,10 @@ const SECTIONS: LegalSection[] = [
       <>
         <p>We only share data with sub-processors strictly necessary to run the Service:</p>
         <ul>
-          <li><strong>Stripe</strong> &mdash; payments.</li>
-          <li><strong>OVHcloud</strong> &mdash; hosting (EU region).</li>
-          <li><strong>ZeptoMail</strong> &mdash; transactional email.</li>
-          <li><strong>Cloudflare</strong> &mdash; DDoS mitigation and edge caching.</li>
+          <li><strong>Stripe</strong>: payments.</li>
+          <li><strong>OVHcloud</strong>: hosting (EU region).</li>
+          <li><strong>ZeptoMail</strong>: transactional email.</li>
+          <li><strong>Cloudflare</strong>: DDoS mitigation and edge caching.</li>
         </ul>
         <p>
           Each sub-processor is bound by a data-processing agreement. We never sell or
@@ -119,9 +119,7 @@ const SECTIONS: LegalSection[] = [
       <>
         <p>
           Data is encrypted in transit (TLS 1.3) and at rest (AES-256). Production
-          access is gated by SSO with hardware keys, audited monthly. We&rsquo;re working
-          toward SOC 2 Type II certification &mdash; status updates at
-          <a href="https://orba.work/security"> orba.work/security</a>.
+          access is gated by SSO with hardware keys, audited monthly.
         </p>
         <p>
           Found a vulnerability? Email
