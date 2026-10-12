@@ -1,133 +1,81 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { DocPage } from "@/components/docs/doc-page";
+import { cn } from "@/lib/utils";
+import { inkButton } from "@/lib/ui";
+import { FREE_LIMITS } from "@/lib/plans";
+import { DocPage, DocLink } from "@/components/docs/doc-page";
 import { DocSection } from "@/components/docs/doc-section";
 import { DocSteps } from "@/components/docs/doc-list";
 import { DocCallout } from "@/components/docs/doc-callout";
-import { DocFooter } from "@/components/docs/doc-footer";
 
 export const metadata: Metadata = {
   title: "Getting started",
-  description: "Sign up, create your first board, and add tasks in under ten minutes.",
+  description: "Create an account, your first project and its columns.",
 };
 
 export default function GettingStartedPage() {
   return (
     <DocPage
       eyebrow="Getting started"
-      title="Up and running in ten minutes."
-      lead="Sign up, drop in your first board, and invite the team. By the end of this guide your sprint is on screen."
+      title="Your first board in a few minutes."
+      lead="Create an account, add a project, shape its columns and invite the people who work on it."
     >
-      <DocSection
-        step="01"
-        title="Create your account"
-        description="One step. Email and a password, or sign in with Google or GitHub if you prefer."
-      >
+      <DocSection step="01" title="Create your account">
         <DocSteps
           items={[
-            {
-              title: "Open the sign-up page",
-              description: "Pick email/password or any OAuth provider on the right.",
-            },
-            {
-              title: "Confirm your email",
-              description: "We send one link. Click it and you're in. No SMS codes, no captcha hell.",
-            },
-            {
-              title: "Land on your dashboard",
-              description: "Empty by design. The next step fills it in.",
-            },
+            { title: "Open the sign-up page", description: "Use an email and a password, or continue with Google or GitHub." },
+            { title: "Land on your dashboard", description: "It is empty until you create a project." },
           ]}
         />
         <div className="mt-6">
-          <Button asChild className="bg-brand text-brand-foreground hover:bg-brand/90">
-            <Link href="/register">
-              Create an account
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <Link href="/register" className={cn(inkButton, "h-10 px-4 text-sm")}>
+            Create an account
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </DocSection>
 
       <DocSection
         step="02"
         title="Create your first project"
-        description="Projects are boards. One project per body of work: a sprint, a launch, a hiring pipeline."
+        description="A project is one board: a sprint, a launch, a hiring pipeline."
       >
         <DocSteps
           items={[
-            {
-              title: "Click New project on the dashboard",
-              description: "Top-right corner.",
-            },
-            {
-              title: "Name it and pick a color",
-              description: "The color shows up on cards across the app, so make it count.",
-            },
-            {
-              title: "Choose a starter template, or skip",
-              description: "Templates pre-fill columns. You can always rename later.",
-            },
+            { title: "Click New project on the dashboard", description: "A dialog opens with two tabs, Custom and Template." },
+            { title: "Name it and pick a colour", description: "Add a description and a due date if you want them." },
+            { title: "Start custom or from a template", description: "Custom starts with To Do, In Progress and Done. A template brings its own columns and sample cards." },
           ]}
         />
-      </DocSection>
-
-      <DocSection
-        step="03"
-        title="Set up your columns"
-        description="Columns are your workflow. Most teams need three. Some need five."
-      >
-        <DocSteps
-          items={[
-            {
-              title: "Default columns",
-              description: "Backlog · In progress · Done. Good enough for most teams on day one.",
-            },
-            {
-              title: "Add columns",
-              description: "Click + at the end of the row. Rename by double-clicking the title.",
-            },
-            {
-              title: "Reorder by drag",
-              description: "Grab the column header. Drop it where it should live.",
-            },
-          ]}
-        />
-        <DocCallout tone="tip" title="Don't over-engineer">
-          Five columns max. Anything more and cards get lost. You can always add a column later; you can&apos;t reclaim
-          attention spent on the wrong workflow.
+        <DocCallout tone="info" title="Free plan">
+          The Free plan includes {FREE_LIMITS.boards} projects with up to {FREE_LIMITS.membersPerBoard} people on each.
+          See <DocLink href="/docs/subscription">Subscriptions</DocLink>.
         </DocCallout>
       </DocSection>
 
-      <DocSection
-        step="04"
-        title="Invite your team"
-        description="A board is more useful with two people on it. Even more so with five."
-      >
+      <DocSection step="03" title="Shape your columns" description="Columns are your workflow. Most teams need three or four.">
         <DocSteps
           items={[
-            {
-              title: "Open project settings",
-              description: "Settings tab inside any project.",
-            },
-            {
-              title: "Invite by email",
-              description: "Members get a one-click link. They sign in or sign up, both routes work.",
-            },
-            {
-              title: "Pick a role",
-              description: "Member, Admin, or Owner. Roles are explained on the Collaboration page.",
-            },
+            { title: "Add a column", description: "Click Add Column on the board, then give it a name and a colour." },
+            { title: "Edit or delete a column", description: "Open the menu on the column header." },
+            { title: "Add cards", description: "Create a card in a column, then drag it to the next one as the work moves." },
+          ]}
+        />
+        <DocCallout tone="tip" title="Keep it short">
+          Five columns at most. Past that, cards get lost between stages nobody looks at.
+        </DocCallout>
+      </DocSection>
+
+      <DocSection step="04" title="Invite your team">
+        <DocSteps
+          items={[
+            { title: "Open the board and click Team", description: "The team dialog lists everyone on the project." },
+            { title: "Invite by email", description: "People without an account get an email with a link to sign up." },
+            { title: "Pick a role", description: "Member or Admin. Roles are explained on the Collaboration page." },
           ]}
         />
       </DocSection>
-
-      <DocFooter
-        prev={{ href: "/docs", label: "Overview" }}
-        next={{ href: "/docs/user-guide", label: "User guide" }}
-      />
     </DocPage>
   );
 }

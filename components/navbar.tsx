@@ -145,7 +145,10 @@ export function Navbar() {
 
   const solid = scrolled || open;
 
+  // The sheet is a sibling of the header, not a child: backdrop-filter on the
+  // header would make it the containing block of the fixed sheet.
   return (
+    <>
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color] duration-200 ease-out",
@@ -267,6 +270,7 @@ export function Navbar() {
           </button>
         </div>
       </nav>
+    </header>
 
       <AnimatePresence>
         {open && (
@@ -279,7 +283,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.16 } }}
             exit={{ opacity: 0, transition: { duration: 0.12 } }}
-            className="fixed inset-x-0 top-14 bottom-0 flex flex-col bg-background px-4 sm:px-6 md:hidden"
+            className="fixed inset-x-0 top-14 bottom-0 z-50 flex flex-col bg-background px-4 sm:px-6 md:hidden"
           >
             <ul className="mt-2">
               {NAV_LINKS.map((link, i) => {
@@ -342,6 +346,6 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
