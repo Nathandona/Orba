@@ -1,23 +1,23 @@
 <div align="center">
-  <img src="public/banner.svg" alt="Orba" width="100%" />
+  <img src="public/banner.jpg" alt="Orba: plan the week on Monday, and watch the board empty by Friday" width="100%" />
 </div>
 
 <div align="center">
 
 # Orba
 
-Modern Kanban project management for teams. Organize work on drag and drop boards, collaborate with members, and manage subscriptions, all in one workspace.
+A Kanban board for small teams. Name your columns, drag cards to Done, and see where every project stands without asking anyone.
 
 <p>
-  <img src="https://img.shields.io/badge/Next.js-15-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19-087EA4?style=flat-square&logo=react&logoColor=white" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/TypeScript-7-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/Prisma-6-2D3748?style=flat-square&logo=prisma&logoColor=white" alt="Prisma" />
+  <img src="https://img.shields.io/badge/Prisma-7-2D3748?style=flat-square&logo=prisma&logoColor=white" alt="Prisma" />
   <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/NextAuth.js-4-000000?style=flat-square&logo=auth0&logoColor=white" alt="NextAuth.js" />
   <img src="https://img.shields.io/badge/Stripe-Payments-635BFF?style=flat-square&logo=stripe&logoColor=white" alt="Stripe" />
-  <img src="https://img.shields.io/badge/shadcn%2Fui-Radix-000000?style=flat-square&logo=shadcnui&logoColor=white" alt="shadcn/ui" />
+  <img src="https://img.shields.io/badge/shadcn%2Fui-Base_UI-000000?style=flat-square&logo=shadcnui&logoColor=white" alt="shadcn/ui" />
 </p>
 
 </div>
@@ -43,11 +43,11 @@ Orba is a project management platform built around Kanban boards. It gives teams
 
 | Area | Technology |
 | --- | --- |
-| Framework | Next.js 15 (App Router) with React 19 |
-| Language | TypeScript |
-| Styling | Tailwind CSS 4, shadcn/ui, Radix UI |
-| Animation | Framer Motion |
-| Database | PostgreSQL with Prisma ORM |
+| Framework | Next.js 16 (App Router) with React 19 |
+| Language | TypeScript 7 |
+| Styling | Tailwind CSS 4, shadcn/ui on Base UI, Hugeicons |
+| Animation | Motion |
+| Database | PostgreSQL with Prisma 7 (pg driver adapter) |
 | Authentication | NextAuth.js v4 |
 | Payments | Stripe |
 | Email | ZeptoMail over SMTP (Nodemailer) |
@@ -58,7 +58,7 @@ Orba is a project management platform built around Kanban boards. It gives teams
 
 ### Prerequisites
 
-- Node.js 18 or higher
+- Node.js 24 or higher
 - pnpm
 - A PostgreSQL database (local, Docker, or hosted)
 
@@ -145,10 +145,10 @@ OAuth providers and email are optional. Email and password authentication works 
 app/          Next.js App Router pages and API routes
 components/   UI components, Kanban board, dialogs, and marketing sections
 lib/          Auth, Prisma, Stripe, email, and shared utilities
-prisma/       Prisma schema
+prisma/       Prisma schema (config in prisma.config.ts)
 public/       Static assets, logos, and the banner
 types/        Shared TypeScript types
-middleware.ts Route protection
+proxy.ts      Route protection
 ```
 
 ## API Reference
