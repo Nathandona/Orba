@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { LayoutGroup, motion, useInView, useReducedMotion } from "framer-motion";
-import { MessageSquare } from "lucide-react";
+import { LayoutGroup, motion, useInView, useReducedMotion } from "motion/react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Message01Icon } from "@hugeicons/core-free-icons";
 
 import { cn } from "@/lib/utils";
 import { springSoft } from "@/lib/motion";
@@ -100,7 +101,7 @@ function BoardCard({ card, phase, isMover }: { card: Card; phase: Phase; isMover
           {card.due && <span>{card.due}</span>}
           {card.comments ? (
             <span className="flex items-center gap-1">
-              <MessageSquare className="h-3 w-3" />
+              <HugeiconsIcon icon={Message01Icon} className="h-3 w-3" />
               {card.comments}
             </span>
           ) : null}

@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowRight, Lock, AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, ArrowRight02Icon, CheckmarkCircle02Icon, SquareLock02Icon, ViewIcon, ViewOffIcon } from "@hugeicons/core-free-icons";
+import { motion } from "motion/react";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -110,7 +111,7 @@ function ResetPasswordForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
+                <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                 <AlertDescription>{tokenError}</AlertDescription>
               </Alert>
               <div className="space-y-3">
@@ -151,7 +152,7 @@ function ResetPasswordForm() {
                 className="text-center space-y-4"
               >
                 <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-500" />
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-8 h-8 text-green-600 dark:text-green-500" />
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-xl font-semibold">Password Reset Successful!</h3>
@@ -174,7 +175,7 @@ function ResetPasswordForm() {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
+                      <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                       <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   </motion.div>
@@ -183,7 +184,7 @@ function ResetPasswordForm() {
                 <div className="space-y-2">
                   <Label htmlFor="password">New Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <HugeiconsIcon icon={SquareLock02Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -199,9 +200,9 @@ function ResetPasswordForm() {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
                       {showPassword ? (
-                        <EyeOff className="w-4 h-4" />
+                        <HugeiconsIcon icon={ViewOffIcon} className="w-4 h-4" />
                       ) : (
-                        <Eye className="w-4 h-4" />
+                        <HugeiconsIcon icon={ViewIcon} className="w-4 h-4" />
                       )}
                     </button>
                   </div>
@@ -214,7 +215,7 @@ function ResetPasswordForm() {
                             req.met ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'
                           }`}
                         >
-                          <CheckCircle className={`w-3 h-3 ${req.met ? 'opacity-100' : 'opacity-30'}`} />
+                          <HugeiconsIcon icon={CheckmarkCircle02Icon} className={`w-3 h-3 ${req.met ? 'opacity-100' : 'opacity-30'}`} />
                           <span>{req.text}</span>
                         </div>
                       ))}
@@ -225,7 +226,7 @@ function ResetPasswordForm() {
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">Confirm New Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <HugeiconsIcon icon={SquareLock02Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
@@ -241,9 +242,9 @@ function ResetPasswordForm() {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
                       {showConfirmPassword ? (
-                        <EyeOff className="w-4 h-4" />
+                        <HugeiconsIcon icon={ViewOffIcon} className="w-4 h-4" />
                       ) : (
-                        <Eye className="w-4 h-4" />
+                        <HugeiconsIcon icon={ViewIcon} className="w-4 h-4" />
                       )}
                     </button>
                   </div>
@@ -260,7 +261,7 @@ function ResetPasswordForm() {
                   ) : (
                     <>
                       Reset Password
-                      <ArrowRight className="ml-2 w-5 h-5" />
+                      <HugeiconsIcon icon={ArrowRight02Icon} className="ml-2 w-5 h-5" />
                     </>
                   )}
                 </Button>

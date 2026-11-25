@@ -20,7 +20,7 @@ interface FaqAccordionProps {
 
 export function FaqAccordion({ items, className }: FaqAccordionProps) {
   return (
-    <Accordion type="single" collapsible className={className}>
+    <Accordion className={className}>
       {items.map((item, i) => (
         <AccordionItem key={i} value={`item-${i}`}>
           <AccordionTrigger>{item.q}</AccordionTrigger>

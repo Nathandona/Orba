@@ -7,8 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Mail, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, ArrowLeft02Icon, CheckmarkCircle02Icon, Mail01Icon } from "@hugeicons/core-free-icons";
+import { motion } from "motion/react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -70,7 +71,7 @@ export default function ForgotPasswordPage() {
                 className="text-center space-y-4"
               >
                 <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                  <CheckCircle2 className="w-8 h-8 text-green-600 dark:text-green-500" />
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-8 h-8 text-green-600 dark:text-green-500" />
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-xl font-semibold">Check your email</h3>
@@ -84,7 +85,7 @@ export default function ForgotPasswordPage() {
                 <div className="pt-4">
                   <Link href="/login">
                     <Button variant="outline" className="w-full">
-                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      <HugeiconsIcon icon={ArrowLeft02Icon} className="mr-2 h-4 w-4" />
                       Back to Login
                     </Button>
                   </Link>
@@ -98,7 +99,7 @@ export default function ForgotPasswordPage() {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
+                      <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                       <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   </motion.div>
@@ -107,7 +108,7 @@ export default function ForgotPasswordPage() {
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <HugeiconsIcon icon={Mail01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="email"
                       type="email"
@@ -134,7 +135,7 @@ export default function ForgotPasswordPage() {
                     href="/login"
                     className="text-sm text-muted-foreground hover:text-primary inline-flex items-center gap-2"
                   >
-                    <ArrowLeft className="h-4 w-4" />
+                    <HugeiconsIcon icon={ArrowLeft02Icon} className="h-4 w-4" />
                     Back to Login
                   </Link>
                 </div>

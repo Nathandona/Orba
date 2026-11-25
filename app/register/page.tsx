@@ -10,8 +10,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, Lock, Mail, User, AlertCircle, CheckCircle, Github } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, ArrowRight02Icon, CheckmarkCircle02Icon, GithubIcon, Mail01Icon, SquareLock02Icon, UserIcon } from "@hugeicons/core-free-icons";
+import { motion } from "motion/react";
 
 function RegisterForm() {
   const router = useRouter();
@@ -161,7 +162,7 @@ function RegisterForm() {
                 onClick={() => handleOAuthSignIn('github')}
                 className="w-full"
               >
-                <Github className="w-5 h-5 mr-2" />
+                <HugeiconsIcon icon={GithubIcon} className="w-5 h-5 mr-2" />
                 GitHub
               </Button>
               <Button
@@ -210,7 +211,7 @@ function RegisterForm() {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
+                    <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 </motion.div>
@@ -219,7 +220,7 @@ function RegisterForm() {
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={UserIcon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="name"
                     name="name"
@@ -236,7 +237,7 @@ function RegisterForm() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={Mail01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="email"
                     name="email"
@@ -253,7 +254,7 @@ function RegisterForm() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={SquareLock02Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="password"
                     name="password"
@@ -274,7 +275,7 @@ function RegisterForm() {
                           req.met ? 'text-green-600 dark:text-green-500' : 'text-muted-foreground'
                         }`}
                       >
-                        <CheckCircle className={`w-3 h-3 ${req.met ? 'opacity-100' : 'opacity-30'}`} />
+                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className={`w-3 h-3 ${req.met ? 'opacity-100' : 'opacity-30'}`} />
                         <span>{req.text}</span>
                       </div>
                     ))}
@@ -285,7 +286,7 @@ function RegisterForm() {
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={SquareLock02Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
@@ -310,7 +311,7 @@ function RegisterForm() {
                 ) : (
                   <>
                     Create Account
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    <HugeiconsIcon icon={ArrowRight02Icon} className="ml-2 w-5 h-5" />
                   </>
                 )}
               </Button>

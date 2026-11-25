@@ -24,18 +24,8 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/toast';
-import {
-  Loader2,
-  X,
-  Paperclip,
-  Upload,
-  MessageSquare,
-  Send,
-  FileText,
-  Image as ImageIcon,
-  File,
-  Download
-} from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Attachment01Icon, Cancel01Icon, Download01Icon, File01Icon, File02Icon, Image01Icon, Loading03Icon, Message01Icon, SentIcon, Upload01Icon } from "@hugeicons/core-free-icons";
 
 interface EditTaskDialogProps {
   open: boolean;
@@ -342,9 +332,9 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
   };
 
   const getFileIcon = (type: string) => {
-    if (type.startsWith('image/')) return <ImageIcon className="w-4 h-4" />;
-    if (type.includes('pdf')) return <FileText className="w-4 h-4" />;
-    return <File className="w-4 h-4" />;
+    if (type.startsWith('image/')) return <HugeiconsIcon icon={Image01Icon} className="w-4 h-4" />;
+    if (type.includes('pdf')) return <HugeiconsIcon icon={File01Icon} className="w-4 h-4" />;
+    return <HugeiconsIcon icon={File02Icon} className="w-4 h-4" />;
   };
 
   const handleDownloadFile = (file: Attachment) => {
@@ -387,11 +377,11 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="comments">
-              <MessageSquare className="w-4 h-4 mr-2" />
+              <HugeiconsIcon icon={Message01Icon} className="w-4 h-4 mr-2" />
               Comments ({comments.length})
             </TabsTrigger>
             <TabsTrigger value="attachments">
-              <Paperclip className="w-4 h-4 mr-2" />
+              <HugeiconsIcon icon={Attachment01Icon} className="w-4 h-4 mr-2" />
               Files ({attachments.length})
             </TabsTrigger>
           </TabsList>
@@ -426,7 +416,8 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
                   <Label htmlFor="edit-status">Status</Label>
                   <Select
                     value={formData.status}
-                    onValueChange={(value) => setFormData({ ...formData, status: value })}
+                    items={{ todo: "To Do", "in-progress": "In Progress", review: "Review", done: "Done" }}
+                    onValueChange={(value) => value && setFormData({ ...formData, status: value })}
                     disabled={loading}
                   >
                     <SelectTrigger id="edit-status">
@@ -445,8 +436,9 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
                   <Label htmlFor="edit-priority">Priority</Label>
                   <Select
                     value={formData.priority}
-                    onValueChange={(value: 'low' | 'medium' | 'high') =>
-                      setFormData({ ...formData, priority: value })
+                    items={{ low: "Low", medium: "Medium", high: "High" }}
+                    onValueChange={(value: 'low' | 'medium' | 'high' | null) =>
+                      value && setFormData({ ...formData, priority: value })
                     }
                     disabled={loading}
                   >
@@ -478,15 +470,15 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
                   <Label htmlFor="edit-assignee">Assignee</Label>
                   {teamMembers && teamMembers.length > 0 ? (
                     <Select
-                      value={formData.assignee}
-                      onValueChange={(value) => setFormData({ ...formData, assignee: value })}
+                      value={formData.assignee || null}
+                      onValueChange={(value) => setFormData({ ...formData, assignee: value ?? '' })}
                       disabled={loading}
                     >
                       <SelectTrigger id="edit-assignee">
                         <SelectValue placeholder="Select team member" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Unassigned</SelectItem>
+                        <SelectItem value={null}>Unassigned</SelectItem>
                         {teamMembers.map((member) => (
                           <SelectItem key={member.id} value={member.name}>
                             {member.name}
@@ -526,13 +518,13 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
                     {formData.labels.map((label) => (
                       <Badge key={label} variant="secondary" className="px-2 py-1">
                         {label}
-                        <button
+                        <button aria-label="Remove label"
                           type="button"
                           onClick={() => removeLabel(label)}
                           className="ml-1 hover:text-destructive"
                           disabled={loading}
                         >
-                          <X className="h-3 w-3" />
+                          <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
                         </button>
                       </Badge>
                     ))}
@@ -547,7 +539,7 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
                 <Button type="submit" className="flex-1" disabled={loading}>
                   {loading ? (
                     <>
-                      <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                      <HugeiconsIcon icon={Loading03Icon} className="mr-2 w-4 h-4 animate-spin" />
                       Saving...
                     </>
                   ) : (
@@ -562,7 +554,7 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
           <TabsContent value="comments" className="space-y-4">
             {loadingComments ? (
               <div className="text-center py-8 text-muted-foreground">
-                <Loader2 className="w-6 h-6 mx-auto mb-2 animate-spin" />
+                <HugeiconsIcon icon={Loading03Icon} className="w-6 h-6 mx-auto mb-2 animate-spin" />
                 Loading comments...
               </div>
             ) : (
@@ -603,8 +595,8 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
                 onChange={(e) => setNewComment(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleAddComment())}
               />
-              <Button onClick={handleAddComment} size="icon">
-                <Send className="w-4 h-4" />
+              <Button aria-label="Send comment" onClick={handleAddComment} size="icon">
+                <HugeiconsIcon icon={SentIcon} className="w-4 h-4" />
               </Button>
             </div>
           </TabsContent>
@@ -622,9 +614,9 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
               />
               <label htmlFor="file-upload" className="cursor-pointer">
                 {uploading ? (
-                  <Loader2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground animate-spin" />
+                  <HugeiconsIcon icon={Loading03Icon} className="w-12 h-12 mx-auto mb-4 text-muted-foreground animate-spin" />
                 ) : (
-                  <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={Upload01Icon} className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                 )}
                 <p className="text-sm text-muted-foreground mb-2">
                   {uploading ? 'Uploading...' : 'Click to upload or drag and drop'}
@@ -637,7 +629,7 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
 
             {loadingAttachments ? (
               <div className="text-center py-4 text-muted-foreground">
-                <Loader2 className="w-6 h-6 mx-auto mb-2 animate-spin" />
+                <HugeiconsIcon icon={Loading03Icon} className="w-6 h-6 mx-auto mb-2 animate-spin" />
                 Loading attachments...
               </div>
             ) : attachments.length > 0 ? (
@@ -665,23 +657,23 @@ export function EditTaskDialog({ open, onOpenChange, task, teamMembers, onSave }
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button
+                      <Button aria-label="Download file"
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDownloadFile(file)}
                         className="text-muted-foreground hover:text-foreground"
                         title="Download file"
                       >
-                        <Download className="w-4 h-4" />
+                        <HugeiconsIcon icon={Download01Icon} className="w-4 h-4" />
                       </Button>
-                      <Button
+                      <Button aria-label="Remove attachment"
                         variant="ghost"
                         size="sm"
                         onClick={() => removeAttachment(file.id)}
                         className="text-destructive hover:text-destructive"
                         title="Delete file"
                       >
-                        <X className="w-4 h-4" />
+                        <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>

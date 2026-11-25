@@ -1,14 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Bricolage_Grotesque, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/components/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { Analytics } from "@vercel/analytics/next";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+/* One family for the whole site. Optical sizing keeps the 96px display
+   tight and the 13px card labels open. */
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+  axes: ["opsz"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -16,23 +20,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-});
-
 const SITE_URL = "https://orba.work";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Orba: the Kanban your team will actually open on Monday",
+    default: "Orba: plan the week on Monday, watch the board empty by Friday",
     template: "%s · Orba",
   },
   description:
-    "Orba is a quiet, fast, opinionated Kanban for product teams. Plan the sprint, run the standup, ship the work, without losing an afternoon to the tool.",
+    "Orba is a Kanban board for small teams. Name your columns, drag cards to Done, and see where every project stands without asking anyone. Free for three boards.",
   applicationName: "Orba",
   keywords: [
     "Kanban",
@@ -63,21 +60,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Orba",
-    title: "Orba: the Kanban your team will actually open on Monday",
+    title: "Orba: plan the week on Monday, watch the board empty by Friday",
     description:
-      "A quiet, fast, opinionated Kanban for product teams. Plan, track, ship, without losing an afternoon to the tool.",
+      "A Kanban board for small teams. Name your columns, drag cards to Done, and see where every project stands.",
     url: SITE_URL,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Orba: the Kanban your team will actually open on Monday",
+    title: "Orba: plan the week on Monday, watch the board empty by Friday",
     description:
-      "A quiet, fast, opinionated Kanban for product teams.",
+      "A Kanban board for small teams. Free for three boards.",
     creator: "@orba",
-  },
-  icons: {
-    icon: "/favicon.ico",
   },
 };
 
@@ -85,6 +79,10 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e0e11" },
+  ],
 };
 
 export default function RootLayout({
@@ -96,18 +94,19 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+      className={`${bricolage.variable} ${geistMono.variable}`}
     >
       <head />
       <body className="font-sans antialiased">
-        <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light">
-            <ToastProvider>
-              {children}
-            </ToastProvider>
-            <Analytics />
-          </ThemeProvider>
-        </AuthProvider>
+        {/* Base UI portals (dialogs, menus, popovers) stack above this root. */}
+        <div className="isolate">
+          <AuthProvider>
+            <ThemeProvider attribute="class" defaultTheme="light">
+              <ToastProvider>{children}</ToastProvider>
+              <Analytics />
+            </ThemeProvider>
+          </AuthProvider>
+        </div>
       </body>
     </html>
   );

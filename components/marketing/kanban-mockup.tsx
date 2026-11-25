@@ -1,27 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import {
-  Bug,
-  CheckCircle2,
-  Circle,
-  CircleDot,
-  Clock,
-  Compass,
-  Flag,
-  GitPullRequest,
-  Megaphone,
-  MessageSquare,
-  Paintbrush,
-  Paperclip,
-  Plus,
-  Search,
-  Sparkles,
-  UserPlus,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
+import { Attachment01Icon, Bug01Icon, CheckmarkCircle02Icon, CircleIcon, Clock01Icon, Compass01Icon, Flag01Icon, GitPullRequestIcon, Megaphone01Icon, Message01Icon, PaintBrush01Icon, PlusSignIcon, RecordIcon, Search01Icon, SparklesIcon, UserAdd01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 
 type Tone = "blue" | "green" | "amber" | "rose" | "violet" | "slate" | "teal" | "lime";
@@ -50,7 +32,7 @@ interface BoardPreset {
   project: string;
   subtitle: string;
   badge: string;
-  icon: LucideIcon;
+  icon: IconSvgElement;
   columns: [MockColumn, MockColumn, MockColumn];
 }
 
@@ -70,9 +52,9 @@ const TAG_TONE: Record<Tone, string> = {
 };
 
 const PRIORITY = {
-  low: { color: "text-ink-3/50", icon: Circle },
-  med: { color: "text-[oklch(0.65_0.16_85)]", icon: CircleDot },
-  high: { color: "text-[oklch(0.62_0.20_25)]", icon: CircleDot },
+  low: { color: "text-ink-3/50", icon: CircleIcon },
+  med: { color: "text-[oklch(0.65_0.16_85)]", icon: RecordIcon },
+  high: { color: "text-[oklch(0.62_0.20_25)]", icon: RecordIcon },
 } as const;
 
 // ── Presets ────────────────────────────────────────────────────────────
@@ -81,7 +63,7 @@ const launch: BoardPreset = {
   project: "Atlas launch",
   subtitle: "Q2 · 23 tasks",
   badge: "orba.work / atlas-launch",
-  icon: Flag,
+  icon: Flag01Icon,
   columns: [
     {
       id: "todo",
@@ -169,7 +151,7 @@ const hiring: BoardPreset = {
   project: "Senior PM · hiring",
   subtitle: "Pipeline · 14 candidates",
   badge: "people / sr-pm-q2",
-  icon: UserPlus,
+  icon: UserAdd01Icon,
   columns: [
     {
       id: "applied",
@@ -253,7 +235,7 @@ const content: BoardPreset = {
   project: "Q3 content calendar",
   subtitle: "Marketing · 18 pieces",
   badge: "marketing / q3",
-  icon: Megaphone,
+  icon: Megaphone01Icon,
   columns: [
     {
       id: "draft",
@@ -331,7 +313,7 @@ const bugs: BoardPreset = {
   project: "Bug triage",
   subtitle: "Engineering · this week",
   badge: "engineering / triage",
-  icon: Bug,
+  icon: Bug01Icon,
   columns: [
     {
       id: "new",
@@ -415,7 +397,7 @@ const design: BoardPreset = {
   project: "Design system v2",
   subtitle: "Design · sprint 4",
   badge: "design / dsv2",
-  icon: Paintbrush,
+  icon: PaintBrush01Icon,
   columns: [
     {
       id: "ideas",
@@ -491,7 +473,7 @@ const roadmap: BoardPreset = {
   project: "Roadmap · 2026",
   subtitle: "Product · half-year",
   badge: "product / 2026-h1",
-  icon: Compass,
+  icon: Compass01Icon,
   columns: [
     {
       id: "later",
@@ -569,7 +551,7 @@ const reviews: BoardPreset = {
   project: "Pull requests",
   subtitle: "Engineering · today",
   badge: "engineering / prs",
-  icon: GitPullRequest,
+  icon: GitPullRequestIcon,
   columns: [
     {
       id: "open",
@@ -694,7 +676,7 @@ function MockCard({ task, idx }: { task: MockTask; idx: number }) {
         >
           {task.tag.label}
         </span>
-        {PrioIcon && <PrioIcon className={cn("h-3.5 w-3.5", prioColor)} />}
+        {PrioIcon && <HugeiconsIcon icon={PrioIcon} className={cn("h-3.5 w-3.5", prioColor)} />}
       </div>
       <h4 className="mt-2.5 text-[13px] font-medium leading-snug text-ink-1">
         {task.title}
@@ -715,19 +697,19 @@ function MockCard({ task, idx }: { task: MockTask; idx: number }) {
         <div className="flex items-center gap-2.5">
           {task.due && (
             <span className="inline-flex items-center gap-1">
-              <Clock className="h-3 w-3" />
+              <HugeiconsIcon icon={Clock01Icon} className="h-3 w-3" />
               {task.due}
             </span>
           )}
           {task.comments != null && (
             <span className="inline-flex items-center gap-1">
-              <MessageSquare className="h-3 w-3" />
+              <HugeiconsIcon icon={Message01Icon} className="h-3 w-3" />
               {task.comments}
             </span>
           )}
           {task.attachments != null && (
             <span className="inline-flex items-center gap-1">
-              <Paperclip className="h-3 w-3" />
+              <HugeiconsIcon icon={Attachment01Icon} className="h-3 w-3" />
               {task.attachments}
             </span>
           )}
@@ -809,11 +791,11 @@ export function KanbanMockup({
             <span className="h-2.5 w-2.5 rounded-full bg-[oklch(0.74_0.15_150)]" />
           </div>
           <div className="hidden items-center gap-2 rounded-full border border-hairline bg-background/80 px-3 py-1 text-[11px] text-ink-3 sm:inline-flex">
-            <Search className="h-3 w-3" />
+            <HugeiconsIcon icon={Search01Icon} className="h-3 w-3" />
             orba.work / {board.badge.split("/")[1]?.trim() ?? board.badge}
           </div>
           <div className="flex items-center gap-2 text-[11px] text-ink-3">
-            <Sparkles className="h-3 w-3 text-brand" />
+            <HugeiconsIcon icon={SparklesIcon} className="h-3 w-3 text-brand" />
             <span className="hidden sm:inline">Realtime</span>
           </div>
         </div>
@@ -822,7 +804,7 @@ export function KanbanMockup({
         <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-3 sm:px-5">
           <div className="flex items-center gap-2.5">
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-tint text-brand">
-              <ProjectIcon className="h-3 w-3" />
+              <HugeiconsIcon icon={ProjectIcon} className="h-3 w-3" />
             </span>
             <span className="text-sm font-medium text-ink-1">{board.project}</span>
             <span className="hidden text-xs text-ink-3 sm:inline">
@@ -836,7 +818,7 @@ export function KanbanMockup({
               ))}
             </div>
             <div className="hidden h-7 items-center gap-1 rounded-md border border-hairline px-2 text-[11px] text-ink-2 sm:inline-flex">
-              <Users className="h-3 w-3" />
+              <HugeiconsIcon icon={UserGroupIcon} className="h-3 w-3" />
               {teamCount}
             </div>
           </div>
@@ -867,7 +849,7 @@ export function KanbanMockup({
                   aria-label="Add task"
                   className="rounded-md p-1 text-ink-3 hover:text-ink-1"
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <HugeiconsIcon icon={PlusSignIcon} className="h-3.5 w-3.5" />
                 </button>
               </div>
               <div className="flex flex-col gap-3">
@@ -881,7 +863,7 @@ export function KanbanMockup({
                 )}
                 {col.empty?.kind === "shipped" && (
                   <div className="flex items-center gap-2 rounded-xl border border-hairline bg-surface-2/40 px-3 py-2.5 text-[11px] text-ink-3">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-brand" />
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3.5 w-3.5 text-brand" />
                     {col.empty.label}
                   </div>
                 )}

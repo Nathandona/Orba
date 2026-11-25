@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useSearchParams } from "next/navigation";
-import { AlertCircle, Check, Loader2 } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, Loading03Icon, Tick02Icon } from "@hugeicons/core-free-icons";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Navbar } from "@/components/navbar";
@@ -174,19 +175,19 @@ function PricingContent() {
             <div className="mt-10 max-w-2xl" role="status">
               {success && (
                 <Alert className="border-hairline">
-                  <Check className="h-4 w-4" />
+                  <HugeiconsIcon icon={Tick02Icon} className="h-4 w-4" />
                   <AlertDescription className="text-ink-1">Subscription active. Welcome to Pro.</AlertDescription>
                 </Alert>
               )}
               {canceled && (
                 <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
+                  <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                   <AlertDescription>Checkout canceled. You can try again anytime.</AlertDescription>
                 </Alert>
               )}
               {error && (
                 <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
+                  <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
@@ -262,7 +263,7 @@ export default function PricingPage() {
         <div className="min-h-screen bg-background">
           <Navbar />
           <div className="flex min-h-[60vh] items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-ink-3" />
+            <HugeiconsIcon icon={Loading03Icon} className="h-6 w-6 animate-spin text-ink-3" />
           </div>
           <Footer />
         </div>

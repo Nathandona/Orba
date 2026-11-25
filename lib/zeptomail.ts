@@ -1,3 +1,4 @@
+import 'server-only';
 import nodemailer from 'nodemailer';
 
 if (!process.env.ZEPTOMAIL_USER || !process.env.ZEPTOMAIL_PASS) {

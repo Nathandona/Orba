@@ -32,9 +32,10 @@ import {
 } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Users, UserPlus, Trash2, Mail, AlertCircle, Clock } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, Clock01Icon, Delete02Icon, Mail01Icon, UserAdd01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "motion/react";
 import { useToast } from '@/components/ui/toast';
 
 interface TeamMember {
@@ -175,16 +176,14 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Users className="w-4 h-4 mr-2" />
-          Team
-        </Button>
+      <DialogTrigger render={<Button variant="outline" size="sm" />}>
+        <HugeiconsIcon icon={UserGroupIcon} className="w-4 h-4 mr-2" />
+        Team
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
+            <HugeiconsIcon icon={UserGroupIcon} className="w-5 h-5" />
             Team Members
           </DialogTitle>
           <DialogDescription>
@@ -196,7 +195,7 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
           {/* Add Member Form */}
           <div className="border rounded-lg p-4 bg-muted/50">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <UserPlus className="w-4 h-4" />
+              <HugeiconsIcon icon={UserAdd01Icon} className="w-4 h-4" />
               Add Team Member
             </h3>
             
@@ -228,8 +227,12 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
 
               <div className="space-y-2">
                 <Label htmlFor="role">Role</Label>
-                <Select value={role} onValueChange={(value: 'member' | 'admin') => setRole(value)}>
-                  <SelectTrigger>
+                <Select
+                  value={role}
+                  items={{ member: "Member - Can view and edit tasks", admin: "Admin - Can manage team and settings" }}
+                  onValueChange={(value: 'member' | 'admin' | null) => value && setRole(value)}
+                >
+                  <SelectTrigger id="role">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -241,7 +244,7 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
 
               {error && (
                 <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
+                  <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
@@ -287,7 +290,7 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
                   <div>
                     <p className="font-medium">{projectOwner.name}</p>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Mail className="w-3 h-3" />
+                      <HugeiconsIcon icon={Mail01Icon} className="w-3 h-3" />
                       {projectOwner.email}
                     </div>
                   </div>
@@ -317,13 +320,13 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
                           <p className="font-medium">{member.name}</p>
                           {member.status === 'pending' && (
                             <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-500 dark:border-yellow-900">
-                              <Clock className="w-3 h-3 mr-1" />
+                              <HugeiconsIcon icon={Clock01Icon} className="w-3 h-3 mr-1" />
                               Pending
                             </Badge>
                           )}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Mail className="w-3 h-3" />
+                          <HugeiconsIcon icon={Mail01Icon} className="w-3 h-3" />
                           {member.email}
                         </div>
                         {member.status === 'pending' && (
@@ -337,13 +340,13 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
                       <Badge className={getRoleBadgeColor(member.role)}>
                         {member.role}
                       </Badge>
-                      <Button
+                      <Button aria-label="Remove member"
                         variant="ghost"
                         size="sm"
                         onClick={() => setMemberToDelete(member)}
                         className="text-destructive hover:text-destructive hover:bg-destructive/10"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" />
                       </Button>
                     </div>
                   </motion.div>
@@ -352,7 +355,7 @@ export function TeamDialog({ projectId, projectOwner, onMembersChange }: TeamDia
 
               {members.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
-                  <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <HugeiconsIcon icon={UserGroupIcon} className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No team members yet</p>
                   <p className="text-xs">Add members to collaborate on this project</p>
                 </div>

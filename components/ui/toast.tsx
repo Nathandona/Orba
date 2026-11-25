@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { X } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Button } from '@/components/ui/button';
 
 interface Toast {
@@ -60,13 +61,13 @@ export function ToastProvider({ children }: ToastProviderProps) {
               <AlertDescription>
                 {toast.message}
               </AlertDescription>
-              <Button
+              <Button aria-label="Dismiss"
                 variant="ghost"
                 size="sm"
                 className="absolute right-2 top-2 h-6 w-6 p-0 hover:bg-muted"
                 onClick={() => removeToast(toast.id)}
               >
-                <X className="h-4 w-4" />
+                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
               </Button>
             </Alert>
           </div>

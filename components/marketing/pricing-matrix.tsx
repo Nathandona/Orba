@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Check, Minus } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { MinusSignIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 
 type Cell = boolean | string;
@@ -24,8 +25,8 @@ interface PricingMatrixProps {
 }
 
 function renderCell(value: Cell) {
-  if (value === true) return <Check aria-label="Included" className="mx-auto h-4 w-4 text-ink-1" />;
-  if (value === false) return <Minus aria-label="Not included" className="mx-auto h-4 w-4 text-ink-3/50" />;
+  if (value === true) return <HugeiconsIcon icon={Tick02Icon} aria-label="Included" className="mx-auto h-4 w-4 text-ink-1" />;
+  if (value === false) return <HugeiconsIcon icon={MinusSignIcon} aria-label="Not included" className="mx-auto h-4 w-4 text-ink-3/50" />;
   return <span className="font-mono text-xs text-ink-1">{value}</span>;
 }
 

@@ -1,5 +1,5 @@
 # Multi-stage build for Next.js with pnpm
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -8,8 +8,10 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
+# Copy package files (pnpm-workspace.yaml holds the allowed build scripts,
+# the Prisma files let the postinstall `prisma generate` run)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml prisma.config.ts ./
+COPY prisma ./prisma
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -25,7 +27,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma Client
-RUN npx prisma generate
+RUN pnpm exec prisma generate
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1

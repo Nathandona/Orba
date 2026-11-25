@@ -16,7 +16,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Plus, Crown, Lock, CheckCircle, LockOpen } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { CheckmarkCircle02Icon, CrownIcon, Loading03Icon, PlusSignIcon, SquareLock02Icon, SquareUnlock02Icon } from "@hugeicons/core-free-icons";
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/toast';
 
@@ -177,11 +178,9 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          New Project
-        </Button>
+      <DialogTrigger render={<Button />}>
+        <HugeiconsIcon icon={PlusSignIcon} className="mr-2 h-4 w-4" />
+        New Project
       </DialogTrigger>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -230,7 +229,7 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
                             <CardTitle className="text-sm font-medium flex items-center gap-2">
                               {template.name}
                               {template.plan === 'premium' && (
-                                <Lock className="w-4 h-4" />
+                                <HugeiconsIcon icon={SquareLock02Icon} className="w-4 h-4" />
                               )}
                             </CardTitle>
                             <CardDescription className="text-xs mt-1">
@@ -281,7 +280,7 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
                   className="w-full text-sm p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg flex items-center justify-center gap-2 text-amber-700 dark:text-amber-300 cursor-pointer"
                   aria-label="Upgrade to Pro"
                 >
-                  <LockOpen className="w-4 h-4" />
+                  <HugeiconsIcon icon={SquareUnlock02Icon} className="w-4 h-4" />
                   <span>Upgrade to Pro to unlock all templates</span>
                 </Button>
               )}
@@ -294,7 +293,7 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
                 <div className="p-3 bg-muted/50 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 text-green-600" />
                       <span className="text-sm font-medium">Template:</span>
                       <span className="text-sm">{selectedTemplate.name}</span>
                     </div>
@@ -389,7 +388,7 @@ export function NewProjectDialog({ onProjectCreated }: NewProjectDialogProps) {
                 <Button type="submit" className="flex-1" disabled={loading}>
                   {loading ? (
                     <>
-                      <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                      <HugeiconsIcon icon={Loading03Icon} className="mr-2 w-4 h-4 animate-spin" />
                       Creating...
                     </>
                   ) : (

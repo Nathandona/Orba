@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { verifyPassword } from '@/lib/auth';
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
+  adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,

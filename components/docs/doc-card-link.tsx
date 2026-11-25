@@ -1,6 +1,7 @@
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { focusRing } from "@/lib/ui";
 
@@ -24,7 +25,7 @@ export function DocCardLink({ href, title, description, className }: DocCardLink
     >
       <span className="flex items-center justify-between gap-3 font-medium text-ink-1">
         {title}
-        <ArrowRight className="h-4 w-4 shrink-0 text-ink-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
+        <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4 shrink-0 text-ink-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
       </span>
       {description && <span className="mt-1.5 text-sm leading-relaxed text-ink-2">{description}</span>}
     </Link>

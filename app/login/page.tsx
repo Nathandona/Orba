@@ -10,8 +10,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, Lock, Mail, AlertCircle, Github } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, ArrowRight02Icon, GithubIcon, Mail01Icon, SquareLock02Icon } from "@hugeicons/core-free-icons";
+import { motion } from "motion/react";
 
 function LoginForm() {
   const router = useRouter();
@@ -93,7 +94,7 @@ function LoginForm() {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
+                    <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 </motion.div>
@@ -102,7 +103,7 @@ function LoginForm() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={Mail01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
@@ -118,7 +119,7 @@ function LoginForm() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={SquareLock02Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="password"
                     type="password"
@@ -155,7 +156,7 @@ function LoginForm() {
                 ) : (
                   <>
                     Sign In
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    <HugeiconsIcon icon={ArrowRight02Icon} className="ml-2 w-5 h-5" />
                   </>
                 )}
               </Button>
@@ -179,7 +180,7 @@ function LoginForm() {
                 onClick={() => handleOAuthSignIn('github')}
                 className="w-full"
               >
-                <Github className="w-5 h-5 mr-2" />
+                <HugeiconsIcon icon={GithubIcon} className="w-5 h-5 mr-2" />
                 GitHub
               </Button>
               <Button

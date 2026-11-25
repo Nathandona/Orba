@@ -8,26 +8,8 @@ const nextConfig: NextConfig = {
 
   // Image optimization
   images: {
-    domains: ['localhost'],
+    remotePatterns: [{ protocol: 'http', hostname: 'localhost' }],
     formats: ['image/webp', 'image/avif'],
-  },
-
-  // Bundle optimization
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Optimize chunk splitting for production
-    if (!isServer && !dev) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      };
-    }
-    return config;
   },
 
   // Headers for better caching
@@ -51,7 +33,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-          ];
+    ];
   },
 
   // Add domain configuration for better SEO and analytics

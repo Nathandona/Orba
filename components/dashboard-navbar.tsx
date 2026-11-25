@@ -10,7 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, ArrowLeft } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft02Icon, Logout01Icon, UserIcon } from "@hugeicons/core-free-icons";
 import { signOut } from 'next-auth/react';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { useTheme } from 'next-themes';
@@ -67,19 +68,19 @@ export function DashboardNavbar({
               onClick={() => router.push(backButtonPath)}
               className="hidden sm:flex"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <HugeiconsIcon icon={ArrowLeft02Icon} className="w-4 h-4 mr-2" />
               Back
             </Button>
           )}
 
           {showBackButton && (
-            <Button
+            <Button aria-label="Back"
               variant="ghost"
               size="sm"
               onClick={() => router.push(backButtonPath)}
               className="sm:hidden p-2"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <HugeiconsIcon icon={ArrowLeft02Icon} className="w-4 h-4" />
             </Button>
           )}
 
@@ -105,15 +106,13 @@ export function DashboardNavbar({
           {rightContent}
           <ModeToggle />
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                <Avatar>
-                  <AvatarImage src={user.image || undefined} alt={user.name || 'User'} />
-                  <AvatarFallback>{getUserInitials(user.name)}</AvatarFallback>
-                </Avatar>
-              </Button>
+            <DropdownMenuTrigger render={<Button variant="ghost" className="relative h-10 w-10 rounded-full" />}>
+              <Avatar>
+                <AvatarImage src={user.image || undefined} alt={user.name || 'User'} />
+                <AvatarFallback>{getUserInitials(user.name)}</AvatarFallback>
+              </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuContent className="w-56" align="end">
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{user.name || 'User'}</p>
@@ -123,15 +122,13 @@ export function DashboardNavbar({
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/profile" className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </Link>
+              <DropdownMenuItem render={<Link href="/profile" className="cursor-pointer" />}>
+                <HugeiconsIcon icon={UserIcon} className="mr-2 h-4 w-4" />
+                <span>Profile</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut()}>
-                <LogOut className="mr-2 h-4 w-4" />
+                <HugeiconsIcon icon={Logout01Icon} className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

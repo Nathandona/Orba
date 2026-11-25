@@ -11,7 +11,7 @@ interface DocFaqProps {
 
 export function DocFaq({ items, className }: DocFaqProps) {
   return (
-    <Accordion type="single" collapsible className={cn("divide-y divide-hairline border-y border-hairline", className)}>
+    <Accordion className={cn("divide-y divide-hairline border-y border-hairline", className)}>
       {items.map((item, i) => (
         <AccordionItem key={i} value={`item-${i}`} className="border-0">
           <AccordionTrigger className="py-4 text-left text-[15px] font-medium text-ink-1 hover:no-underline sm:text-base">

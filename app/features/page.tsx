@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useSession } from "next-auth/react";
-import { ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
 
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -112,7 +113,7 @@ export default function FeaturesPage() {
             <motion.div variants={fadeUp} className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link href={href} className={cn(inkButton, "group h-12 px-6 text-base")}>
                 {session ? "Open dashboard" : "Start free"}
-                <ArrowRight className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-0.5" />
+                <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/pricing"

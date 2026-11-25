@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { inkButton, outlineButton } from "@/lib/ui";
 import { DocPage } from "@/components/docs/doc-page";
@@ -31,7 +32,7 @@ export default function AuthenticationPage() {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/register" className={cn(inkButton, "h-10 px-4 text-sm")}>
             Create an account
-            <ArrowRight className="h-4 w-4" />
+            <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
           </Link>
           <Link href="/login" className={cn(outlineButton, "h-10 px-4 text-sm")}>
             Sign in

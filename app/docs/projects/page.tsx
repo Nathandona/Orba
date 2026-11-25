@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { inkButton } from "@/lib/ui";
 import { DocPage, DocLink } from "@/components/docs/doc-page";
@@ -65,7 +66,7 @@ export default function ProjectsPage() {
       <div>
         <Link href="/dashboard" className={cn(inkButton, "h-10 px-4 text-sm")}>
           Open dashboard
-          <ArrowRight className="h-4 w-4" />
+          <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
         </Link>
       </div>
     </DocPage>

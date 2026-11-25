@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRef } from "react";
-import { useInView } from "framer-motion";
+import { useInView } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
