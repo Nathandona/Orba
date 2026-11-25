@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { inkButton } from "@/lib/ui";
 import { FREE_LIMITS } from "@/lib/plans";
@@ -31,7 +32,7 @@ export default function GettingStartedPage() {
         <div className="mt-6">
           <Link href="/register" className={cn(inkButton, "h-10 px-4 text-sm")}>
             Create an account
-            <ArrowRight className="h-4 w-4" />
+            <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
           </Link>
         </div>
       </DocSection>

@@ -11,26 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { motion } from 'framer-motion';
-import {
-    User,
-    Mail,
-    Calendar,
-    MapPin,
-    Briefcase,
-    Save,
-    Camera,
-    Shield,
-    Bell,
-    Palette,
-    Lock,
-    CheckCircle2,
-    AlertCircle,
-    CreditCard,
-    Crown,
-    ExternalLink,
-    Loader2,
-} from 'lucide-react';
+import { motion } from "motion/react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, Briefcase01Icon, Calendar03Icon, Camera01Icon, CheckmarkCircle02Icon, CreditCardIcon, CrownIcon, FloppyDiskIcon, LinkSquare02Icon, Loading03Icon, Location01Icon, Mail01Icon, Notification01Icon, PaintBoardIcon, Shield01Icon, SquareLock02Icon, UserIcon } from "@hugeicons/core-free-icons";
 
 interface ProfileContentProps {
     user: {
@@ -180,11 +163,11 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                                  'U'}
                                             </AvatarFallback>
                                         </Avatar>
-                                        <Button
+                                        <Button aria-label="Change profile picture"
                                             size="sm"
                                             className="absolute bottom-0 right-0 rounded-full h-10 w-10 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                         >
-                                            <Camera className="h-4 w-4" />
+                                            <HugeiconsIcon icon={Camera01Icon} className="h-4 w-4" />
                                         </Button>
                                     </div>
 
@@ -193,23 +176,23 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                         <div className="flex items-center gap-2">
                                             <h1 className="text-3xl font-bold">{user.name || 'User'}</h1>
                                             <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                                                <CheckCircle2 className="h-3 w-3 mr-1" />
+                                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3 w-3 mr-1" />
                                                 Verified
                                             </Badge>
                                         </div>
                                         <p className="text-muted-foreground flex items-center gap-2">
-                                            <Mail className="h-4 w-4" />
+                                            <HugeiconsIcon icon={Mail01Icon} className="h-4 w-4" />
                                             {user.email}
                                         </p>
                                         {formData.jobTitle && formData.company && (
                                             <p className="text-muted-foreground flex items-center gap-2">
-                                                <Briefcase className="h-4 w-4" />
+                                                <HugeiconsIcon icon={Briefcase01Icon} className="h-4 w-4" />
                                                 {formData.jobTitle} at {formData.company}
                                             </p>
                                         )}
                                         {formData.location && (
                                             <p className="text-muted-foreground flex items-center gap-2">
-                                                <MapPin className="h-4 w-4" />
+                                                <HugeiconsIcon icon={Location01Icon} className="h-4 w-4" />
                                                 {formData.location}
                                             </p>
                                         )}
@@ -238,7 +221,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                                         'Saving...'
                                                     ) : (
                                                         <>
-                                                            <Save className="h-4 w-4 mr-2" />
+                                                            <HugeiconsIcon icon={FloppyDiskIcon} className="h-4 w-4 mr-2" />
                                                             Save Changes
                                                         </>
                                                     )}
@@ -272,7 +255,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                         animate={{ opacity: 1, y: 0 }}
                                         className="mt-4 p-3 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-lg flex items-center gap-2"
                                     >
-                                        <CheckCircle2 className="h-4 w-4" />
+                                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4" />
                                         Profile updated successfully!
                                     </motion.div>
                                 )}
@@ -282,7 +265,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                         animate={{ opacity: 1, y: 0 }}
                                         className="mt-4 p-3 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg flex items-center gap-2"
                                     >
-                                        <AlertCircle className="h-4 w-4" />
+                                        <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
                                         Failed to update profile. Please try again.
                                     </motion.div>
                                 )}
@@ -299,19 +282,19 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                         <Tabs defaultValue="general" className="w-full">
                             <TabsList className="grid w-full grid-cols-4">
                                 <TabsTrigger value="general">
-                                    <User className="h-4 w-4 mr-2" />
+                                    <HugeiconsIcon icon={UserIcon} className="h-4 w-4 mr-2" />
                                     General
                                 </TabsTrigger>
                                 <TabsTrigger value="billing">
-                                    <CreditCard className="h-4 w-4 mr-2" />
+                                    <HugeiconsIcon icon={CreditCardIcon} className="h-4 w-4 mr-2" />
                                     Billing
                                 </TabsTrigger>
                                 <TabsTrigger value="security">
-                                    <Shield className="h-4 w-4 mr-2" />
+                                    <HugeiconsIcon icon={Shield01Icon} className="h-4 w-4 mr-2" />
                                     Security
                                 </TabsTrigger>
                                 <TabsTrigger value="preferences">
-                                    <Palette className="h-4 w-4 mr-2" />
+                                    <HugeiconsIcon icon={PaintBoardIcon} className="h-4 w-4 mr-2" />
                                     Preferences
                                 </TabsTrigger>
                             </TabsList>
@@ -412,7 +395,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                             </div>
                                             {subscription?.isPro && (
                                                 <Badge className="bg-primary/10 text-primary border-primary">
-                                                    <Crown className="h-3 w-3 mr-1" />
+                                                    <HugeiconsIcon icon={CrownIcon} className="h-3 w-3 mr-1" />
                                                     Pro
                                                 </Badge>
                                             )}
@@ -471,38 +454,38 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                                 {subscription?.isPro ? (
                                                     <>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>Unlimited boards</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>Unlimited team members</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>Advanced analytics</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>Priority support</span>
                                                         </div>
                                                     </>
                                                 ) : (
                                                     <>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>Up to 3 boards</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>5 team members</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>Basic templates</span>
                                                         </div>
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
                                                             <span>Email support</span>
                                                         </div>
                                                     </>
@@ -523,14 +506,14 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                                     >
                                                         {isLoadingPortal ? (
                                                             <>
-                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                <HugeiconsIcon icon={Loading03Icon} className="mr-2 h-4 w-4 animate-spin" />
                                                                 Loading...
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <CreditCard className="mr-2 h-4 w-4" />
+                                                                <HugeiconsIcon icon={CreditCardIcon} className="mr-2 h-4 w-4" />
                                                                 Manage Subscription
-                                                                <ExternalLink className="ml-2 h-4 w-4" />
+                                                                <HugeiconsIcon icon={LinkSquare02Icon} className="ml-2 h-4 w-4" />
                                                             </>
                                                         )}
                                                     </Button>
@@ -543,7 +526,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                                     onClick={() => window.location.href = '/pricing'}
                                                     className="w-full"
                                                 >
-                                                    <Crown className="mr-2 h-4 w-4" />
+                                                    <HugeiconsIcon icon={CrownIcon} className="mr-2 h-4 w-4" />
                                                     Upgrade to Pro
                                                 </Button>
                                             )}
@@ -596,7 +579,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
 
                                         <div className="space-y-4">
                                             <h3 className="text-lg font-semibold flex items-center gap-2">
-                                                <Lock className="h-5 w-5" />
+                                                <HugeiconsIcon icon={SquareLock02Icon} className="h-5 w-5" />
                                                 Two-Factor Authentication
                                             </h3>
                                             <p className="text-sm text-muted-foreground">
@@ -622,7 +605,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
                                     <CardContent className="space-y-6">
                                         <div className="space-y-4">
                                             <h3 className="text-lg font-semibold flex items-center gap-2">
-                                                <Bell className="h-5 w-5" />
+                                                <HugeiconsIcon icon={Notification01Icon} className="h-5 w-5" />
                                                 Notifications
                                             </h3>
                                             <div className="space-y-3">
@@ -660,7 +643,7 @@ export function ProfileContent({ user, subscription, stats }: ProfileContentProp
 
                                         <div className="space-y-4">
                                             <h3 className="text-lg font-semibold flex items-center gap-2">
-                                                <Calendar className="h-5 w-5" />
+                                                <HugeiconsIcon icon={Calendar03Icon} className="h-5 w-5" />
                                                 Date & Time
                                             </h3>
                                             <div className="space-y-2">

@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Link2 } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Link01Icon } from "@hugeicons/core-free-icons";
 
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -127,7 +128,7 @@ export function LegalPage({ title, intro, lastUpdated, sections }: LegalPageProp
                   aria-label={`Link to ${s.title}`}
                   className={cn("rounded-sm text-ink-3 opacity-0 transition-opacity hover:text-ink-1 group-hover:opacity-100 focus-visible:opacity-100", focusRing)}
                 >
-                  <Link2 className="h-4 w-4" />
+                  <HugeiconsIcon icon={Link01Icon} className="h-4 w-4" />
                 </a>
               </h2>
               <div className="mt-4 space-y-4 text-[15px] leading-relaxed text-ink-2 sm:text-base [&_a]:text-ink-1 [&_a]:underline [&_a]:decoration-hairline [&_a]:underline-offset-4 [&_a:hover]:decoration-ink-1 [&_li]:pl-1 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-5 [&_strong]:font-medium [&_strong]:text-ink-1 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_ul]:marker:text-ink-3">

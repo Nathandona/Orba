@@ -13,14 +13,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Calendar,
-  MessageSquare,
-  Paperclip,
-  MoreVertical,
-  Edit,
-  Trash2,
-} from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Attachment01Icon, Calendar03Icon, Delete02Icon, Message01Icon, MoreVerticalIcon, PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { Task } from '@/components/kanban-board';
 import { EditTaskDialog } from '@/components/edit-task-dialog';
 import { useToast } from '@/components/ui/toast';
@@ -138,14 +132,18 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
             {/* Menu in top right */}
             <div className="flex justify-end">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 hover:bg-muted"
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
+                <DropdownMenuTrigger
+                  onClick={(e) => e.stopPropagation()}
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0 hover:bg-muted"
+                      aria-label="Task options"
+                    />
+                  }
+                >
+                  <HugeiconsIcon icon={MoreVerticalIcon} className="h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                   <DropdownMenuItem
@@ -154,7 +152,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
                       setIsEditOpen(true);
                     }}
                   >
-                    <Edit className="mr-2 h-4 w-4" />
+                    <HugeiconsIcon icon={PencilEdit01Icon} className="mr-2 h-4 w-4" />
                     Edit Task
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -164,7 +162,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
                       setIsDeleteOpen(true);
                     }}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <HugeiconsIcon icon={Delete02Icon} className="mr-2 h-4 w-4" />
                     Delete Task
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -202,18 +200,18 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
               <div className="flex items-center gap-1 sm:gap-2 text-muted-foreground flex-wrap">
                 {task.dueDate && (
                   <div className="flex items-center gap-1 text-xs">
-                    <Calendar className="w-3 h-3" />
+                    <HugeiconsIcon icon={Calendar03Icon} className="w-3 h-3" />
                     <span className="hidden xs:inline">{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                     <span className="xs:hidden">{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1 sm:gap-2">
                   <div className="flex items-center gap-1 text-xs">
-                    <MessageSquare className="w-3 h-3" />
+                    <HugeiconsIcon icon={Message01Icon} className="w-3 h-3" />
                     <span>{localTask._count?.comments || 0}</span>
                   </div>
                   <div className="flex items-center gap-1 text-xs">
-                    <Paperclip className="w-3 h-3" />
+                    <HugeiconsIcon icon={Attachment01Icon} className="w-3 h-3" />
                     <span>{localTask._count?.attachments || 0}</span>
                   </div>
                 </div>
@@ -269,7 +267,7 @@ export function KanbanCard({ task, isDragging = false, teamMembers, onUpdate, on
                 </>
               ) : (
                 <>
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <HugeiconsIcon icon={Delete02Icon} className="mr-2 h-4 w-4" />
                   Delete Task
                 </>
               )}

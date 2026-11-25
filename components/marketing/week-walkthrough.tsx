@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 
 import { Section } from "@/components/marketing/section";
 import { PlanVisual, ShipVisual, TrackVisual } from "@/components/marketing/week-visuals";

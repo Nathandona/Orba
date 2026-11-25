@@ -13,11 +13,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Loading03Icon } from "@hugeicons/core-free-icons";
 import { useToast } from "@/components/ui/toast";
 
 interface ContactSalesDialogProps {
-  trigger?: React.ReactNode;
+  trigger?: React.ReactElement;
   onSubmit?: (formData: ContactFormData) => Promise<void>;
 }
 
@@ -79,7 +80,7 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      {trigger && <DialogTrigger render={trigger} />}
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Contact</DialogTitle>
@@ -146,7 +147,7 @@ export function ContactSalesDialog({ trigger, onSubmit }: ContactSalesDialogProp
             >
               {contactFormSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                  <HugeiconsIcon icon={Loading03Icon} className="mr-2 w-4 h-4 animate-spin" />
                   Sending...
                 </>
               ) : (

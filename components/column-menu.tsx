@@ -9,7 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreVertical, Trash2, Edit } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Delete02Icon, MoreVerticalIcon, PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,15 +67,13 @@ export function ColumnMenu({ columnId, columnTitle, projectId, onColumnDeleted, 
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
+        <DropdownMenuTrigger render={<Button aria-label="Column options" variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted" />}>
+          <HugeiconsIcon icon={MoreVerticalIcon} className="h-4 w-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {onColumnEdit && (
             <DropdownMenuItem onClick={() => onColumnEdit(columnId)}>
-              <Edit className="mr-2 h-4 w-4" />
+              <HugeiconsIcon icon={PencilEdit01Icon} className="mr-2 h-4 w-4" />
               Edit Column
             </DropdownMenuItem>
           )}
@@ -82,7 +81,7 @@ export function ColumnMenu({ columnId, columnTitle, projectId, onColumnDeleted, 
             className="text-destructive"
             onClick={() => setIsDeleteOpen(true)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <HugeiconsIcon icon={Delete02Icon} className="mr-2 h-4 w-4" />
             Delete Column
           </DropdownMenuItem>
         </DropdownMenuContent>

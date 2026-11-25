@@ -4,11 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { ArrowRight, LayoutDashboard, LogOut, Menu, Moon, Sun, User, X } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon, Cancel01Icon, DashboardSquare01Icon, Logout01Icon, Menu01Icon, Moon02Icon, Sun03Icon, UserIcon } from "@hugeicons/core-free-icons";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -55,8 +56,8 @@ function ThemeButton() {
         focusRing,
       )}
     >
-      <Sun className="h-4 w-4 scale-100 rotate-0 transition-transform dark:scale-0 dark:-rotate-90" />
-      <Moon className="absolute h-4 w-4 scale-0 rotate-90 transition-transform dark:scale-100 dark:rotate-0" />
+      <HugeiconsIcon icon={Sun03Icon} className="h-4 w-4 scale-100 rotate-0 transition-transform dark:scale-0 dark:-rotate-90" />
+      <HugeiconsIcon icon={Moon02Icon} className="absolute h-4 w-4 scale-0 rotate-90 transition-transform dark:scale-100 dark:rotate-0" />
     </button>
   );
 }
@@ -200,15 +201,13 @@ export function Navbar() {
                 Dashboard
               </Link>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button type="button" aria-label="Account" className={cn("hidden rounded-full md:block", focusRing)}>
-                    <Avatar className="h-7 w-7 ring-1 ring-hairline">
-                      <AvatarImage src={session.user?.image || undefined} alt={session.user?.name || "User"} />
-                      <AvatarFallback className="bg-surface-2 text-xs font-medium text-ink-1">
-                        {(session.user?.name || session.user?.email || "U").charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
+                <DropdownMenuTrigger render={<button type="button" aria-label="Account" className={cn("hidden rounded-full md:block", focusRing)} />}>
+                  <Avatar className="h-7 w-7 ring-1 ring-hairline">
+                    <AvatarImage src={session.user?.image || undefined} alt={session.user?.name || "User"} />
+                    <AvatarFallback className="bg-surface-2 text-xs font-medium text-ink-1">
+                      {(session.user?.name || session.user?.email || "U").charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
                   <DropdownMenuLabel className="font-normal">
@@ -216,24 +215,20 @@ export function Navbar() {
                     <p className="mt-1 text-xs leading-none text-ink-3">{session.user?.email}</p>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="cursor-pointer">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </Link>
+                  <DropdownMenuItem render={<Link href="/dashboard" className="cursor-pointer" />}>
+                    <HugeiconsIcon icon={DashboardSquare01Icon} className="mr-2 h-4 w-4" />
+                    Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
+                  <DropdownMenuItem render={<Link href="/profile" className="cursor-pointer" />}>
+                    <HugeiconsIcon icon={UserIcon} className="mr-2 h-4 w-4" />
+                    Profile
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    className="cursor-pointer text-destructive focus:text-destructive"
+                    className="cursor-pointer text-destructive data-highlighted:text-destructive"
                     onClick={() => signOut({ callbackUrl: "/" })}
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <HugeiconsIcon icon={Logout01Icon} className="mr-2 h-4 w-4" />
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -249,7 +244,7 @@ export function Navbar() {
               </Link>
               <Link href="/register" className={cn(inkButton, "group h-8 px-3 text-sm")}>
                 Get started
-                <ArrowRight className="hidden h-3.5 w-3.5 transition-transform motion-safe:group-hover:translate-x-0.5 md:block" />
+                <HugeiconsIcon icon={ArrowRight02Icon} className="hidden h-3.5 w-3.5 transition-transform motion-safe:group-hover:translate-x-0.5 md:block" />
               </Link>
             </>
           )}
@@ -266,7 +261,7 @@ export function Navbar() {
               focusRing,
             )}
           >
-            {open ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
+            {open ? <HugeiconsIcon icon={Cancel01Icon} className="h-[18px] w-[18px]" /> : <HugeiconsIcon icon={Menu01Icon} className="h-[18px] w-[18px]" />}
           </button>
         </div>
       </nav>

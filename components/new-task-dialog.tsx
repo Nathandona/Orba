@@ -20,9 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Plus } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Cancel01Icon, Loading03Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 
 interface TeamMember {
@@ -38,7 +38,7 @@ interface NewTaskDialogProps {
   columnTitle: string;
   teamMembers?: TeamMember[];
   onTaskCreated?: (task: any) => void;
-  trigger?: React.ReactNode;
+  trigger?: React.ReactElement;
 }
 
 export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, onTaskCreated, trigger }: NewTaskDialogProps) {
@@ -135,13 +135,15 @@ export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, o
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <Plus className="h-4 w-4" />
-          </Button>
-        )}
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          trigger ?? (
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Add task">
+              <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />
+            </Button>
+          )
+        }
+      />
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Task</DialogTitle>
@@ -180,8 +182,9 @@ export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, o
               <Label htmlFor="task-priority">Priority</Label>
               <Select
                 value={formData.priority}
-                onValueChange={(value: 'low' | 'medium' | 'high') =>
-                  setFormData({ ...formData, priority: value })
+                items={{ low: "Low", medium: "Medium", high: "High" }}
+                onValueChange={(value: 'low' | 'medium' | 'high' | null) =>
+                  value && setFormData({ ...formData, priority: value })
                 }
                 disabled={loading}
               >
@@ -212,15 +215,15 @@ export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, o
             <Label htmlFor="task-assignee">Assignee</Label>
             {teamMembers && teamMembers.length > 0 ? (
               <Select
-                value={formData.assignee}
-                onValueChange={(value) => setFormData({ ...formData, assignee: value })}
+                value={formData.assignee || null}
+                onValueChange={(value) => setFormData({ ...formData, assignee: value ?? '' })}
                 disabled={loading}
               >
                 <SelectTrigger id="task-assignee">
                   <SelectValue placeholder="Select team member" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Unassigned</SelectItem>
+                  <SelectItem value={null}>Unassigned</SelectItem>
                   {teamMembers.map((member) => (
                     <SelectItem key={member.id} value={member.name}>
                       {member.name} ({member.email})
@@ -259,13 +262,13 @@ export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, o
                 {formData.labels.map((label) => (
                   <Badge key={label} variant="secondary" className="px-2 py-1">
                     {label}
-                    <button
+                    <button aria-label="Remove label"
                       type="button"
                       onClick={() => removeLabel(label)}
                       className="ml-1 hover:text-destructive"
                       disabled={loading}
                     >
-                      <X className="h-3 w-3" />
+                      <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
                     </button>
                   </Badge>
                 ))}
@@ -286,7 +289,7 @@ export function NewTaskDialog({ projectId, columnId, columnTitle, teamMembers, o
             <Button type="submit" className="flex-1" disabled={loading}>
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                  <HugeiconsIcon icon={Loading03Icon} className="mr-2 w-4 h-4 animate-spin" />
                   Creating...
                 </>
               ) : (

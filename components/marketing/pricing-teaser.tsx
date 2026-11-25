@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
+import { motion, useReducedMotion } from "motion/react";
 
 import { Section } from "@/components/marketing/section";
 import { easeOutExpo, viewportOnce } from "@/lib/motion";
@@ -105,7 +106,7 @@ export function PricingTeaser() {
           <Reveal delay={afterWords(wordCount(heading)) + 90} className="mt-8 hidden lg:block">
             <Link href="/pricing" className={cn(outlineButton, "h-11 px-5 text-sm")}>
               Compare plans
-              <ArrowRight className="h-4 w-4" />
+              <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
             </Link>
           </Reveal>
         </div>
@@ -131,7 +132,7 @@ export function PricingTeaser() {
           </div>
           <Link href="/pricing" className={cn(outlineButton, "mt-6 h-11 w-full px-5 text-sm sm:w-auto lg:hidden")}>
             Compare plans
-            <ArrowRight className="h-4 w-4" />
+            <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
           </Link>
         </div>
       </div>

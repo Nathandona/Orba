@@ -22,17 +22,9 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/toast';
-import {
-    LayoutGrid,
-    List,
-    CheckCircle2,
-    Clock,
-    AlertCircle,
-    Users,
-    Target,
-    MoreVertical,
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, CheckmarkCircle02Icon, Clock01Icon, GridViewIcon, ListViewIcon, MoreVerticalIcon, Target02Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
+import { motion } from "motion/react";
 import { useRouter } from 'next/navigation';
 import { DashboardNavbar } from '@/components/dashboard-navbar';
 import { NewProjectDialog } from '@/components/new-project-dialog';
@@ -110,25 +102,25 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
         {
             title: 'Total Projects',
             value: totalProjects.toString(),
-            icon: Target,
+            icon: Target02Icon,
             color: 'text-blue-600',
         },
         {
             title: 'Tasks Completed',
             value: totalTasksCompleted.toString(),
-            icon: CheckCircle2,
+            icon: CheckmarkCircle02Icon,
             color: 'text-green-600',
         },
         {
             title: 'In Progress',
             value: totalTasksInProgress.toString(),
-            icon: Clock,
+            icon: Clock01Icon,
             color: 'text-orange-600',
         },
         {
             title: 'Collaborators',
             value: totalCollaborators.toString(),
-            icon: Users,
+            icon: UserGroupIcon,
             color: 'text-purple-600',
         },
     ];
@@ -137,13 +129,13 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
         switch (status) {
             case 'completed':
             case 'done':
-                return <CheckCircle2 className="w-4 h-4 text-green-600" />;
+                return <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 text-green-600" />;
             case 'in-progress':
-                return <Clock className="w-4 h-4 text-orange-600" />;
+                return <HugeiconsIcon icon={Clock01Icon} className="w-4 h-4 text-orange-600" />;
             case 'todo':
-                return <AlertCircle className="w-4 h-4 text-blue-600" />;
+                return <HugeiconsIcon icon={AlertCircleIcon} className="w-4 h-4 text-blue-600" />;
             default:
-                return <AlertCircle className="w-4 h-4 text-gray-600" />;
+                return <HugeiconsIcon icon={AlertCircleIcon} className="w-4 h-4 text-gray-600" />;
         }
     };
 
@@ -223,19 +215,19 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                 user={user}
                 leftContent={
                     <div className="hidden md:flex items-center gap-2">
-                        <Button
+                        <Button aria-label="Grid view"
                             variant={view === 'grid' ? 'default' : 'ghost'}
                             size="sm"
                             onClick={() => setView('grid')}
                         >
-                            <LayoutGrid className="w-4 h-4" />
+                            <HugeiconsIcon icon={GridViewIcon} className="w-4 h-4" />
                         </Button>
-                        <Button
+                        <Button aria-label="List view"
                             variant={view === 'list' ? 'default' : 'ghost'}
                             size="sm"
                             onClick={() => setView('list')}
                         >
-                            <List className="w-4 h-4" />
+                            <HugeiconsIcon icon={ListViewIcon} className="w-4 h-4" />
                         </Button>
                     </div>
                 }
@@ -269,7 +261,7 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                             <Card key={stat.title}>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                     <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                                    <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                                    <HugeiconsIcon icon={stat.icon} className={`h-4 w-4 ${stat.color}`} />
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-2xl font-bold">{stat.value}</div>
@@ -332,15 +324,18 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                                     )}
                                                 </div>
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <MoreVertical className="h-4 w-4" />
-                                                        </Button>
+                                                    <DropdownMenuTrigger
+                                                        render={
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-8 w-8 p-0"
+                                                                aria-label="Project options"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            />
+                                                        }
+                                                    >
+                                                        <HugeiconsIcon icon={MoreVerticalIcon} className="h-4 w-4" />
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={(e) => {
@@ -404,11 +399,11 @@ export function DashboardContent({ user, projects: initialProjects, recentTasks:
                                             </div>
                                             <div className="flex items-center justify-between text-sm">
                                                 <div className="flex items-center gap-2 text-muted-foreground">
-                                                    <Users className="h-4 w-4" />
+                                                    <HugeiconsIcon icon={UserGroupIcon} className="h-4 w-4" />
                                                     <span>{project.team} members</span>
                                                 </div>
                                                 <div className="flex items-center gap-2 text-muted-foreground">
-                                                    <Clock className="h-4 w-4" />
+                                                    <HugeiconsIcon icon={Clock01Icon} className="h-4 w-4" />
                                                     <span>Due {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'No date'}</span>
                                                 </div>
                                             </div>

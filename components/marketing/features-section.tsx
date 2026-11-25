@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import { Section } from "@/components/marketing/section";
 import { BentoCell, BentoGrid } from "@/components/marketing/bento";

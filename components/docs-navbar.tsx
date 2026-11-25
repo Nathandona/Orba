@@ -7,7 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useSession } from "next-auth/react";
-import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowUpRight01Icon, Cancel01Icon, Menu01Icon, Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons";
 
 import { cn } from "@/lib/utils";
 import { focusRing, inkButton } from "@/lib/ui";
@@ -25,8 +26,8 @@ function ThemeButton() {
         focusRing,
       )}
     >
-      <Sun className="h-4 w-4 scale-100 rotate-0 transition-transform dark:scale-0 dark:-rotate-90" />
-      <Moon className="absolute h-4 w-4 scale-0 rotate-90 transition-transform dark:scale-100 dark:rotate-0" />
+      <HugeiconsIcon icon={Sun03Icon} className="h-4 w-4 scale-100 rotate-0 transition-transform dark:scale-0 dark:-rotate-90" />
+      <HugeiconsIcon icon={Moon02Icon} className="absolute h-4 w-4 scale-0 rotate-90 transition-transform dark:scale-100 dark:rotate-0" />
     </button>
   );
 }
@@ -99,7 +100,7 @@ export function DocsNavbar() {
             className={cn("mr-2 hidden items-center gap-1 rounded-sm text-sm text-ink-2 transition-colors hover:text-ink-1 md:inline-flex", focusRing)}
           >
             Back to site
-            <ArrowUpRight className="h-3.5 w-3.5" />
+            <HugeiconsIcon icon={ArrowUpRight01Icon} className="h-3.5 w-3.5" />
           </Link>
           <div className="hidden md:block">
             <ThemeButton />
@@ -119,7 +120,7 @@ export function DocsNavbar() {
               focusRing,
             )}
           >
-            {open ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
+            {open ? <HugeiconsIcon icon={Cancel01Icon} className="h-[18px] w-[18px]" /> : <HugeiconsIcon icon={Menu01Icon} className="h-[18px] w-[18px]" />}
             Menu
           </button>
         </div>
@@ -141,7 +142,7 @@ export function DocsNavbar() {
           <div className="mt-10 flex items-center justify-between border-t border-hairline pt-5">
             <Link href="/" className={cn("inline-flex items-center gap-1 rounded-sm text-sm text-ink-2", focusRing)}>
               Back to site
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              <HugeiconsIcon icon={ArrowUpRight01Icon} className="h-3.5 w-3.5" />
             </Link>
             <ThemeButton />
           </div>

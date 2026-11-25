@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { LayoutGroup, motion } from "framer-motion";
-import { Clock, GripVertical, MessageSquare, Paperclip, Plus, Send } from "lucide-react";
+import { LayoutGroup, motion } from "motion/react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Attachment01Icon, Clock01Icon, DragDropVerticalIcon, Message01Icon, PlusSignIcon, SentIcon } from "@hugeicons/core-free-icons";
 
 import { cn } from "@/lib/utils";
 import { easeOutExpo } from "@/lib/motion";
@@ -99,13 +100,13 @@ export function PlanVisual({ play }: VisualProps) {
               transition={{ duration: 0.3, delay: play ? i * 0.04 : 0, ease: easeOutExpo }}
               className="flex h-8 items-center gap-2 rounded-md border border-hairline bg-background px-2.5 text-sm text-ink-1"
             >
-              <GripVertical className="h-3.5 w-3.5 shrink-0 text-ink-3" />
+              <HugeiconsIcon icon={DragDropVerticalIcon} className="h-3.5 w-3.5 shrink-0 text-ink-3" />
               <Pip className={c.pip} />
               <span className="truncate">{c.name}</span>
             </motion.li>
           ))}
           <li className="flex h-8 items-center gap-2 rounded-md border border-dashed border-hairline px-2.5 text-sm">
-            <Plus className="h-3.5 w-3.5 shrink-0 text-ink-3" />
+            <HugeiconsIcon icon={PlusSignIcon} className="h-3.5 w-3.5 shrink-0 text-ink-3" />
             {chars > 0 ? (
               <span className="truncate text-ink-1">
                 {typed.slice(0, chars)}
@@ -125,7 +126,7 @@ export function PlanVisual({ play }: VisualProps) {
           <Initials>JL</Initials>
           <Initials className="bg-ink-2">EL</Initials>
           <span className="inline-flex h-6 items-center gap-1 rounded-full border border-dashed border-hairline px-2 text-[11px] text-ink-2">
-            <Plus className="h-3 w-3" />
+            <HugeiconsIcon icon={PlusSignIcon} className="h-3 w-3" />
             Invite
           </span>
         </div>
@@ -154,14 +155,14 @@ function TaskCard({ className, lifted }: { className?: string; lifted?: boolean 
       <div className="mt-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 font-mono text-[11px] text-ink-3">
           <span className="inline-flex items-center gap-1">
-            <Clock className="h-3 w-3" />
+            <HugeiconsIcon icon={Clock01Icon} className="h-3 w-3" />
             {TASK.due}
           </span>
           <span className="inline-flex items-center gap-1">
-            <MessageSquare className="h-3 w-3" />2
+            <HugeiconsIcon icon={Message01Icon} className="h-3 w-3" />2
           </span>
           <span className="inline-flex items-center gap-1">
-            <Paperclip className="h-3 w-3" />1
+            <HugeiconsIcon icon={Attachment01Icon} className="h-3 w-3" />1
           </span>
         </div>
         <Initials>{TASK.owner}</Initials>
@@ -217,7 +218,7 @@ export function TrackVisual({ play }: VisualProps) {
             <span className="truncate">Add a comment...</span>
           </span>
           <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-ink-1 text-background">
-            <Send className="h-3.5 w-3.5" />
+            <HugeiconsIcon icon={SentIcon} className="h-3.5 w-3.5" />
           </span>
         </div>
       </div>

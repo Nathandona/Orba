@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Loading03Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { useToast } from '@/components/ui/toast';
 
 interface AddColumnDialogProps {
@@ -125,12 +126,12 @@ export function AddColumnDialog({ open, onOpenChange, projectId, onColumnCreated
             <Button type="submit" className="flex-1" disabled={loading || !formData.title.trim()}>
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                  <HugeiconsIcon icon={Loading03Icon} className="mr-2 w-4 h-4 animate-spin" />
                   Creating...
                 </>
               ) : (
                 <>
-                  <Plus className="mr-2 w-4 h-4" />
+                  <HugeiconsIcon icon={PlusSignIcon} className="mr-2 w-4 h-4" />
                   Add Column
                 </>
               )}

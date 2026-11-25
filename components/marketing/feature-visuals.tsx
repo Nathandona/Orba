@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { Check, FileText, MessageSquare, Paperclip } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Attachment01Icon, File01Icon, Message01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
 
 import { cn } from "@/lib/utils";
 import { easeOutExpo } from "@/lib/motion";
@@ -185,7 +186,7 @@ export function CardDetailVisual() {
               {(["Low", "Medium", "High"] as const).map((l) => (
                 <div key={l} className={cn("flex items-center justify-between rounded px-2 py-1", l === "High" && "bg-surface-2")}>
                   <Priority level={l} />
-                  {l === "High" && <Check className="h-3 w-3 text-ink-1" />}
+                  {l === "High" && <HugeiconsIcon icon={Tick02Icon} className="h-3 w-3 text-ink-1" />}
                 </div>
               ))}
             </motion.div>
@@ -234,16 +235,16 @@ export function ThreadVisual() {
         </motion.div>
       ))}
       <MiniCard className="flex items-center gap-2 p-2.5">
-        <FileText className="h-3.5 w-3.5 shrink-0 text-ink-3" />
+        <HugeiconsIcon icon={File01Icon} className="h-3.5 w-3.5 shrink-0 text-ink-3" />
         <span className="min-w-0 flex-1 truncate text-[12px] text-ink-1">{DEMO.file.name}</span>
         <span className="font-mono text-[10px] text-ink-3">{DEMO.file.size}</span>
       </MiniCard>
       <div className="mt-auto flex items-center gap-3 px-1 font-mono text-[11px] text-ink-3">
         <span className="inline-flex items-center gap-1">
-          <MessageSquare className="h-3 w-3" /> 2
+          <HugeiconsIcon icon={Message01Icon} className="h-3 w-3" /> 2
         </span>
         <span className="inline-flex items-center gap-1">
-          <Paperclip className="h-3 w-3" /> 1
+          <HugeiconsIcon icon={Attachment01Icon} className="h-3 w-3" /> 1
         </span>
       </div>
     </div>
@@ -325,7 +326,7 @@ export function TemplatesVisual() {
             ) : (
               <Chip>Free</Chip>
             )}
-            {i === 0 && <Check className="h-3.5 w-3.5 shrink-0 text-ink-1" />}
+            {i === 0 && <HugeiconsIcon icon={Tick02Icon} className="h-3.5 w-3.5 shrink-0 text-ink-1" />}
           </MiniCard>
         </div>
       ))}

@@ -3,7 +3,8 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
 
 import { cn } from "@/lib/utils";
 import { focusRing } from "@/lib/ui";
@@ -24,7 +25,7 @@ export function DocFooter({ className }: { className?: string }) {
       {prev ? (
         <Link href={prev.href} className={cn(card, focusRing)}>
           <span className="inline-flex items-center gap-1.5 text-[13px] text-ink-3">
-            <ArrowLeft className="h-3 w-3" />
+            <HugeiconsIcon icon={ArrowLeft02Icon} className="h-3 w-3" />
             Previous
           </span>
           <span className="font-medium text-ink-1">{prev.label}</span>
@@ -36,7 +37,7 @@ export function DocFooter({ className }: { className?: string }) {
         <Link href={next.href} className={cn(card, "sm:items-end sm:text-right", focusRing)}>
           <span className="inline-flex items-center gap-1.5 text-[13px] text-ink-3">
             Next
-            <ArrowRight className="h-3 w-3" />
+            <HugeiconsIcon icon={ArrowRight02Icon} className="h-3 w-3" />
           </span>
           <span className="font-medium text-ink-1">{next.label}</span>
         </Link>

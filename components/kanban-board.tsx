@@ -16,7 +16,7 @@ import {
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { motion } from 'framer-motion';
+import { motion } from "motion/react";
 import { useRouter } from 'next/navigation';
 import { KanbanColumn } from './kanban-column';
 import { KanbanCard } from '@/components/kanban-card';

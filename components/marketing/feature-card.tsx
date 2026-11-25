@@ -1,9 +1,9 @@
 import * as React from "react";
-import type { LucideIcon } from "lucide-react";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import { cn } from "@/lib/utils";
 
 interface FeatureCardProps {
-  icon?: LucideIcon;
+  icon?: IconSvgElement;
   title: string;
   description: string;
   bullets?: string[];
@@ -13,7 +13,7 @@ interface FeatureCardProps {
 }
 
 export function FeatureCard({
-  icon: Icon,
+  icon,
   title,
   description,
   bullets,
@@ -33,14 +33,14 @@ export function FeatureCard({
         className,
       )}
     >
-      {Icon && (
+      {icon && (
         <div
           className={cn(
             "mb-6 inline-flex h-10 w-10 items-center justify-center rounded-full border",
             ink ? "border-background/30 text-background" : "border-hairline text-brand",
           )}
         >
-          <Icon className="h-5 w-5" />
+          <HugeiconsIcon icon={icon} className="h-5 w-5" />
         </div>
       )}
       <h3

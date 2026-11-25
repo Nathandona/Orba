@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import { NewBoardCard } from "@/components/marketing/new-board-card";
 import { FREE_LIMITS, PRO_PRICE } from "@/lib/plans";
@@ -59,7 +60,7 @@ export function CtaBand({
           <Reveal delay={after + 90} className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <Link href={href} className={cn(inkButton, "h-11 px-6 text-base")}>
               {session ? "Open dashboard" : primaryText}
-              <ArrowRight className="h-4 w-4" />
+              <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
             </Link>
             <Link
               href={secondaryHref}
@@ -69,7 +70,7 @@ export function CtaBand({
               )}
             >
               {secondaryText}
-              <ArrowUpRight className="h-4 w-4" />
+              <HugeiconsIcon icon={ArrowUpRight01Icon} className="h-4 w-4" />
             </Link>
           </Reveal>
           <Reveal as="p" delay={after + 180} className="mt-6 font-mono text-xs text-ink-3">

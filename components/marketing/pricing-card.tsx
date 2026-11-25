@@ -4,7 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight02Icon, Loading03Icon, Tick02Icon } from "@hugeicons/core-free-icons";
 
 import { cn } from "@/lib/utils";
 import { inkButton, outlineButton } from "@/lib/ui";
@@ -69,13 +70,13 @@ export function PricingCard({ plan, billing, onError, className }: PricingCardPr
 
   const label = loading ? (
     <>
-      <Loader2 className="h-4 w-4 animate-spin" />
+      <HugeiconsIcon icon={Loading03Icon} className="h-4 w-4 animate-spin" />
       Processing
     </>
   ) : (
     <>
       {!paid && session ? "Go to dashboard" : plan.cta}
-      <ArrowRight className="h-4 w-4" />
+      <HugeiconsIcon icon={ArrowRight02Icon} className="h-4 w-4" />
     </>
   );
 
@@ -125,7 +126,7 @@ export function PricingCard({ plan, billing, onError, className }: PricingCardPr
       <ul className="mt-8 space-y-3 border-t border-hairline pt-6 text-sm">
         {plan.features.map((f) => (
           <li key={f} className="flex items-start gap-3 text-ink-1">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-ink-2" />
+            <HugeiconsIcon icon={Tick02Icon} className="mt-0.5 h-4 w-4 shrink-0 text-ink-2" />
             <span>{f}</span>
           </li>
         ))}
